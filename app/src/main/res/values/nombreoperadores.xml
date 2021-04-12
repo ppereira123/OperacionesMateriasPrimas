@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="combo_tiposOperaciones">
+        <item>Maria Perez</item>
+        <item>Jose Fernandez</item>
+        <item>Juanita Luz</item>
+
+
+
+    </string-array>
+
+</resources>
