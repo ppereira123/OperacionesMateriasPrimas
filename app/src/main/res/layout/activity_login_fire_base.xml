@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".login.LoginFireBase">
+
+    <Button
+        android:id="@+id/btnIniciarsesion"
+        android:layout_width="225dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="150dp"
+        android:backgroundTint="@color/purple_200"
+        android:elevation="20dp"
+        android:onClick="iniciarSesion"
+        android:text="Inciar Sesión"
+        android:textColor="#000000"
+        app:icon="@drawable/googleg_disabled_color_18"
+        app:iconSize="50dp"
+        app:iconTintMode="multiply" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="352dp"
+        android:layout_height="278dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="80dp"
+        app:srcCompat="@mipmap/montanas" />
+
+    <TextView
+        android:id="@+id/txtlogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif-light"
+        android:text="HolcimQuarry"
+        android:textSize="36sp" />
+
+</FrameLayout>

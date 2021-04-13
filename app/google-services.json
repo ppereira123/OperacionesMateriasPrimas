@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "29287484008",
+    "firebase_url": "https://operaciones-materiasprimas-default-rtdb.firebaseio.com",
+    "project_id": "operaciones-materiasprimas",
+    "storage_bucket": "operaciones-materiasprimas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29287484008:android:fe0d10293348af8ee4c9dd",
+        "android_client_info": {
+          "package_name": "com.example.operacionesmteriasprimas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29287484008-tugor0nlgqavr7b8780243p58u2eohnp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJbxy_A57LyDgDWeSuO_3OD3yHmSs5E8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29287484008-tugor0nlgqavr7b8780243p58u2eohnp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
