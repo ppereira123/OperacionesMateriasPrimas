@@ -7,6 +7,23 @@
     android:orientation="vertical"
     tools:context=".ui.reporte.ReporteFragment">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabNuevoReporte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|right"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:clickable="true"
+        android:src="@android:drawable/ic_input_add" />
+
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Reportes Diarios" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

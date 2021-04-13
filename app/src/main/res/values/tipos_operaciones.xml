@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="combo_tiposOperaciones">
         <item>Extracción</item>
         <item>Esteril</item>
@@ -12,5 +13,17 @@
         <item>Apoyo en actividades de planta (paros mayores)</item>
         <item>Escoger hora de extracción</item>
     </string-array>
+
+    <string-array name="combo_turnos">
+        <item>Amanecida</item>
+        <item>Día</item>
+        <item>Tarde</item>
+    </string-array>
+
+
+
+
+
+
 
 </resources>
