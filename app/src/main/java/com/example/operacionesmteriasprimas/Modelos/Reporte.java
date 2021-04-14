@@ -1,8 +1,9 @@
 package com.example.operacionesmteriasprimas.Modelos;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Reporte {
+public class Reporte implements Serializable {
     String fecha;
     String supervisor;
     String id;

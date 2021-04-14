@@ -1,8 +1,9 @@
 package com.example.operacionesmteriasprimas.Modelos;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Operador {
+public class Operador implements Serializable {
     HashMap<Integer,Double> actividades;
     String nombre;
 

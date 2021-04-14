@@ -1,5 +1,6 @@
 package com.example.operacionesmteriasprimas.ui.reporte;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
@@ -8,7 +9,9 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.service.autofill.UserData;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,12 +20,24 @@ import android.widget.ListView;
 
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
+import com.example.operacionesmteriasprimas.Modelos.Operador;
+import com.example.operacionesmteriasprimas.Modelos.Reporte;
+import com.example.operacionesmteriasprimas.Modelos.UsersData;
 import com.example.operacionesmteriasprimas.R;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class Nuevoreporte extends AppCompatActivity {
@@ -39,6 +54,9 @@ public class Nuevoreporte extends AppCompatActivity {
     Context context=this;
     String turno="";
     String fecha="";
+    UsersData user;
+    String id="";
+    final int REQUEST_CODE=2;
 
 
 
@@ -53,21 +71,80 @@ public class Nuevoreporte extends AppCompatActivity {
         spinner=findViewById(R.id.spinnerTurno);
         txtTurno=findViewById(R.id.txtEscogerTurno);
         tietOperadores=findViewById(R.id.tietOperadores);
-
+        getUser();
         configFecha(tietFecha);
         llenarSpinner(spinner,txtTurno);
         llenarLista();
 
+    }
 
+    private void getUser() {
+        InternalStorage internalStorage= new InternalStorage();
+        user=internalStorage.cargarArchivo(context);
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void siguiente(View view) throws IOException {
+        String error="";
+        if(fecha.equals("")){
+            error=error+"/Fecha";
+        }
 
+        if(turno.equals("Seleccione el turno")){
+            error=error+"/Turno";
+        }
 
+        if(operadoresSeleccionados.size()<1){
+            error=error+"/Seleccionar operadores";
+        }
+
+        if(error.equals("")){
+            obtenerId();
+            HashMap<String, Operador> operadorHashMap =generarOperadores();
+            Reporte reporte= new Reporte(fecha,user.getName(),id,turno,operadorHashMap);
+            Intent intent= new Intent(context,ListaOperadores.class);
+            intent.putExtra("Reporte",reporte);
+            startActivityForResult(intent,REQUEST_CODE);
+            new InternalStorage().guardarReporte(reporte,context);
+            Toast.makeText(context, "Reporte creado correctamente", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        else{
+            String[] separado=error.split("/");
+            String[] errores=error.split("/");
+
+            List<String>muestra=new ArrayList<>();
+            for(int i=1;i<errores.length;i++){
+                muestra.add(errores[i]);
+            }
+            String dialogErrores=String.join(",",muestra);
+
+            Snackbar snackbar=Snackbar.make(findViewById(R.id.viewNuevoReporte),"Falta completar:"+dialogErrores, BaseTransientBottomBar.LENGTH_LONG);
+            snackbar.show();
+        }
+    }
+
+    private void obtenerId() {
+        FirebaseDatabase database= FirebaseDatabase.getInstance();
+        DatabaseReference reference=database.getReference("ReportesDiarios").child(user.getName());
+        DatabaseReference refId=reference.push();
+        id=refId.getKey();
+    }
+
+    private HashMap<String, Operador> generarOperadores() {
+        HashMap<String,Operador> operadorHashMap= new HashMap<>();
+        for(String s: operadoresSeleccionados){
+            Operador operador= new Operador(new HashMap<Integer,Double>(),s);
+            operadorHashMap.put(s,operador);
+        }
+        return null;
     }
 
     void llenarSpinner(Spinner spinner,TextView txtTurno){
         String[] turnos=getResources().getStringArray(R.array.combo_turnos);
         List<String> lturnos=new ArrayList<>();
-        lturnos.add("Selecciones turno");
+        lturnos.add("Seleccione el turno");
         for(String s:turnos){
             lturnos.add(s);
         }
