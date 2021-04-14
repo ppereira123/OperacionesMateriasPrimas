@@ -86,72 +86,8 @@ public class ReporteFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater mInflater=LayoutInflater.from(root.getContext());;
-                AlertDialog.Builder builder = new AlertDialog.Builder(root.getContext());
-                builder.setTitle("Nuevo Reporte");
-                View view = mInflater.inflate(R.layout.res_nuevo_reporte, null);
-                TextInputEditText tietFecha,tietTurno;
-                Spinner spinner;
-                tietFecha=view.findViewById(R.id.tietFechaNuevoReporte);
-                tietTurno=view.findViewById(R.id.tietFechaNuevoReporte2);
-                spinner=view.findViewById(R.id.spinnerTurno);
-                configFecha(tietFecha);
-                llenarSpinner(spinner,tietTurno);
-
-                tietFecha.setText(fecha);
-                spinner.setSelection(0);
-
-                builder.setView(view);
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        String error="";
-
-                        if (fecha.equals("")) {
-                            error=error+"/Fecha";
-                        }
-
-                        if(turno.equals("Seleccione turno")){
-                            error=error+"/Turno";
-                        }
-
-
-
-                        if(error.equals("")){
-                            Intent intent=new Intent(root.getContext(),Nuevoreporte.class);
-                            startActivityForResult(intent,1);
-                        }
-
-
-                        else {
-                            String[] errores=error.split("/");
-
-                            List<String>muestra=new ArrayList<>();
-                            for(int i=1;i<errores.length;i++){
-                                muestra.add(errores[i]);
-                            }
-                            String dialogErrores=String.join(",",muestra);
-                            Snackbar snackbar = Snackbar
-                                    .make(root, "Falta ingresar: "+dialogErrores, Snackbar.LENGTH_LONG);
-                            snackbar.show();
-                        }
-
-                    }
-                });
-
-                builder.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-
-                AlertDialog alert = builder.create();
-                alert.show();
-
-
+                Intent intent=new Intent(root.getContext(),Nuevoreporte.class);
+                startActivityForResult(intent,1);
 
 
             }
@@ -163,61 +99,7 @@ public class ReporteFragment extends Fragment {
         cargarReportes();
     }
 
-    void llenarSpinner(Spinner spinner,TextInputEditText tiet){
-        String[] turnos=getResources().getStringArray(R.array.combo_turnos);
-        List<String> lturnos=new ArrayList<>();
-        lturnos.add("Selecciones turno");
-        for(String s:turnos){
-            lturnos.add(s);
-        }
-        spinner.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item,lturnos));
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                turno= (String) parent.getItemAtPosition(position);
-                tiet.setText(turno);
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-    }
-
-    private void configFecha(TextInputEditText tietFecha) {
-        Calendar calendar= Calendar.getInstance();
-        final int year = calendar.get(Calendar.YEAR);
-        final int month = calendar.get(Calendar.MONTH);
-        final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        tietFecha.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int day) {
-                        month = month+1;
-                        String date= day+"/"+month+"/"+year;
-                        fecha=date;
-                        tietFecha.setText(fecha);
-
-                    }
-                },year,month,day);
 
 
 
-                if(hasFocus){
-                    datePickerDialog.show();
-                }
-                else{
-                    datePickerDialog.dismiss();
-                }
-
-            }
-        });
-    }
 }

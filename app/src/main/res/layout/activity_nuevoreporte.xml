@@ -1,53 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#2C98E016"
     android:orientation="vertical"
-    tools:context=".ui.reporte.Nuevoreporte" >
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="Escoger operadores:" />
-
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/buscarOperadores"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="#2C98E016">
-
-
-    </androidx.appcompat.widget.SearchView>
+    tools:context=".ui.reporte.Nuevoreporte">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context=".ui.reporte.Nuevoreporte">
 
-        <ListView
-            android:id="@+id/lvNombreOperadores"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
+            android:layout_height="match_parent"
+            android:layout_margin="5dp">
 
-        </ListView>
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Seleccionar Fecha"
+                android:textSize="16sp" />
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tietFechaNuevoReporte"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:gravity="center"
+                android:hint="Fecha:" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:id="@+id/txtEscogerTurno"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Escoger Turno:"
+                android:textSize="16sp" />
+        </androidx.cardview.widget.CardView>
+
+        <Spinner
+            android:id="@+id/spinnerTurno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Escoger Operadores"
+                android:textSize="16sp" />
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tietOperadores"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:gravity="center"
+                android:hint="Operadores Seleccionados:"
+                android:singleLine="false" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnsalir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Siguiente" />
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btnsalir"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Siguiente" />
-
-</LinearLayout>
+</ScrollView>
