@@ -47,7 +47,7 @@ public class Nuevoreporte extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Ingreso de Administrador");
+        getSupportActionBar().setTitle("Nuevo Reporte");
         setContentView(R.layout.activity_nuevoreporte);
         tietFecha=findViewById(R.id.tietFechaNuevoReporte);
         spinner=findViewById(R.id.spinnerTurno);
