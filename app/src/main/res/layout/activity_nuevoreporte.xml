@@ -7,7 +7,7 @@
     android:id="@+id/viewNuevoReporte"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2C98E016"
+    android:background="#FFFEFE"
     android:orientation="vertical"
     tools:context=".ui.reporte.Nuevoreporte">
 
@@ -20,12 +20,14 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="5dp">
+            android:layout_margin="5dp"
+            android:background="#FFFFFF">
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/ic_launcher_background"
                 android:gravity="center"
                 android:text="Seleccionar Fecha"
                 android:textSize="16sp" />
@@ -41,6 +43,9 @@
                 android:id="@+id/tietFechaNuevoReporte"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@color/white"
                 android:editable="false"
                 android:focusable="auto"
                 android:gravity="center"
@@ -57,6 +62,8 @@
                 android:id="@+id/txtEscogerTurno"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/tab"
+                android:backgroundTint="@color/ic_launcher_background"
                 android:gravity="center"
                 android:text="Escoger Turno:"
                 android:textSize="16sp" />
@@ -75,9 +82,10 @@
             android:layout_margin="5dp">
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/textView8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/ic_launcher_background"
                 android:gravity="center"
                 android:text="Escoger Operadores"
                 android:textSize="16sp" />
@@ -93,13 +101,16 @@
                 android:id="@+id/tietOperadores"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@color/white"
                 android:editable="false"
                 android:gravity="center|left"
                 android:singleLine="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/btnsalir"
+            android:id="@+id/btnsiguente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OperacionesmteriasPrimas">
-        <activity android:name=".ui.reporte.ListaOperadores"></activity>
+        <activity android:name=".ui.reporte.ListaActividadOperadores"></activity>
+        <activity android:name=".ui.reporte.ListaOperadores" />
         <activity android:name=".ui.reporte.Nuevoreporte" />
         <activity android:name=".login.LoginFireBase" />
         <activity android:name=".Splash">

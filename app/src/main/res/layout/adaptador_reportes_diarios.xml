@@ -1,84 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViewItemPresion"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:scrollbarTrackVertical="@drawable/ic_launcher_foreground"
+    android:visibility="visible"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        app:cardElevation="1dp">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:animateLayoutChanges="true"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <RelativeLayout
+            android:id="@+id/cvJugador"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:elevation="20dp">
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="6dp">
 
-            <ImageView
-                android:id="@+id/imgCompletadoDescarte"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="left|center_vertical"
-                android:layout_margin="5dp"
-                app:srcCompat="@mipmap/multiply" />
 
             <LinearLayout
-                android:layout_width="246dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center|left"
-                android:layout_marginLeft="45dp"
+                android:id="@+id/rLResultadoMotor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:longClickable="true"
+                android:orientation="vertical"
+                android:padding="6dp">
 
                 <TextView
-                    android:id="@+id/txtDNombreSupervisor"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/txtNombreActividad"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    android:gravity="center|left"
-                    android:text="Nombre Supervisor"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:text="Enunciado"
                     android:textColor="#000000"
                     android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/txtTurno"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    android:gravity="center|left"
-                    android:text="Turno"
-                    android:textSize="16sp" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilValorPresion"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp">
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center|right"
-                android:gravity="center|right">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextHoras"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:hint="Horas"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/txtFechaRH"
+                    <Button
+                        android:id="@+id/btnAnterioPresion"
+                        style="@android:style/Widget.Material.Light.Button.Borderless"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="15/03/21" />
+                        android:layout_weight="1"
+                        android:text="Anterior"
+                        android:textColor="@color/purple_500"
+                        android:textSize="12sp" />
 
+                    <Button
+                        android:id="@+id/btnSiguientePresion"
+                        style="@android:style/Widget.Material.Light.Button.Borderless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Siguiente"
+                        android:textColor="@color/purple_500"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
             </LinearLayout>
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    </androidx.cardview.widget.CardView>
 
-</LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
