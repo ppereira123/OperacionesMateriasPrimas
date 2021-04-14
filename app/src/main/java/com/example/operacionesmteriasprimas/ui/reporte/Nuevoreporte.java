@@ -33,6 +33,7 @@ public class Nuevoreporte extends AppCompatActivity {
     boolean[] checkedItems;
     List<String> operadoresSeleccionados;
     TextInputEditText tietFecha,tietOperadores;
+    String muestra="";
     TextView txtTurno;
     Spinner spinner;
     Context context=this;
@@ -104,6 +105,7 @@ public class Nuevoreporte extends AppCompatActivity {
                         String date= day+"/"+month+"/"+year;
                         fecha=date;
                         tietFecha.setText(fecha);
+                        tietFecha.clearFocus();
 
                     }
                 },year,month,day);
@@ -148,10 +150,11 @@ public class Nuevoreporte extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String muestra="";
+
                          for(String s:operadoresSeleccionados){
                              muestra=muestra+s+"\n";
                              tietOperadores.setText(muestra);
+                             tietOperadores.clearFocus();
                          }
                     }
                 });
@@ -168,6 +171,7 @@ public class Nuevoreporte extends AppCompatActivity {
                      for(int i=0;i<checkedItems.length;i++){
                          checkedItems[i]=false;
                          operadoresSeleccionados.clear();
+                         muestra="";
                      }
                     }
                 });
