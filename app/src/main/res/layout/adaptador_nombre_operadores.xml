@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llEscoger"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/checkBoxOperador"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:gravity="center|left" />
 
     <TextView
         android:id="@+id/txtnombreOperadorLv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Nombre Operador" />
+        android:layout_gravity="center"
+        android:text="Nombre Operador"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
 </LinearLayout>

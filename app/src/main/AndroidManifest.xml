@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OperacionesmteriasPrimas">
         <activity android:name=".ui.reporte.Nuevoreporte"></activity>
-        <activity android:name=".MainActivity2" />
         <activity android:name=".login.LoginFireBase" />
         <activity android:name=".Splash">
             <intent-filter>

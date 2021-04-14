@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 
 public class InternalStorage {
 
@@ -35,9 +36,52 @@ public class InternalStorage {
         os.close();
         fos.close();
 
+    }
+
+    public void guardarReporte(Reporte reporte,Context context) throws IOException {
+        HashMap<String,Reporte> reportes=cargarReportes(context);
+        reportes.put(reporte.getId(),reporte);
+        String urlArchivo="reportes.txt";
+        FileOutputStream fos = null;
+        try {
+            fos = context.openFileOutput(urlArchivo, Context.MODE_PRIVATE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ObjectOutputStream os = null;
+        try {
+            os = new ObjectOutputStream(fos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        os.writeObject(reportes);
+        os.close();
+        fos.close();
 
 
+    }
 
+    public HashMap<String,Reporte> cargarReportes(Context context){
+        String urlArchivo="reportes.txt";
+        HashMap<String,Reporte> reportes= new HashMap<>();
+        String archivos[]=context.fileList();
+        try {
+
+            FileInputStream fis = context.openFileInput(urlArchivo);
+            ObjectInputStream is = new ObjectInputStream(fis);
+            reportes = (HashMap<String, Reporte>) is.readObject();
+            is.close();
+            fis.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return reportes;
     }
 
     public boolean ArchivoExiste(String[] archivos, String urlArchivo) {
