@@ -3,6 +3,7 @@ package com.example.operacionesmteriasprimas.Modelos;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Operador implements Serializable {
     HashMap<Integer,Double> actividades;
@@ -50,5 +51,11 @@ public class Operador implements Serializable {
 
     public void setActividades(HashMap<Integer, Double> actividades) {
         this.actividades = actividades;
+    }
+
+    public int getActividadesPendientes(){
+
+        int restantes=nombreActividades.size()-actividades.size();
+        return restantes;
     }
 }
