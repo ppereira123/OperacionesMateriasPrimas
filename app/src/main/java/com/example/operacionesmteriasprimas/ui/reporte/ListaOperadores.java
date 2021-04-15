@@ -51,7 +51,7 @@ public class ListaOperadores extends AppCompatActivity {
         operadores=new ArrayList<>();
         hashOperadores=reporte.getOperadores();
         operadores=hashToList(hashOperadores);
-        adaptadorlistaOperadores adaptadorlistaOperadores=new adaptadorlistaOperadores(context, operadores);
+        adaptadorlistaOperadores adaptadorlistaOperadores=new adaptadorlistaOperadores(context, operadores,reporte);
         listOperadores.setAdapter(adaptadorlistaOperadores);
     }
 
