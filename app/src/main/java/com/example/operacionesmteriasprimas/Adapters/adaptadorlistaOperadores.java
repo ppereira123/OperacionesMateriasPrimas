@@ -33,7 +33,7 @@ public class adaptadorlistaOperadores extends BaseAdapter {
     List actividadesSelecionadas=new ArrayList<String>();
     HashMap<String,Operador> hashOperadores;
 
-    public adaptadorlistaOperadores(Context context, List<Operador> listItems, String nombre_operador, String urlArchivo, ListaActividadOperadores actividadesOperador, HashMap<String, Operador> hashOperadores) {
+    public adaptadorlistaOperadores(Context context, List<Operador> listItems) {
         this.context = context;
         this.listItems = listItems;
         this.nombre_operador = nombre_operador;
@@ -65,15 +65,15 @@ public class adaptadorlistaOperadores extends BaseAdapter {
         TextView nombreOperador= convertView.findViewById(R.id.txtNombreOperador);
         ImageView imgCompletado=convertView.findViewById(R.id.imgCompletado);
         nombreOperador.setText(item.getNombre());
-        LinearLayout viewOperador= convertView.findViewById(R.id.viewOperador);
-        /*
+        LinearLayout viewOperador= convertView.findViewById(R.id.linearOperador);
+
         if(item.isCompleto()){
             imgCompletado.setImageResource(R.mipmap.check);
         }
         else {
             imgCompletado.setImageResource(R.mipmap.multiply);
         }
-*/
+
 
         viewOperador.setOnClickListener(new View.OnClickListener() {
 
@@ -103,7 +103,7 @@ public class adaptadorlistaOperadores extends BaseAdapter {
                     public void onClick(DialogInterface dialog, int which) {
 
                         Intent intent = new Intent(context, ListaActividadOperadores.class);
-                        intent.putExtra("actividades", (Parcelable) actividadesSelecionadas);
+                        intent.putExtra("actividades", (Serializable) actividadesSelecionadas);
                         context.startActivity(intent);
 
 

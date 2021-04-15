@@ -29,6 +29,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.operacionesmteriasprimas.Adapters.BaseAdapterReportes;
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.R;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReporteFragment extends Fragment {
 
@@ -55,7 +57,7 @@ public class ReporteFragment extends Fragment {
     Context context;
 
     HashMap<String, Reporte> hashReportes;
-    List<Reporte> resportes;
+    List<Reporte> reportes;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -66,20 +68,35 @@ public class ReporteFragment extends Fragment {
         listReporte=root.findViewById(R.id.listReporte);
         fab=root.findViewById(R.id.fabNuevoReporte);
         swipe=root.findViewById(R.id.swipeReporte);
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                cargarReportes();
+            }
+        });
         storage=new InternalStorage();
         cargarReportes();
         configFab();
         context=root.getContext();
-
-
-
-
-
         return root;
     }
 
     private void cargarReportes(){
+        swipe.setRefreshing(true);
+        hashReportes=storage.cargarReportes(root.getContext());
+        reportes=listToHash(hashReportes);
         Toast.makeText(root.getContext(), "Cargando", Toast.LENGTH_SHORT).show();
+        BaseAdapterReportes baseAdapterReportes= new BaseAdapterReportes(reportes,root.getContext(),this);
+        listReporte.setAdapter(baseAdapterReportes);
+        swipe.setRefreshing(false);
+    }
+
+    private List<Reporte >listToHash(HashMap<String, Reporte> hashReportes) {
+        List<Reporte> reportes=new ArrayList<>();
+        for(Map.Entry<String,Reporte> entry:hashReportes.entrySet()){
+            reportes.add(entry.getValue());
+        }
+        return reportes;
     }
 
     private void configFab(){

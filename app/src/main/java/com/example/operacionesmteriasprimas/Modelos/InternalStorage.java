@@ -72,6 +72,7 @@ public class InternalStorage {
             reportes = (HashMap<String, Reporte>) is.readObject();
             is.close();
             fis.close();
+            return reportes;
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

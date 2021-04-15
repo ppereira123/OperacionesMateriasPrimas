@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/viewOperador"
+    android:id="@+id/linearOperador"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -25,7 +24,7 @@
                 android:layout_height="30dp"
                 android:layout_gravity="left|center_vertical"
                 android:layout_margin="5dp"
-                app:srcCompat="@mipmap/multiply" />
+                app:srcCompat="@drawable/multiply" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -2,20 +2,52 @@ package com.example.operacionesmteriasprimas.Modelos;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Reporte implements Serializable {
     String fecha;
     String supervisor;
     String id;
     String turno;
+    boolean completado;
+    boolean subido;
     HashMap<String,Operador> operadores;
 
-    public Reporte(String fecha, String supervisor, String id, String turno, HashMap<String, Operador> operadores) {
+    public Reporte(String fecha, String supervisor, String id, String turno, boolean completado, boolean subido, HashMap<String, Operador> operadores) {
         this.fecha = fecha;
         this.supervisor = supervisor;
         this.id = id;
         this.turno = turno;
+        this.completado = completado;
+        this.subido = subido;
         this.operadores = operadores;
+    }
+
+    public int getRestantes(){
+        int contCompleto=0;
+        for (Map.Entry<String,Operador> entry:operadores.entrySet()){
+            if(entry.getValue().isCompleto()){
+                contCompleto++;
+            }
+        }
+        int restantes=operadores.size()-contCompleto;
+        return restantes;
+    }
+
+    public boolean isSubido() {
+        return subido;
+    }
+
+    public void setSubido(boolean subido) {
+        this.subido = subido;
+    }
+
+    public boolean isCompletado() {
+        return completado;
+    }
+
+    public void setCompletado(boolean completado) {
+        this.completado = completado;
     }
 
     public String getTurno() {

@@ -101,9 +101,9 @@ public class Nuevoreporte extends AppCompatActivity {
         if(error.equals("")){
             obtenerId();
             HashMap<String, Operador> operadorHashMap =generarOperadores();
-            Reporte reporte= new Reporte(fecha,user.getName(),id,turno,operadorHashMap);
+            Reporte reporte= new Reporte(fecha,user.getName(),id,turno,false,false,operadorHashMap);
             Intent intent= new Intent(context,ListaOperadores.class);
-            intent.putExtra("Reporte",reporte);
+            intent.putExtra("reporte",reporte);
             startActivityForResult(intent,REQUEST_CODE);
             new InternalStorage().guardarReporte(reporte,context);
             Toast.makeText(context, "Reporte creado correctamente", Toast.LENGTH_SHORT).show();
@@ -135,10 +135,10 @@ public class Nuevoreporte extends AppCompatActivity {
     private HashMap<String, Operador> generarOperadores() {
         HashMap<String,Operador> operadorHashMap= new HashMap<>();
         for(String s: operadoresSeleccionados){
-            Operador operador= new Operador(new HashMap<Integer,Double>(),s);
+            Operador operador= new Operador(new HashMap<Integer,Double>(),s,false,new ArrayList<>());
             operadorHashMap.put(s,operador);
         }
-        return null;
+        return operadorHashMap;
     }
 
     void llenarSpinner(Spinner spinner,TextView txtTurno){

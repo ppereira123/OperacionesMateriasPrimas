@@ -49,7 +49,7 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/txtPresionesPendientes"
+                    android:id="@+id/txtOperadoresPendientes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
