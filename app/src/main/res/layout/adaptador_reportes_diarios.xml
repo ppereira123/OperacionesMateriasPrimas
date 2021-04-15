@@ -71,7 +71,7 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/btnAnterioPresion"
+                        android:id="@+id/btnAnterio"
                         style="@android:style/Widget.Material.Light.Button.Borderless"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                         android:textSize="12sp" />
 
                     <Button
-                        android:id="@+id/btnSiguientePresion"
+                        android:id="@+id/btnSiguiente"
                         style="@android:style/Widget.Material.Light.Button.Borderless"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
