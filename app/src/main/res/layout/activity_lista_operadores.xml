@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -89,13 +89,13 @@
         </androidx.cardview.widget.CardView>
 
         <Button
-            android:id="@+id/btnAgregar"
+            android:id="@+id/btnmodificarOperadores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:text="Agregar operador"
+            android:text="Modificar operadores"
             app:icon="@android:drawable/ic_menu_add" />
 
         <LinearLayout
@@ -126,8 +126,8 @@
         <ListView
             android:id="@+id/listOperadores"
             android:layout_width="match_parent"
-            android:layout_height="300dp" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>
