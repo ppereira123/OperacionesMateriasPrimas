@@ -25,12 +25,12 @@ import java.util.List;
 public class AdapterRecyclerActividades extends BaseAdapter {
     private List<String> mdata;
     private Context context;
-    HashMap<Integer, Double> valores;
+    HashMap<String , Double> valores;
     int posicion;
     private ListaActividadOperadores instance;
     Double horas;
 
-    public AdapterRecyclerActividades(List<String> mdata,  Context context, HashMap<Integer, Double> valores, int posicion, ListaActividadOperadores instance) {
+    public AdapterRecyclerActividades(List<String> mdata,  Context context, HashMap<String, Double> valores, int posicion, ListaActividadOperadores instance) {
         this.mdata = mdata;
         this.context = context;
         this.valores = valores;
@@ -54,7 +54,7 @@ public class AdapterRecyclerActividades extends BaseAdapter {
         return 0;
     }
 
-    public HashMap<Integer,Double> getValores(){
+    public HashMap<String,Double> getValores(){
         return valores;
     }
 
@@ -97,7 +97,7 @@ public class AdapterRecyclerActividades extends BaseAdapter {
 
                 }
                 if(horas>0.0){
-                    valores.put(posicion,horas);
+                    valores.put(String.valueOf(posicion),horas);
                     instance.marcarChips(posicion);
                 }
                 else{

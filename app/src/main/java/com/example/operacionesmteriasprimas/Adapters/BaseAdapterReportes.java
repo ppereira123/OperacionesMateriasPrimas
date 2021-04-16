@@ -1,6 +1,8 @@
 package com.example.operacionesmteriasprimas.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +16,15 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.R;
 import com.example.operacionesmteriasprimas.ui.reporte.ListaOperadores;
+import com.example.operacionesmteriasprimas.ui.reporte.ReporteFragment;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,9 +33,9 @@ import java.util.Map;
 public class BaseAdapterReportes extends BaseAdapter {
     List<Reporte> listReportes;
     Context context;
-    Fragment fragment;
+    ReporteFragment fragment;
 
-    public BaseAdapterReportes(List<Reporte> listReportes, Context contex, Fragment fragment) {
+    public BaseAdapterReportes(List<Reporte> listReportes, Context contex, ReporteFragment fragment) {
         this.listReportes=listReportes;
         this.context=contex;
         this.fragment=fragment;
@@ -75,6 +80,42 @@ public class BaseAdapterReportes extends BaseAdapter {
                 fragment.startActivityForResult(intent,2);
 
             }
+        });
+
+        llReportes.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder= new AlertDialog.Builder(context);
+                builder.setTitle("Seguro que deseas eliminar el reporte");
+                builder.setMessage("Supervisor: "+item.getSupervisor()+"\nTurno: "+item.getTurno()+"\nFecha: "+item.getFecha());
+                builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            new InternalStorage().eliminarReporte(item,context);
+                            fragment.cargarReportes();
+                            dialog.dismiss();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
+
+                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alertDialog=builder.create();
+                alertDialog.show();
+                return false;
+            }
+
+
         });
 
         txtInspector.setText(item.getSupervisor());

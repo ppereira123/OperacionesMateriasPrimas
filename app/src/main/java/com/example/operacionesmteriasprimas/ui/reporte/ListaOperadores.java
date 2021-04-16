@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.operacionesmteriasprimas.Adapters.BaseAdapterOperadores;
 import com.example.operacionesmteriasprimas.Adapters.adaptadorlistaOperadores;
@@ -20,6 +21,11 @@ import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +62,6 @@ public class ListaOperadores extends AppCompatActivity {
 
         reporte=(Reporte)getIntent().getSerializableExtra("reporte");
         cargarDatos();
-
         cargarOperadores();
         btnmodificarOperador.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +198,39 @@ public class ListaOperadores extends AppCompatActivity {
 
     }
 
+    public void subir(View view){
+        int cont=0;
+        for(Operador operador:operadores){
+            if(operador.isCompleto()){
+                cont++;
+            }
+        }
+        if(cont==hashOperadores.size()){
+            FirebaseDatabase database= FirebaseDatabase.getInstance();
+            DatabaseReference refReporte= database.getReference("Reportes");
+            reporte.setOperadores(hashOperadores);
+            reporte.setSubido(true);
+            try {
+                new InternalStorage().guardarReporte(reporte,context);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            refReporte.setValue(reporte).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(context, "Reporte guardado correctamente", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            });
+        }
+        else{
+            Snackbar snackbar= Snackbar.make(view,"No se puede guardar, de completar todos los operadores", BaseTransientBottomBar.LENGTH_SHORT);
+            snackbar.show();
+        }
+
+
+    }
+
     public void guardarOperadores(){
         if(reporte.getRestantes()==0){
             reporte.setCompletado(true);
@@ -211,7 +249,6 @@ public class ListaOperadores extends AppCompatActivity {
 
     }
 
-
     private List<Operador> hashToList(HashMap<String, Operador> hashOperadores) {
         List<Operador> operadores= new ArrayList<>();
         for(Map.Entry<String,Operador> entry:hashOperadores.entrySet()){
@@ -219,6 +256,7 @@ public class ListaOperadores extends AppCompatActivity {
         }
         return operadores;
     }
+
     private List<String> hashToLisSIMPLEt(HashMap<String, Operador> hashOperadores) {
         List<String> operadores= new ArrayList<>();
         for(Map.Entry<String,Operador> entry:hashOperadores.entrySet()){

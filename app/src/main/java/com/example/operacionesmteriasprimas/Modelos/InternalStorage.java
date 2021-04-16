@@ -18,7 +18,12 @@ public class InternalStorage {
 
     }
 
-    public void guardarArchivo(UsersData data,Context context) throws IOException {
+    @Override
+    public String toString() {
+        return "InternalStorage{}";
+    }
+
+    public void guardarArchivo(UsersData data, Context context) throws IOException {
         String urlArchivo="admin.txt";
         FileOutputStream fos = null;
         try {
@@ -59,6 +64,27 @@ public class InternalStorage {
         fos.close();
 
 
+    }
+
+    public void eliminarReporte(Reporte reporte,Context context) throws IOException {
+        HashMap<String,Reporte> reportes=cargarReportes(context);
+        reportes.remove(reporte.getId());
+        String urlArchivo="reportes.txt";
+        FileOutputStream fos = null;
+        try {
+            fos = context.openFileOutput(urlArchivo, Context.MODE_PRIVATE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ObjectOutputStream os = null;
+        try {
+            os = new ObjectOutputStream(fos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        os.writeObject(reportes);
+        os.close();
+        fos.close();
     }
 
     public HashMap<String,Reporte> cargarReportes(Context context){

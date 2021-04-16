@@ -23,6 +23,20 @@ public class Reporte implements Serializable {
         this.operadores = operadores;
     }
 
+
+    @Override
+    public String toString() {
+        return "Reporte{" +
+                "fecha='" + fecha + '\'' +
+                ", supervisor='" + supervisor + '\'' +
+                ", id='" + id + '\'' +
+                ", turno='" + turno + '\'' +
+                ", completado=" + completado +
+                ", subido=" + subido +
+                ", operadores=" + operadores +
+                '}';
+    }
+
     public int getRestantes(){
         int contCompleto=0;
         for (Map.Entry<String,Operador> entry:operadores.entrySet()){

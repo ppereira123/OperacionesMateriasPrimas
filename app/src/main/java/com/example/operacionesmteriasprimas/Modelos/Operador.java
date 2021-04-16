@@ -6,16 +6,26 @@ import java.util.List;
 import java.util.Map;
 
 public class Operador implements Serializable {
-    HashMap<Integer,Double> actividades;
+    HashMap<String,Double> actividades;
     String nombre;
     boolean completo;
     List<String> nombreActividades;
 
-    public Operador(HashMap<Integer, Double> actividades, String nombre, boolean completo, List<String> nombreActividades) {
+    public Operador(HashMap<String, Double> actividades, String nombre, boolean completo, List<String> nombreActividades) {
         this.actividades = actividades;
         this.nombre = nombre;
         this.completo = completo;
         this.nombreActividades = nombreActividades;
+    }
+
+    @Override
+    public String toString() {
+        return "Operador{" +
+                "actividades=" + actividades +
+                ", nombre='" + nombre + '\'' +
+                ", completo=" + completo +
+                ", nombreActividades=" + nombreActividades +
+                '}';
     }
 
     public List<String> getNombreActividades() {
@@ -45,11 +55,11 @@ public class Operador implements Serializable {
     public Operador() {
     }
 
-    public HashMap<Integer, Double> getActividades() {
+    public HashMap<String, Double> getActividades() {
         return actividades;
     }
 
-    public void setActividades(HashMap<Integer, Double> actividades) {
+    public void setActividades(HashMap<String, Double> actividades) {
         this.actividades = actividades;
     }
 

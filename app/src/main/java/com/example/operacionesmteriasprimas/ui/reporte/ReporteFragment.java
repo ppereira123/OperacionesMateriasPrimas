@@ -83,7 +83,7 @@ public class ReporteFragment extends Fragment {
         return root;
     }
 
-    private void cargarReportes(){
+    public void cargarReportes(){
         swipe.setRefreshing(true);
         hashReportes=storage.cargarReportes(root.getContext());
         reportes=listToHash(hashReportes);
