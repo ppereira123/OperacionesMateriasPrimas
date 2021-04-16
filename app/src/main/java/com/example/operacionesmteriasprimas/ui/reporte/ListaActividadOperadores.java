@@ -27,7 +27,10 @@ import com.google.android.material.snackbar.Snackbar;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -46,11 +49,8 @@ public class ListaActividadOperadores extends AppCompatActivity {
     List<String> actividades;
     List<String> actividad;
     int cont;
-
     List actividadesSelecionadas=new ArrayList<String>();
     HashMap<String,Double> valores;
-
-
     Context context=this;
     AdapterRecyclerActividades adapter;
     View root;

@@ -207,7 +207,7 @@ public class ListaOperadores extends AppCompatActivity {
         }
         if(cont==hashOperadores.size()){
             FirebaseDatabase database= FirebaseDatabase.getInstance();
-            DatabaseReference refReporte= database.getReference("Reportes");
+            DatabaseReference refReporte= database.getReference("Reportes").child(reporte.getId());
             reporte.setOperadores(hashOperadores);
             reporte.setSubido(true);
             try {
