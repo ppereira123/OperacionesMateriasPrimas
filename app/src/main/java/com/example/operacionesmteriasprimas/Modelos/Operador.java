@@ -1,17 +1,19 @@
 package com.example.operacionesmteriasprimas.Modelos;
 
+import com.example.operacionesmteriasprimas.ui.reporte.ListaOperadores;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Operador implements Serializable {
-    HashMap<String,Double> actividades;
+    List<Double> actividades;
     String nombre;
     boolean completo;
     List<String> nombreActividades;
 
-    public Operador(HashMap<String, Double> actividades, String nombre, boolean completo, List<String> nombreActividades) {
+    public Operador(List<Double> actividades, String nombre, boolean completo, List<String> nombreActividades) {
         this.actividades = actividades;
         this.nombre = nombre;
         this.completo = completo;
@@ -55,11 +57,11 @@ public class Operador implements Serializable {
     public Operador() {
     }
 
-    public HashMap<String, Double> getActividades() {
+    public List<Double> getActividades() {
         return actividades;
     }
 
-    public void setActividades(HashMap<String, Double> actividades) {
+    public void setActividades(List<Double> actividades) {
         this.actividades = actividades;
     }
 

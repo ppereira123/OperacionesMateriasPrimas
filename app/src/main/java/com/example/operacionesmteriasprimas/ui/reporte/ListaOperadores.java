@@ -112,7 +112,7 @@ public class ListaOperadores extends AppCompatActivity {
                  for(boolean seleccionado:checkedItems){
                      if(seleccionado){
                          if(!operadoresSeleccionados.contains(listAllOperadores.get(cont))){
-                             Operador operador= new Operador(new HashMap<>(),listAllOperadores.get(cont),false,new ArrayList<>());
+                             Operador operador= new Operador(new ArrayList<>(),listAllOperadores.get(cont),false,new ArrayList<>());
                              operadores.add(operador);
                              operadoresSeleccionados.add(listAllOperadores.get(cont));
                              hashOperadores.put(operador.getNombre(),operador);

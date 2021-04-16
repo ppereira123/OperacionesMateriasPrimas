@@ -42,13 +42,19 @@ public class ListaActividadOperadores extends AppCompatActivity {
     Reporte reporte=null;
     Operador operador=null;
     LinearLayout lLModificar,layout;
+    //Actividades del objeto operador
     List<String> actividades;
+    //Actividad que se muestra en adapter
     List<String> actividad;
     int cont;
-    List actividadesSelecionadas=new ArrayList<String>();
-    HashMap<String,Double> valores;
+    //Lista de todas las actividades
+    List<String> listAllActividades;
+
+    List<Double> valores;
     Context context=this;
     AdapterRecyclerActividades adapter;
+    boolean[] checkedItems;
+    List<String> allActividades;
     View root;
 
 
@@ -67,36 +73,24 @@ public class ListaActividadOperadores extends AppCompatActivity {
         chipGroup=findViewById(R.id.chipGroupActividades);
         reporte=(Reporte)getIntent().getSerializableExtra("reporte");
         operador=(Operador)getIntent().getSerializableExtra("operador");
-        actividades=operador.getNombreActividades();
         cargarDatos();
         generarChips();
         iniciarChips();
 
 
         lLModificar.setOnClickListener(new View.OnClickListener() {
+
             String[] actividadesM = context.getResources().getStringArray(R.array.combo_tiposOperaciones);
-            boolean[] checkedItems = new boolean[actividadesM.length];
+
             @Override
             public void onClick(View v) {
-
+                obtenerEscogidos(actividadesM);
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Escoge los operadores");
                 builder.setMultiChoiceItems(actividadesM, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        if (isChecked) {
-                            if (!actividadesSelecionadas.contains(which)) {
-                                actividadesSelecionadas.add(actividadesM[which]);
-                            } else {
-                                actividadesSelecionadas.remove(which);
-                            }
-                        }
 
-                        else{
-                            actividadesSelecionadas.remove(actividadesSelecionadas.indexOf(actividadesM[which]));
-                        }
-
-                        Toast.makeText(context, String.valueOf(actividadesSelecionadas.size()), Toast.LENGTH_SHORT).show();
                     }
 
                 });
@@ -104,23 +98,30 @@ public class ListaActividadOperadores extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(actividadesSelecionadas.size()>0) {
-                            operador.setNombreActividades(actividadesSelecionadas);
-                            HashMap<String, Operador> operadorHashMap = reporte.getOperadores();
-                            operadorHashMap.put(operador.getNombre(), operador);
-                            reporte.setOperadores(operadorHashMap);
-                            try {
-                                new InternalStorage().guardarReporte(reporte, context);
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                        int cont=0;
+                        for(boolean seleccionado:checkedItems){
+                            String estaActividad=listAllActividades.get(cont);
+                            if(seleccionado){
+                                if(!actividades.contains(estaActividad)){
+                                    actividades.add(estaActividad);
+                                }
                             }
+                            else{
+                                if(actividades.contains(estaActividad)){
+                                    valores.remove(String.valueOf(actividades.indexOf(estaActividad)));
+                                    actividades.remove(actividades.indexOf(estaActividad));
 
-                        }
-                        else {
-                            Snackbar sna=Snackbar.make(context,layout,"Debe tener al menos una actividad", BaseTransientBottomBar.LENGTH_LONG);
-                            sna.show();
-                        }
+                                    Toast.makeText(ListaActividadOperadores.this, String.valueOf(valores.size()), Toast.LENGTH_SHORT).show();
 
+                                }
+                            }
+                            cont++;
+                        }
+                        operador.setNombreActividades(actividades);
+                        operador.setActividades(valores);
+                        cargarLista();
+                        generarChips();
+                        iniciarChips();
 
                     }
                 });
@@ -144,9 +145,23 @@ public class ListaActividadOperadores extends AppCompatActivity {
 
     }
 
+    void obtenerEscogidos(String[] actividadesM){
+            listAllActividades=new ArrayList<>();
+         checkedItems = new boolean[actividadesM.length];
+         for(String s: actividadesM){
+            listAllActividades.add(s);
+         }
+         for(String s: actividades){
+             checkedItems[listAllActividades.indexOf(s)]=true;
+         }
+
+    }
+
     private void iniciarChips() {
-        for(Map.Entry<String,Double>entry:valores.entrySet()){
-            marcarChips(Integer.parseInt(entry.getKey()));
+        int cont=0;
+        for(int i=0;i<valores.size();i++){
+            marcarChips(cont);
+            cont++;
         }
     }
 
@@ -155,6 +170,7 @@ public class ListaActividadOperadores extends AppCompatActivity {
         valores=adapter.getValores();
         //Agrego las actividades al operador
         operador.setActividades(valores);
+        operador.setNombreActividades(actividades);
         if(operador.getActividadesPendientes()<=0){
             operador.setCompleto(true);
         }
@@ -179,6 +195,7 @@ public class ListaActividadOperadores extends AppCompatActivity {
     private void generarChips() {
 
         cont=1;
+        chipGroup.removeAllViews();
         for(String s:actividades){
             Chip chip= new Chip(context);
             chip.setTextSize(18);
@@ -215,6 +232,7 @@ public class ListaActividadOperadores extends AppCompatActivity {
     }
 
     private void cargarDatos() {
+        actividades=operador.getNombreActividades();
         actividad=new ArrayList<>();
         txtFecha.setText(reporte.getFecha());
         txtNombreOperador.setText(operador.getNombre());

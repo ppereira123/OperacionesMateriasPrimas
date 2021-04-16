@@ -25,12 +25,12 @@ import java.util.List;
 public class AdapterRecyclerActividades extends BaseAdapter {
     private List<String> mdata;
     private Context context;
-    HashMap<String , Double> valores;
+    List <Double> valores;
     int posicion;
     private ListaActividadOperadores instance;
     Double horas;
 
-    public AdapterRecyclerActividades(List<String> mdata,  Context context, HashMap<String, Double> valores, int posicion, ListaActividadOperadores instance) {
+    public AdapterRecyclerActividades(List<String> mdata,  Context context, List<Double> valores, int posicion, ListaActividadOperadores instance) {
         this.mdata = mdata;
         this.context = context;
         this.valores = valores;
@@ -54,7 +54,7 @@ public class AdapterRecyclerActividades extends BaseAdapter {
         return 0;
     }
 
-    public HashMap<String,Double> getValores(){
+    public List<Double> getValores(){
         return valores;
     }
 
@@ -67,8 +67,8 @@ public class AdapterRecyclerActividades extends BaseAdapter {
         Button btnSiguient=convertView.findViewById(R.id.btnSiguiente);
         Button btnAnterior=convertView.findViewById(R.id.btnAnterio);
 
-        if(valores.containsKey(String.valueOf(posicion))){
-            tietHoras.setText(String.valueOf(valores.get(String.valueOf(posicion))));
+        if(valores.contains(item)){
+            tietHoras.setText(String.valueOf(valores.get(posicion)));
         }
 
         else{
@@ -97,7 +97,7 @@ public class AdapterRecyclerActividades extends BaseAdapter {
 
                 }
                 if(horas>0.0){
-                    valores.put(String.valueOf(posicion),horas);
+                    valores.add(posicion,horas);
                     instance.marcarChips(posicion);
                 }
                 else{
