@@ -97,8 +97,10 @@ public class AdapterRecyclerActividades extends BaseAdapter {
 
                 }
                 if(horas>0.0){
+
                     valores.add(posicion,horas);
                     instance.marcarChips(posicion);
+
                 }
                 else{
                    valores.remove(posicion);

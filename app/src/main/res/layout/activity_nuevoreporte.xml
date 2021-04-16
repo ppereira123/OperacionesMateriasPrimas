@@ -50,6 +50,11 @@
                 android:focusable="auto"
                 android:gravity="center"
                 android:hint="Fecha:"
+                android:nextFocusLeft="@+id/txtEscogerTurno"
+                android:nextFocusRight="@+id/txtEscogerTurno"
+                android:nextFocusUp="@+id/txtEscogerTurno"
+                android:nextFocusDown="@+id/txtEscogerTurno"
+                android:nextFocusForward="@+id/txtEscogerTurno"
                 android:selectAllOnFocus="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
