@@ -28,8 +28,8 @@
                 app:srcCompat="@drawable/multiply" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="248dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center|left"
                 android:layout_marginLeft="40dp"
                 android:gravity="center"
@@ -43,7 +43,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:gravity="center|left|center_vertical"
-                    android:text="Pañalin Premium"
+                    android:text="Nombre Supervisor"
                     android:textColor="#050505"
                     android:textSize="16sp" />
 
