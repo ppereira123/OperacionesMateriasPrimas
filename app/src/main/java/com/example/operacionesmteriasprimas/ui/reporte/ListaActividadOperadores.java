@@ -22,13 +22,12 @@ import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.R;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-<<<<<<< Updated upstream
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-=======
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
->>>>>>> Stashed changes
+
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -47,12 +46,11 @@ public class ListaActividadOperadores extends AppCompatActivity {
     List<String> actividades;
     List<String> actividad;
     int cont;
-<<<<<<< Updated upstream
+
     List actividadesSelecionadas=new ArrayList<String>();
-    HashMap<Integer,Double> valores;
-=======
     HashMap<String,Double> valores;
->>>>>>> Stashed changes
+
+
     Context context=this;
     AdapterRecyclerActividades adapter;
     View root;
