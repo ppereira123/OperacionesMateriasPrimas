@@ -178,7 +178,7 @@ public class adaptadorlistaOperadores extends BaseAdapter {
                     Intent intent = new Intent(context, ListaActividadOperadores.class);
                     intent.putExtra("operador", (Serializable) item);
                     intent.putExtra("reporte", (Serializable) reporte);
-                    context.startActivity(intent);
+                    instance.startActivityForResult(intent,3);
                 }
             });
 

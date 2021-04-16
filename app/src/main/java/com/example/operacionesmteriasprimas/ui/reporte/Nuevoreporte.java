@@ -136,7 +136,7 @@ public class Nuevoreporte extends AppCompatActivity {
     private HashMap<String, Operador> generarOperadores() {
         HashMap<String,Operador> operadorHashMap= new HashMap<>();
         for(String s: operadoresSeleccionados){
-            Operador operador= new Operador(new HashMap<String, Double>(),s,false,new ArrayList<>());
+            Operador operador= new Operador(new ArrayList<>(),s,false,new ArrayList<>());
             operadorHashMap.put(s,operador);
         }
         return operadorHashMap;
