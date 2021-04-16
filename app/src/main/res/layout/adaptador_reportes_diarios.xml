@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:animateLayoutChanges="true"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -50,17 +49,19 @@
                     android:textSize="18sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilValorPresion"
+                    android:id="@+id/tilComentario"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp">
+                    android:hint="Horas:"
+                    android:layout_height="match_parent">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextHoras"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:hint="Horas"
+                        android:layout_margin="10dp"
+                        android:focusable="auto"
+                        android:selectAllOnFocus="true"
+
                         android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 

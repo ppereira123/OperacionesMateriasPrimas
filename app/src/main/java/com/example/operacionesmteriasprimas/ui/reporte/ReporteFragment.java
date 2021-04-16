@@ -31,6 +31,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.operacionesmteriasprimas.Adapters.BaseAdapterReportes;
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
+import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -38,6 +39,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.core.Repo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -88,6 +90,18 @@ public class ReporteFragment extends Fragment {
         Toast.makeText(root.getContext(), "Cargando", Toast.LENGTH_SHORT).show();
         BaseAdapterReportes baseAdapterReportes= new BaseAdapterReportes(reportes,root.getContext(),this);
         listReporte.setAdapter(baseAdapterReportes);
+        for(Reporte reporte:reportes){
+                if (reporte.getRestantes() == 0) {
+                    reporte.setCompletado(true);
+                    try {
+                        storage.guardarReporte(reporte, root.getContext());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+        }
+
         swipe.setRefreshing(false);
     }
 

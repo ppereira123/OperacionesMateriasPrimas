@@ -119,6 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:backgroundTint="#673AB7"
+                android:onClick="guardarOperadores"
                 android:text="Guardar" />
 
         </LinearLayout>

@@ -12,13 +12,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.R;
 import com.example.operacionesmteriasprimas.ui.reporte.ListaActividadOperadores;
+import com.example.operacionesmteriasprimas.ui.reporte.ListaOperadores;
 import com.example.operacionesmteriasprimas.ui.reporte.Nuevoreporte;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -29,15 +33,17 @@ import java.util.List;
 public class adaptadorlistaOperadores extends BaseAdapter {
     private Context context;
     private List<Operador> listItems;
-    View convertView;
+    View view;
     private String nombre_operador;
     String urlArchivo="";
     ListaActividadOperadores actividadesOperador;
     List actividadesSelecionadas=new ArrayList<String>();
     HashMap<String,Operador> hashOperadores;
+    ListaOperadores instance;
     Reporte reporte;
 
-    public adaptadorlistaOperadores(Context context, List<Operador> listItems, Reporte reporte) {
+
+    public adaptadorlistaOperadores(Context context, List<Operador> listItems, Reporte reporte, ListaOperadores instance) {
         this.context = context;
         this.listItems = listItems;
         this.nombre_operador = nombre_operador;
@@ -45,6 +51,7 @@ public class adaptadorlistaOperadores extends BaseAdapter {
         this.actividadesOperador = actividadesOperador;
         this.hashOperadores = hashOperadores;
         this.reporte=reporte;
+        this.instance=instance;
     }
 
     @Override
@@ -64,8 +71,9 @@ public class adaptadorlistaOperadores extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        this.convertView = convertView;
+
         convertView = LayoutInflater.from(context).inflate(R.layout.adaptador_opedador_vista, null);
+        view = convertView;
         Operador item = (Operador) getItem(position);
         TextView nombreOperador = convertView.findViewById(R.id.txtNombreOperador);
         ImageView imgCompletado = convertView.findViewById(R.id.imgCompletado);
@@ -77,6 +85,13 @@ public class adaptadorlistaOperadores extends BaseAdapter {
         } else {
             imgCompletado.setImageResource(R.mipmap.multiply);
         }
+        viewOperador.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                instance.eliminarOperador(item);
+                return false;
+            }
+        });
 
         if(item.getNombreActividades().size()<=0){
         viewOperador.setOnClickListener(new View.OnClickListener() {
@@ -98,25 +113,38 @@ public class adaptadorlistaOperadores extends BaseAdapter {
                                 actividadesSelecionadas.remove(which);
                             }
                         }
+
+                        else{
+                            actividadesSelecionadas.remove(actividadesSelecionadas.indexOf(actividades[which]));
+                        }
+
+                                Toast.makeText(context, String.valueOf(actividadesSelecionadas.size()), Toast.LENGTH_SHORT).show();
                     }
+
                 });
                 builder.setCancelable(false);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        item.setNombreActividades(actividadesSelecionadas);
-                        HashMap<String,Operador> operadorHashMap=reporte.getOperadores();
-                        operadorHashMap.put(item.getNombre(),item);
-                        reporte.setOperadores(operadorHashMap);
-                        try {
-                            new InternalStorage().guardarReporte(reporte,context);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        if(actividadesSelecionadas.size()>0) {
+                            item.setNombreActividades(actividadesSelecionadas);
+                            HashMap<String, Operador> operadorHashMap = reporte.getOperadores();
+                            operadorHashMap.put(item.getNombre(), item);
+                            reporte.setOperadores(operadorHashMap);
+                            try {
+                                new InternalStorage().guardarReporte(reporte, context);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Intent intent = new Intent(context, ListaActividadOperadores.class);
+                            intent.putExtra("operador", (Serializable) item);
+                            intent.putExtra("reporte", (Serializable) reporte);
+                            instance.startActivityForResult(intent,3);
                         }
-                        Intent intent = new Intent(context, ListaActividadOperadores.class);
-                        intent.putExtra("operador", (Serializable) item);
-                        intent.putExtra("reporte", (Serializable) reporte);
-                        context.startActivity(intent);
+                        else {
+                            Snackbar snackbar=Snackbar.make(view,"Debe seleccionar al menos una actividad", BaseTransientBottomBar.LENGTH_LONG);
+                            snackbar.show();
+                        }
 
 
                     }
@@ -133,6 +161,13 @@ public class adaptadorlistaOperadores extends BaseAdapter {
                 dialog.show();
 
 
+            }
+        });
+        viewOperador.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                return false;
             }
         });
     }

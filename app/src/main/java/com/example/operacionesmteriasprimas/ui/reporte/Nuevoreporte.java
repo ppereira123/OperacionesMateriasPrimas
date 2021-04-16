@@ -1,5 +1,6 @@
 package com.example.operacionesmteriasprimas.ui.reporte;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -213,21 +214,26 @@ public class Nuevoreporte extends AppCompatActivity {
                 builder.setMultiChoiceItems(operadores, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        if(isChecked){
-                            if(!operadoresSeleccionados.contains(which)){
-                                operadoresSeleccionados.add(operadores[which]);
-                            }
-                            else{
-                                operadoresSeleccionados.remove(which);
-                            }
-                        }
+
                     }
                 });
                 builder.setCancelable(false);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        operadoresSeleccionados=new ArrayList<>();
+                        for(int i=0;i<checkedItems.length;i++){
+                            boolean b=checkedItems[i];
+                            if(b) {
+                                if (!operadoresSeleccionados.contains(operadores[i])){
+                                    operadoresSeleccionados.add(operadores[i]);
+                            }
+                                else{
+                                    operadoresSeleccionados.remove(i);
+                                }
+                            }
+                        }
+                            muestra="";
                          for(String s:operadoresSeleccionados){
                              muestra=muestra+s+"\n";
                              tietOperadores.setText(muestra);
@@ -239,16 +245,20 @@ public class Nuevoreporte extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        tietOperadores.clearFocus();
                     }
                 });
 
                 builder.setNeutralButton("Reiniciar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        muestra="";
+                        tietOperadores.setText(muestra);
+                        operadoresSeleccionados.clear();
                      for(int i=0;i<checkedItems.length;i++){
                          checkedItems[i]=false;
-                         operadoresSeleccionados.clear();
-                         muestra="";
+                         tietOperadores.clearFocus();
+
                      }
                     }
                 });
@@ -281,4 +291,6 @@ public class Nuevoreporte extends AppCompatActivity {
         onBackPressed();
         return false;
     }
+
+
 }

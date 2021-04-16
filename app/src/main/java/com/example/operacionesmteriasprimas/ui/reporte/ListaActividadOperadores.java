@@ -1,20 +1,24 @@
 package com.example.operacionesmteriasprimas.ui.reporte;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.operacionesmteriasprimas.Adapters.AdapterRecyclerActividades;
+import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.R;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +53,41 @@ public class ListaActividadOperadores extends AppCompatActivity {
         actividades=operador.getNombreActividades();
         cargarDatos();
         generarChips();
+        iniciarChips();
 
 
+    }
+
+    private void iniciarChips() {
+        for(Map.Entry<Integer,Double>entry:valores.entrySet()){
+            marcarChips(entry.getKey());
+        }
+    }
+
+    public void guardar(View view){
+        //Obtengo las actividades realizadas
+        valores=adapter.getValores();
+        //Agrego las actividades al operador
+        operador.setActividades(valores);
+        if(operador.getActividadesPendientes()<=0){
+            operador.setCompleto(true);
+        }
+        else{
+            operador.setCompleto(false);
+        }
+        //Actualizo el operador en el reporte
+        HashMap<String,Operador> operadorHashMap=reporte.getOperadores();
+        operadorHashMap.put(operador.getNombre(),operador);
+        reporte.setOperadores(operadorHashMap);
+        try {
+            new InternalStorage().guardarReporte(reporte,context);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Intent intent= new Intent();
+        intent.putExtra("reporte",reporte);
+        setResult(3,intent);
+        finish();
     }
 
     private void generarChips() {
@@ -82,9 +119,6 @@ public class ListaActividadOperadores extends AppCompatActivity {
         valores=adapter.getValores();
         Chip chip=(Chip) chipGroup.getChildAt(posicion);
         chip.setChipBackgroundColorResource(R.color.purple_200);
-
-
-
     }
 
     public int getPosicionChip(Chip chip){
@@ -108,6 +142,10 @@ public class ListaActividadOperadores extends AppCompatActivity {
     void cargarLista(){
         adapter= new AdapterRecyclerActividades(actividad,context,valores,actividades.indexOf(actividad.get(0)),this);
         listView.setAdapter(adapter);
+    }
+
+    public void eliminarDeLista(String actividad){
+
     }
 
     public boolean anterior(String item){
@@ -134,4 +172,6 @@ public class ListaActividadOperadores extends AppCompatActivity {
             return false;
         }
     }
+
+
 }
