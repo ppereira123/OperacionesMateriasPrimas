@@ -67,8 +67,8 @@ public class AdapterRecyclerActividades extends BaseAdapter {
         Button btnSiguient=convertView.findViewById(R.id.btnSiguiente);
         Button btnAnterior=convertView.findViewById(R.id.btnAnterio);
 
-        if(valores.containsKey(posicion)){
-            tietHoras.setText(String.valueOf(valores.get(posicion)));
+        if(valores.containsKey(String.valueOf(posicion))){
+            tietHoras.setText(String.valueOf(valores.get(String.valueOf(posicion))));
         }
 
         else{
