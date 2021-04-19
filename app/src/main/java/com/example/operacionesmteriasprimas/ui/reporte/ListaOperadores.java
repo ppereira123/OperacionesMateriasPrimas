@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Path;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.operacionesmteriasprimas.Adapters.BaseAdapterOperadores;
+import com.example.operacionesmteriasprimas.Adapters.adaptadorHorasOperadores;
 import com.example.operacionesmteriasprimas.Adapters.adaptadorlistaOperadores;
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
@@ -204,27 +206,67 @@ public class ListaOperadores extends AppCompatActivity {
             if(operador.isCompleto()){
                 cont++;
             }
+
         }
         if(cont==hashOperadores.size()){
-            FirebaseDatabase database= FirebaseDatabase.getInstance();
-            DatabaseReference refReporte= database.getReference("Reportes").child(reporte.getId());
-            reporte.setOperadores(hashOperadores);
-            reporte.setSubido(true);
-            try {
-                new InternalStorage().guardarReporte(reporte,context);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            refReporte.setValue(reporte).addOnSuccessListener(new OnSuccessListener<Void>() {
+            LayoutInflater mInflater= LayoutInflater.from(context);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            View viewdialog = mInflater.inflate(R.layout.dialogo_adaptador_horas_actividades, null);
+            ListView listahoras= viewdialog.findViewById(R.id.listHoras);
+            adaptadorHorasOperadores adapter = new adaptadorHorasOperadores(context,operadores);
+            listahoras.setAdapter(adapter);
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(context, "Reporte guardado correctamente", Toast.LENGTH_LONG).show();
+                public void onClick(DialogInterface dialog, int which) {
+                    FirebaseDatabase database= FirebaseDatabase.getInstance();
+                    DatabaseReference refReporte= database.getReference("Reportes").child(reporte.getId());
+                    reporte.setOperadores(hashOperadores);
+                    reporte.setSubido(true);
+                    try {
+                        new InternalStorage().guardarReporte(reporte,context);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    refReporte.setValue(reporte).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(context, "Reporte guardado correctamente", Toast.LENGTH_LONG).show();
+
+                        }
+                    });
                     finish();
+
+
                 }
             });
+            builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.setView(viewdialog);
+
+            AlertDialog dialog = builder.create();
+
+            dialog.show();
+
+
+
+
+
+
+
+
+
+
+
+
         }
         else{
-            Snackbar snackbar= Snackbar.make(view,"No se puede guardar, de completar todos los operadores", BaseTransientBottomBar.LENGTH_SHORT);
+            Snackbar snackbar= Snackbar.make(view,"No se puede guardar sin completar todos los operadores", BaseTransientBottomBar.LENGTH_SHORT);
             snackbar.show();
         }
 
