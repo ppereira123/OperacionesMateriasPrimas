@@ -86,13 +86,7 @@ public class adaptadorlistaOperadores extends BaseAdapter {
         } else {
             imgCompletado.setImageResource(R.mipmap.multiply);
         }
-        viewOperador.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                instance.eliminarOperador(item);
-                return false;
-            }
-        });
+
 
         if(item.getNombreActividades().size()<=0){
         viewOperador.setOnClickListener(new View.OnClickListener() {
@@ -169,13 +163,7 @@ public class adaptadorlistaOperadores extends BaseAdapter {
 
             }
         });
-        viewOperador.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
 
-                return false;
-            }
-        });
     }
         else{
             viewOperador.setOnClickListener(new View.OnClickListener() {
