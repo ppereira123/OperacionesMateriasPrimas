@@ -36,6 +36,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/purple_700"
+        android:backgroundTint="#F5F5F5"
         android:gravity="center"
         android:text="Horas"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"

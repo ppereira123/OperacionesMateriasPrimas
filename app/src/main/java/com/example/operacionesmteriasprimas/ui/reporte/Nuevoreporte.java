@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import android.widget.Spinner;
@@ -55,6 +56,7 @@ public class Nuevoreporte extends AppCompatActivity {
     Context context=this;
     String turno="";
     String fecha="";
+    LinearLayout llreport;
     UsersData user;
     String id="";
     final int REQUEST_CODE=2;
@@ -69,6 +71,7 @@ public class Nuevoreporte extends AppCompatActivity {
         getSupportActionBar().setTitle("Nuevo Reporte");
         setContentView(R.layout.activity_nuevoreporte);
         tietFecha=findViewById(R.id.tietFechaNuevoReporte);
+        llreport=findViewById(R.id.llReportes);
         spinner=findViewById(R.id.spinnerTurno);
         txtTurno=findViewById(R.id.txtEscogerTurno);
         tietOperadores=findViewById(R.id.tietOperadores);
@@ -187,7 +190,19 @@ public class Nuevoreporte extends AppCompatActivity {
 
 
                     }
+
                 },year,month,day);
+                datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == DialogInterface.BUTTON_NEGATIVE) {
+                            dialog.dismiss();
+                            tietFecha.clearFocus();
+                
+                        }
+
+                    }
+                });
 
                 if(hasFocus){
                     datePickerDialog.show();
