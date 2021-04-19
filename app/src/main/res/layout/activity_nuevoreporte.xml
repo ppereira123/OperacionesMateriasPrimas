@@ -12,9 +12,12 @@
     tools:context=".ui.reporte.Nuevoreporte">
 
     <LinearLayout
+        android:id="@+id/llReportes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         tools:context=".ui.reporte.Nuevoreporte">
 
         <androidx.cardview.widget.CardView
@@ -37,7 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:touchscreenBlocksFocus="true">
+            android:nextFocusLeft="@id/llReportes"
+            android:nextFocusRight="@id/llReportes">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tietFechaNuevoReporte"
@@ -47,15 +51,14 @@
                 android:layout_marginEnd="30dp"
                 android:background="@color/white"
                 android:editable="false"
-                android:focusable="auto"
                 android:gravity="center"
                 android:hint="Fecha:"
-                android:nextFocusLeft="@+id/txtEscogerTurno"
-                android:nextFocusRight="@+id/txtEscogerTurno"
-                android:nextFocusUp="@+id/txtEscogerTurno"
-                android:nextFocusDown="@+id/txtEscogerTurno"
-                android:nextFocusForward="@+id/txtEscogerTurno"
-                android:selectAllOnFocus="false" />
+                android:selectAllOnFocus="false"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:nextFocusLeft="@id/llReportes"
+                android:nextFocusRight="@id/llReportes"
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.cardview.widget.CardView
@@ -92,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/ic_launcher_background"
                 android:gravity="center"
-                android:text="Escoger Operadores"
+
                 android:textSize="16sp" />
         </androidx.cardview.widget.CardView>
 
@@ -100,6 +103,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
+            android:nextFocusLeft="@id/llReportes"
+            android:nextFocusRight="@id/llReportes"
             android:hint="Operadores Seleccionados">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -111,6 +116,10 @@
                 android:background="@color/white"
                 android:editable="false"
                 android:gravity="center|left"
+                android:nextFocusLeft="@id/llReportes"
+                android:nextFocusRight="@id/llReportes"
+                android:focusable="auto"
+                android:selectAllOnFocus="false"
                 android:singleLine="false" />
         </com.google.android.material.textfield.TextInputLayout>
 

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cardViewItemPresion"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:scrollbarTrackVertical="@drawable/ic_launcher_foreground"
     android:visibility="visible"
     app:cardCornerRadius="5dp"
     app:cardElevation="4dp"
@@ -49,19 +47,19 @@
                     android:textSize="18sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilComentario"
                     android:layout_width="match_parent"
-                    android:hint="Horas:"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:focusableInTouchMode="true"
+                    android:hint="Horas"
+                    android:touchscreenBlocksFocus="true">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextHoras"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:focusable="auto"
-                        android:selectAllOnFocus="true"
-
+                        android:gravity="center"
+                        android:nextFocusLeft="@id/editTextHoras"
+                        android:nextFocusRight="@id/editTextHoras"
                         android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,7 +67,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:nextFocusRight="@id/editTextHoras"
+                    android:nextFocusLeft="@id/editTextHoras">
 
                     <Button
                         android:id="@+id/btnAnterio"
@@ -78,6 +78,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Anterior"
+                        android:nextFocusLeft="@id/editTextHoras"
+                        android:nextFocusRight="@id/editTextHoras"
                         android:textColor="@color/purple_500"
                         android:textSize="12sp" />
 
