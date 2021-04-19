@@ -66,8 +66,14 @@ public class Operador implements Serializable {
     }
 
     public int getActividadesPendientes(){
+        int cont=0;
+        for(double d:actividades){
+            if(d>0.0){
+                cont++;
+            }
+        }
 
-        int restantes=nombreActividades.size()-actividades.size();
+        int restantes=nombreActividades.size()-cont;
         return restantes;
     }
 }

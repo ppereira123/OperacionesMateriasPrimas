@@ -1,44 +1,38 @@
 package com.example.operacionesmteriasprimas.ui.reporte;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.operacionesmteriasprimas.Adapters.AdapterRecyclerActividades;
+import com.example.operacionesmteriasprimas.Adapters.ListAdapterActividades;
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.R;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ListaActividadOperadores extends AppCompatActivity {
-    TextView txtNombreOperador,txtFecha,txtActividadesPendientes,txtModificarParametros;
+    TextView txtNombreOperador,txtFecha,txtActividadesPendientes;
+    Button btnAgregarActividad;
     ChipGroup chipGroup;
-    ListView listView;
+    RecyclerView rvActividades;
     Reporte reporte=null;
     Operador operador=null;
     LinearLayout lLModificar,layout;
@@ -48,11 +42,11 @@ public class ListaActividadOperadores extends AppCompatActivity {
     List<String> actividad;
     int cont;
     //Lista de todas las actividades
-    List<String> listAllActividades;
+    String[] ActividadesNoSeleccionadas;
 
     List<Double> valores;
     Context context=this;
-    AdapterRecyclerActividades adapter;
+    ListAdapterActividades adapter;
     boolean[] checkedItems;
     List<String> allActividades;
     View root;
@@ -66,10 +60,10 @@ public class ListaActividadOperadores extends AppCompatActivity {
         txtNombreOperador=findViewById(R.id.txtoperador);
         txtFecha=findViewById(R.id.txtFechaoperador);
         txtActividadesPendientes=findViewById(R.id.txtOperadoresPendientes);
-        txtModificarParametros=findViewById(R.id.txtAgregarParametro);
+        btnAgregarActividad=findViewById(R.id.btnAgregarActividad);
         lLModificar=findViewById(R.id.lLModificarParametros);
         layout=findViewById(R.id.llactividadoperadores);
-        listView=findViewById(R.id.listActividades);
+        rvActividades=findViewById(R.id.rvActividades);
         chipGroup=findViewById(R.id.chipGroupActividades);
         reporte=(Reporte)getIntent().getSerializableExtra("reporte");
         operador=(Operador)getIntent().getSerializableExtra("operador");
@@ -78,16 +72,16 @@ public class ListaActividadOperadores extends AppCompatActivity {
         iniciarChips();
 
 
-        lLModificar.setOnClickListener(new View.OnClickListener() {
+        btnAgregarActividad.setOnClickListener(new View.OnClickListener() {
 
             String[] actividadesM = context.getResources().getStringArray(R.array.combo_tiposOperaciones);
 
             @Override
             public void onClick(View v) {
-                obtenerEscogidos(actividadesM);
+                obtenerNoEscogidos(actividadesM);
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Escoge los operadores");
-                builder.setMultiChoiceItems(actividadesM, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                builder.setMultiChoiceItems(ActividadesNoSeleccionadas, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 
@@ -100,10 +94,11 @@ public class ListaActividadOperadores extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         int cont=0;
                         for(boolean seleccionado:checkedItems){
-                            String estaActividad=listAllActividades.get(cont);
+                            String estaActividad= ActividadesNoSeleccionadas[cont];
                             if(seleccionado){
                                 if(!actividades.contains(estaActividad)){
                                     actividades.add(estaActividad);
+                                    valores.add(0.0);
                                 }
                             }
                             else{
@@ -145,22 +140,28 @@ public class ListaActividadOperadores extends AppCompatActivity {
 
     }
 
-    void obtenerEscogidos(String[] actividadesM){
-            listAllActividades=new ArrayList<>();
-         checkedItems = new boolean[actividadesM.length];
-         for(String s: actividadesM){
-            listAllActividades.add(s);
-         }
-         for(String s: actividades){
-             checkedItems[listAllActividades.indexOf(s)]=true;
-         }
-
+    void obtenerNoEscogidos(String[] actividadesM){
+        List<String> llenar= new ArrayList<>();
+        int cont=0;
+        for(String s:actividadesM){
+            if(!actividades.contains(s)){
+            llenar.add(s);}
+        }
+        ActividadesNoSeleccionadas= new String[llenar.size()];
+        ActividadesNoSeleccionadas= llenar.toArray(ActividadesNoSeleccionadas);
+         checkedItems = new boolean[llenar.size()];
     }
 
-    private void iniciarChips() {
+    public void iniciarChips() {
         int cont=0;
         for(int i=0;i<valores.size();i++){
-            marcarChips(cont);
+            if(valores.get(i)>0){
+                marcarChips(cont);
+            }
+            else{
+                desmarcarChips(cont);
+            }
+
             cont++;
         }
     }
@@ -200,6 +201,20 @@ public class ListaActividadOperadores extends AppCompatActivity {
             Chip chip= new Chip(context);
             chip.setTextSize(18);
             chip.setText("Actividad "+cont);
+            chip.setCloseIconVisible(true);
+            chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String valor=chip.getText().toString();
+                    String[] separado=valor.split(" ");
+                    int num=Integer.parseInt(separado[1]);
+                    num=num-1;
+                    actividades.remove(num);
+                    valores.remove(num);
+                    generarChips();
+                    iniciarChips();
+                }
+            });
             chip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -224,6 +239,12 @@ public class ListaActividadOperadores extends AppCompatActivity {
         chip.setChipBackgroundColorResource(R.color.purple_200);
     }
 
+    public void desmarcarChips(Integer posicion){
+        valores=adapter.getValores();
+        Chip chip=(Chip) chipGroup.getChildAt(posicion);
+        chip.setChipBackgroundColorResource(R.color.tab);
+    }
+
     public int getPosicionChip(Chip chip){
         String nombreChip=chip.getText().toString();
         String[] sep=nombreChip.split(" ");
@@ -244,8 +265,10 @@ public class ListaActividadOperadores extends AppCompatActivity {
     }
 
     void cargarLista(){
-        adapter= new AdapterRecyclerActividades(actividad,context,valores,actividades.indexOf(actividad.get(0)),this);
-        listView.setAdapter(adapter);
+        adapter= new ListAdapterActividades(actividad,context,valores,actividades.indexOf(actividad.get(0)),this);
+        rvActividades.setHasFixedSize(true);
+        rvActividades.setLayoutManager(new LinearLayoutManager(context));
+        rvActividades.setAdapter(adapter);
     }
 
     public void eliminarDeLista(String actividad){

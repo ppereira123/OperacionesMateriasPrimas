@@ -89,16 +89,15 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/txtAgregarParametro"
+                    <Button
+                        android:id="@+id/btnAgregarActividad"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:background="?selectableItemBackground"
-                        android:backgroundTint="#CAC7C7"
                         android:gravity="center"
-                        android:text="Modificar Parametros"
-                        android:textColor="@color/black" />
+                        android:text="Agregar Actividad"
+                        android:textColor="@color/black"
+                        app:icon="@android:drawable/ic_input_add" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -106,8 +105,8 @@
         </androidx.cardview.widget.CardView>
 
 
-        <ListView
-            android:id="@+id/listActividades"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvActividades"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp" />

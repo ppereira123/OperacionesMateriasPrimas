@@ -1,6 +1,7 @@
 package com.example.operacionesmteriasprimas.Adapters;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -128,6 +129,11 @@ public class adaptadorlistaOperadores extends BaseAdapter {
                     public void onClick(DialogInterface dialog, int which) {
                         if(actividadesSelecionadas.size()>0) {
                             item.setNombreActividades(actividadesSelecionadas);
+                            List<Double> valores= new ArrayList<>();
+                            for(int i=0;i<actividadesSelecionadas.size();i++){
+                                valores.add(0.0);
+                            }
+                            item.setActividades(valores);
                             HashMap<String, Operador> operadorHashMap = reporte.getOperadores();
                             operadorHashMap.put(item.getNombre(), item);
                             reporte.setOperadores(operadorHashMap);

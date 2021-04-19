@@ -185,16 +185,16 @@ public class Nuevoreporte extends AppCompatActivity {
                         tietFecha.setText(fecha);
                         tietFecha.clearFocus();
 
+
                     }
                 },year,month,day);
-
-
 
                 if(hasFocus){
                     datePickerDialog.show();
                 }
                 else{
                     datePickerDialog.dismiss();
+                    tietFecha.clearFocus();
                 }
 
             }
@@ -270,6 +270,7 @@ public class Nuevoreporte extends AppCompatActivity {
                 else{
                     dialog.dismiss();
                 }
+
 
             }
         });
