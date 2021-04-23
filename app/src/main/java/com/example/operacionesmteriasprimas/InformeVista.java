@@ -39,6 +39,7 @@ public class InformeVista extends AppCompatActivity {
 
 
 
+
     }
 
     void cargarReportes(){
@@ -76,53 +77,33 @@ public class InformeVista extends AppCompatActivity {
 
 
     }
-    void cargardatos(){
-        List<Reporte> reportes=new ArrayList<>();
-        FirebaseDatabase database= FirebaseDatabase.getInstance();
-        DatabaseReference ref=database.getReference("Reportes");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds: snapshot.getChildren()){
-                    Log.d("myTag", "entra a la base de datos");
-                    GenericTypeIndicator<Reporte> t1 = new GenericTypeIndicator<Reporte>() {};
-                    Reporte m = ds.getValue(t1);
-                    Toast.makeText(context, m.toString(), Toast.LENGTH_SHORT).show();
-                    reportes.add(m);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-
-        });
-        Log.d("myTag", reportes.toString());
-
-        listareportes=reportes;
-
-    }
 private List<sumas> GetData(List<Reporte> listareportes) {
         //HashMap<String, Double> actividadeshoras = new HashMap<String, Double>();
         List<sumas> lista=new ArrayList<sumas>();
         for (Reporte reporte:listareportes){
             for(Operador operador:listReporteToHash(reporte.getOperadores())){
-                int i=0;
+
                 for (String actividad:operador.getNombreActividades()){
-                    if(existeactividad(lista,actividad)==-1){
-                        sumas suma=new sumas(actividad,operador.getActividades().get(i));
+                    if(existeactividad(lista,actividad)==-1) {
+
+
+                        sumas suma = new sumas(actividad, operador.getActividades().get(operador.getNombreActividades().indexOf(actividad)));
                         lista.add(suma);
+                    }else {
+                        double sumar=operador.getActividades().get(operador.getNombreActividades().indexOf(actividad))+lista.get(existeactividad(lista,actividad)).getHoras();
+                        sumas suma = new sumas(actividad, sumar);
+
+                        lista.set(existeactividad(lista,actividad),suma);
+
 
                     }
-                    else {
+                    Toast.makeText(context, String.valueOf(existeactividad(lista,actividad)), Toast.LENGTH_SHORT).show();
 
-                        Double horas= (Double) (operador.getActividades().get(i)+lista.get(existeactividad(lista,actividad)).getHoras());
-                        sumas suma=new sumas(actividad,horas);
-                        lista.add(suma);
 
-                    }
-                    i=i++;
+
+
+
 
 
                 }
@@ -155,14 +136,13 @@ private List<sumas> GetData(List<Reporte> listareportes) {
         return lista;
     }
     private int existeactividad(List<sumas> list, String actividad){
-        int posicion=-1;
-        int i=0;
+        List<String> contenido=new ArrayList<>();
+
+
         for(sumas x:list){
-            if(x.getActividad().equals(actividad)){
-                posicion=i;
-            }
-            i=i++;
+            contenido.add(x.getActividad());
         }
+        int posicion=contenido.indexOf(actividad);
         return posicion;
 
 
