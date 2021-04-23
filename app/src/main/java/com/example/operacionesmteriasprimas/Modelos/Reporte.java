@@ -13,6 +13,7 @@ public class Reporte implements Serializable {
     boolean subido;
     HashMap<String,Operador> operadores;
 
+
     public Reporte(String fecha, String supervisor, String id, String turno, boolean completado, boolean subido, HashMap<String, Operador> operadores) {
         this.fecha = fecha;
         this.supervisor = supervisor;
@@ -22,6 +23,7 @@ public class Reporte implements Serializable {
         this.subido = subido;
         this.operadores = operadores;
     }
+
 
 
     @Override

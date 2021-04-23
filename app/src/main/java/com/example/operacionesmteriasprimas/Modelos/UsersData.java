@@ -9,6 +9,9 @@ public class UsersData implements Serializable {
     String photo;
     String email;
 
+    public UsersData() {
+    }
+
     public UsersData(boolean admin, String id, String name, String photo, String email) {
         this.admin = admin;
         this.id = id;

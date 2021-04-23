@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ListView;
@@ -30,10 +31,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.operacionesmteriasprimas.Adapters.BaseAdapterReportes;
+import com.example.operacionesmteriasprimas.InformeVista;
+import com.example.operacionesmteriasprimas.MainActivity;
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.R;
+import com.example.operacionesmteriasprimas.ui.Informe.VistaInforme;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -57,6 +61,7 @@ public class ReporteFragment extends Fragment {
     String fecha="";
     String turno="";
     Context context;
+    Button verhoras;
 
     HashMap<String, Reporte> hashReportes;
     List<Reporte> reportes;
@@ -70,6 +75,7 @@ public class ReporteFragment extends Fragment {
         listReporte=root.findViewById(R.id.listReporte);
         fab=root.findViewById(R.id.fabNuevoReporte);
         swipe=root.findViewById(R.id.swipeReporte);
+        verhoras=root.findViewById(R.id.verhoras);
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -80,7 +86,15 @@ public class ReporteFragment extends Fragment {
         cargarReportes();
         configFab();
         context=root.getContext();
+        verhoras.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(root.getContext(),InformeVista.class);
+                startActivityForResult(intent,1);
+            }
+        });
         return root;
+
     }
 
     public void cargarReportes(){
@@ -124,6 +138,7 @@ public class ReporteFragment extends Fragment {
             }
         });
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
