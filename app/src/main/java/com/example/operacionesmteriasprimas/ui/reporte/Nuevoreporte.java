@@ -131,7 +131,7 @@ public class Nuevoreporte extends AppCompatActivity {
 
     private void obtenerId() {
         FirebaseDatabase database= FirebaseDatabase.getInstance();
-        DatabaseReference reference=database.getReference("ReportesDiarios").child(user.getName());
+        DatabaseReference reference=database.getReference("Reportes").child(user.getName());
         DatabaseReference refId=reference.push();
         id=refId.getKey();
     }

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.operacionesmteriasprimas.Adapters.adaptadorVistaHoras;
@@ -29,6 +30,9 @@ public class InformeVista extends AppCompatActivity {
     ListView listactividades;
     Context context=this;
     List<Reporte> listareportes;
+    TextView txtprincipales,txtextra;
+    Double horasextra=0.0;
+    Double horasprincipales=0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,10 @@ public class InformeVista extends AppCompatActivity {
         setContentView(R.layout.activity_informe_vista);
         listactividades=findViewById(R.id.listActividades);
         cargarReportes();
+
+        txtprincipales=findViewById(R.id.txtprincipales);
+        txtextra=findViewById(R.id.txtextras);
+
 
 
 
@@ -66,6 +74,16 @@ public class InformeVista extends AppCompatActivity {
 
                 adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,GetData(listareportes));
                 listactividades.setAdapter(adapter);
+                for(sumas suma:GetData(listareportes)){
+                    if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
+                        horasprincipales=horasprincipales+suma.getHoras();
+                    }
+                    else {
+                        horasextra=horasextra+suma.getHoras();
+                    }
+                }
+                txtprincipales.setText(String.valueOf(horasprincipales));
+                txtextra.setText(String.valueOf(horasextra));
 
             }
 
@@ -98,8 +116,6 @@ private List<sumas> GetData(List<Reporte> listareportes) {
 
 
                     }
-                    Toast.makeText(context, String.valueOf(existeactividad(lista,actividad)), Toast.LENGTH_SHORT).show();
-
 
 
 
