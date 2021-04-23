@@ -26,6 +26,8 @@ public class Reporte implements Serializable {
 
 
 
+
+
     @Override
     public String toString() {
         return "Reporte{" +
@@ -108,4 +110,6 @@ public class Reporte implements Serializable {
     public void setOperadores(HashMap<String, Operador> operadores) {
         this.operadores = operadores;
     }
+
+
 }

@@ -14,6 +14,8 @@ public class Operador implements Serializable {
     List<String> nombreActividades;
 
 
+
+
     public Operador(List<Double> actividades, String nombre, boolean completo, List<String> nombreActividades) {
         this.actividades = actividades;
         this.nombre = nombre;

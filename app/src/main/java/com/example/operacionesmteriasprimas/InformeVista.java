@@ -35,9 +35,44 @@ public class InformeVista extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_informe_vista);
         listactividades=findViewById(R.id.listActividades);
-        cargardatos();
-        adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,GetData());
-        listactividades.setAdapter(adapter);
+        cargarReportes();
+
+
+
+    }
+
+    void cargarReportes(){
+        List<String> valores= new ArrayList<>();
+        listareportes=new ArrayList<>();
+        FirebaseDatabase database= FirebaseDatabase.getInstance();
+        DatabaseReference ref=database.getReference("Reportes");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for(DataSnapshot ds:snapshot.getChildren()){
+                        GenericTypeIndicator<Reporte> t = new GenericTypeIndicator<Reporte>() {};
+                        Reporte m = ds.getValue(t);
+                        if(!listareportes.contains(m)){
+                            listareportes.add(m);
+                        }
+                    }
+                    Toast.makeText(context, listareportes.toString(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(context, "No existe referencia", Toast.LENGTH_SHORT).show();
+                }
+
+                adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,GetData(listareportes));
+                listactividades.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
     }
@@ -50,13 +85,10 @@ public class InformeVista extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot ds: snapshot.getChildren()){
                     Log.d("myTag", "entra a la base de datos");
-                    GenericTypeIndicator<Reporte> t = new GenericTypeIndicator<Reporte>() {};
-                    Reporte m = ds.getValue(t);
+                    GenericTypeIndicator<Reporte> t1 = new GenericTypeIndicator<Reporte>() {};
+                    Reporte m = ds.getValue(t1);
                     Toast.makeText(context, m.toString(), Toast.LENGTH_SHORT).show();
                     reportes.add(m);
-
-
-
                 }
             }
 
@@ -71,11 +103,9 @@ public class InformeVista extends AppCompatActivity {
         listareportes=reportes;
 
     }
-    private List<sumas> GetData() {
+private List<sumas> GetData(List<Reporte> listareportes) {
         //HashMap<String, Double> actividadeshoras = new HashMap<String, Double>();
         List<sumas> lista=new ArrayList<sumas>();
-
-        cargardatos();
         for (Reporte reporte:listareportes){
             for(Operador operador:listReporteToHash(reporte.getOperadores())){
                 int i=0;
@@ -139,8 +169,8 @@ public class InformeVista extends AppCompatActivity {
     }
     private List<Operador> listReporteToHash(HashMap<String, Operador> hashoperador) {
         List<Operador> lista= new ArrayList<>();
-        for(Map.Entry m:hashoperador.entrySet()){
-            lista.add((Operador) m.getValue());
+        for(Map.Entry<String,Operador> m:hashoperador.entrySet()){
+            lista.add(m.getValue());
         }
         return lista;
     }
