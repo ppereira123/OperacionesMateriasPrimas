@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -13,10 +14,17 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.service.autofill.UserData;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -41,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class Nuevoreporte extends AppCompatActivity {
 
@@ -226,13 +235,20 @@ public class Nuevoreporte extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 AlertDialog.Builder builder= new AlertDialog.Builder(Nuevoreporte.this);
                 builder.setTitle("Escoge los operadores");
+
+                final SearchView searchView= new SearchView(Nuevoreporte.this);
+
+                builder.setView(searchView);
+                builder.setCancelable(false);
+
+
                 builder.setMultiChoiceItems(operadores, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 
                     }
                 });
-                builder.setCancelable(false);
+                //builder.setCancelable(false);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -252,8 +268,9 @@ public class Nuevoreporte extends AppCompatActivity {
                          for(String s:operadoresSeleccionados){
                              muestra=muestra+s+"\n";
                              tietOperadores.setText(muestra);
-                             tietOperadores.clearFocus();
+
                          }
+                        tietOperadores.clearFocus();
                     }
                 });
                 builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
@@ -277,10 +294,21 @@ public class Nuevoreporte extends AppCompatActivity {
                      }
                     }
                 });
+
+
+
+
                 AlertDialog dialog=builder.create();
+
+
+
 
                 if(hasFocus){
                     dialog.show();
+                   ListView listView=dialog.getListView();
+                    ViewGroup.MarginLayoutParams lp= (ViewGroup.MarginLayoutParams) listView.getLayoutParams();
+                    lp.height=800;
+                    listView.setLayoutParams(lp);
                 }
                 else{
                     dialog.dismiss();
@@ -307,6 +335,113 @@ public class Nuevoreporte extends AppCompatActivity {
         onBackPressed();
         return false;
     }
+
+    private static final class ListItemWithIndex {
+        public final int index;
+        public final String value;
+
+        public ListItemWithIndex(final int index, final String value) {
+            super();
+            this.index = index;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    public static void showMultiChoiceDialogWithSearchFilterUI(final Activity _activity, final Object[] _optionsList,
+                                                               final int _titleResId, final DialogInterface.OnClickListener _itemSelectionListener) {
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(_activity);
+
+        final List<ListItemWithIndex> allItems = new ArrayList<ListItemWithIndex>();
+        final List<ListItemWithIndex> filteredItems = new ArrayList<ListItemWithIndex>();
+
+        for (int i = 0; i < _optionsList.length; i++) {
+            final Object obj = _optionsList[i];
+            final ListItemWithIndex listItemWithIndex = new ListItemWithIndex(i, obj.toString());
+            allItems.add(listItemWithIndex);
+            filteredItems.add(listItemWithIndex);
+        }
+
+        dialogBuilder.setTitle(_titleResId);
+        final ArrayAdapter<ListItemWithIndex> objectsAdapter = new ArrayAdapter<ListItemWithIndex>(_activity,
+                android.R.layout.simple_list_item_1, filteredItems) {
+            @Override
+            public Filter getFilter() {
+                return new Filter() {
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    protected void publishResults(final CharSequence constraint, final FilterResults results) {
+                        filteredItems.clear();
+                        filteredItems.addAll((List<ListItemWithIndex>) results.values);
+                        notifyDataSetChanged();
+                    }
+
+                    @Override
+                    protected FilterResults performFiltering(final CharSequence constraint) {
+                        final FilterResults results = new FilterResults();
+
+                        final String filterString = constraint.toString();
+                        final ArrayList<ListItemWithIndex> list = new ArrayList<ListItemWithIndex>();
+                        for (final ListItemWithIndex obj : allItems) {
+                            final String objStr = obj.toString();
+                            if ("".equals(filterString)
+                                    || objStr.toLowerCase(Locale.getDefault()).contains(
+                                    filterString.toLowerCase(Locale.getDefault()))) {
+                                list.add(obj);
+                            }
+                        }
+
+                        results.values = list;
+                        results.count = list.size();
+                        return results;
+                    }
+                };
+            }
+        };
+
+        final EditText searchEditText = new EditText(_activity);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(final CharSequence arg0, final int arg1, final int arg2, final int arg3) {
+            }
+
+            @Override
+            public void beforeTextChanged(final CharSequence arg0, final int arg1, final int arg2, final int arg3) {
+            }
+
+            @Override
+            public void afterTextChanged(final Editable arg0) {
+                objectsAdapter.getFilter().filter(searchEditText.getText());
+            }
+        });
+
+        final ListView listView = new ListView(_activity);
+        listView.setAdapter(objectsAdapter);
+        final LinearLayout linearLayout = new LinearLayout(_activity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(searchEditText, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 0);
+        layoutParams.weight = 1;
+        linearLayout.addView(listView, layoutParams);
+        dialogBuilder.setView(linearLayout);
+
+        final AlertDialog dialog = dialogBuilder.create();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
+                dialog.dismiss();
+                _itemSelectionListener.onClick(null, filteredItems.get(position).index);
+            }
+        });
+        dialog.show();
+    }
+
 
 
 }
