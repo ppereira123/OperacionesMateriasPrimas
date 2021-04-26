@@ -1,4 +1,4 @@
-package com.example.operacionesmteriasprimas.ui.bitacora;
+package com.example.operacionesmteriasprimas.ui.informes;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

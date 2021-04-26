@@ -55,7 +55,7 @@ public class InformeVista extends AppCompatActivity {
         listareportes=new ArrayList<>();
         FirebaseDatabase database= FirebaseDatabase.getInstance();
         DatabaseReference ref=database.getReference("Reportes");
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){

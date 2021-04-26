@@ -98,6 +98,44 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="20dp"
+                    android:src="@mipmap/grupo" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:hint="Operadores Seleccionados"
+                    android:nextFocusLeft="@id/llReportes"
+                    android:nextFocusRight="@id/llReportes"
+
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tietOperadores"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:editable="false"
+                        android:focusable="auto"
+                        android:gravity="center|left"
+                        android:nextFocusLeft="@id/llReportes"
+                        android:nextFocusRight="@id/llReportes"
+                        android:selectAllOnFocus="false"
+                        android:singleLine="false" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
             <Button
                 android:id="@+id/btn_logout"
                 android:layout_width="205dp"
