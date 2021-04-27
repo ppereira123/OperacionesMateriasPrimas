@@ -87,81 +87,97 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/textView14"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/textfieldtSupervisora"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_marginStart="40dp"
                             android:layout_marginTop="20dp"
-                            android:text="Supervisores:"
-                            android:textColor="@color/ic_launcher_background" />
+                            app:boxBackgroundMode="outline"
+                            app:boxBackgroundColor="@color/white"
+                            app:startIconDrawable="@drawable/operadores">
 
-                        <EditText
-                            android:id="@+id/editSupervisora"
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editSupervisora"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="20dp"
+                                android:hint="Supervisores:"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/ic_launcher_background" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="40dp"
+                            app:startIconDrawable="@drawable/calendario"
+                            app:boxBackgroundMode="outline"
+                            app:boxBackgroundColor="@color/white"
+                            android:layout_marginTop="20dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editFechadesde"
+                                android:drawableLeft="@drawable/calendario"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="20dp"
+                                android:hint="Fecha desde:"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/ic_launcher_background" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="40dp"
+                            app:startIconDrawable="@drawable/calendario"
+                            app:boxBackgroundMode="outline"
+                            app:boxBackgroundColor="@color/white"
+                            android:layout_marginTop="20dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editFechahasta"
+
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="20dp"
+                                android:hint="Fecha hasta:"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/ic_launcher_background" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="40dp"
-                            android:layout_marginEnd="20dp"
-                            android:drawableLeft="@drawable/operadores"
-                            android:ems="10"
-                            android:inputType="textPersonName" />
-
-                        <TextView
-                            android:id="@+id/text2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="40dp"
-                            android:layout_marginTop="20dp"
-                            android:text="Fecha desde:"
-                            android:textColor="@color/ic_launcher_background" />
-
-                        <EditText
-                            android:id="@+id/editFechadesde"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="40dp"
-                            android:layout_marginEnd="20dp"
-                            android:drawableLeft="@drawable/calendario"
-                            android:ems="10"
-                            android:inputType="textPersonName" />
-
-                        <TextView
-                            android:id="@+id/text3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="40dp"
-                            android:layout_marginTop="20dp"
-                            android:text="Fecha hasta:"
-                            android:textColor="@color/ic_launcher_background" />
-
-                        <EditText
-                            android:id="@+id/editFechahasta"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="40dp"
-                            android:layout_marginEnd="20dp"
-                            android:drawableLeft="@drawable/calendario"
-                            android:ems="10"
-                            android:inputType="textPersonName" />
-
-                        <TextView
-                            android:id="@+id/text4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="40dp"
-                            android:layout_marginTop="20dp"
-                            android:text="Tipo de Documento:"
-                            android:textColor="@color/ic_launcher_background" />
-
-                        <EditText
                             android:id="@+id/edittipoDocumento"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
                             android:layout_marginStart="40dp"
+                            android:layout_marginTop="20dp"
                             android:layout_marginEnd="20dp"
-                            android:drawableLeft="@drawable/documento"
-                            android:ems="10"
-                            android:inputType="textPersonName" />
+                            app:startIconDrawable="@drawable/documento"
+                            app:boxBackgroundMode="outline"
+                            android:hint="Tipo de documento:"
+                            app:boxBackgroundColor="@color/white"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autocompleteSpinnerDocumentos"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/white"
+
+                                android:inputType="none" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
+
 
                     </LinearLayout>
 
@@ -206,14 +222,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.30" />
+                                app:layout_constraintGuide_begin="117dp" />
 
                             <androidx.constraintlayout.widget.Guideline
                                 android:id="@+id/guideline12"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.65" />
+                                app:layout_constraintGuide_begin="254dp" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </LinearLayout>
