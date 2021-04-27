@@ -40,7 +40,7 @@ public class Informe extends Fragment {
     TextView name,date;
     EditText editSupervisora,editFechadesde,editFechahasta,edittipoDocumento;
     private FirebaseAuth mAuth;
-    List<String> supervisoreslist=new ArrayList<>();
+    public List<String> supervisoreslist;
     Context context;
     String [] arryaSupervisores;
     boolean[] checkedItems;
@@ -73,36 +73,58 @@ public class Informe extends Fragment {
         configFecha(editFechadesde);
         configFecha(editFechahasta);
         supervisoreslist.add("Todos");
+
         editSupervisora.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                supervisoreslist=new ArrayList<>();
+                supervisoreslist.add("Todos");
                 FirebaseDatabase database= FirebaseDatabase.getInstance();
                 DatabaseReference ref=database.getReference("Reportes");
-
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.exists()){
-                            for(DataSnapshot ds:snapshot.child("supervisor").getChildren()){
+                            for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                DataSnapshot ds=dataSnapshot.child("supervisor");
                                 if(ds.exists()){
-                                    Toast.makeText(root.getContext(), ds.getValue().toString(), Toast.LENGTH_SHORT).show();
-                                    if(supervisoreslist.contains(ds.getValue().toString())==false){
-                                        supervisoreslist.add(ds.getValue().toString());
-                                        Toast.makeText(root.getContext(), ds.getValue().toString(), Toast.LENGTH_SHORT).show();
-
+                                    String supervisor=ds.getValue().toString();
+                                    if(!supervisoreslist.contains(supervisor)){
+                                        supervisoreslist.add(supervisor);
                                     }
                                 }
-                                else {
-                                    Toast.makeText(root.getContext(), "no existe", Toast.LENGTH_SHORT).show();
-                                }
-
                             }
+                            checkedItems=new boolean[supervisoreslist.size()];
+                            arryaSupervisores=new String[supervisoreslist.size()];
+                            checkedItems[0]=false;
+                            arryaSupervisores[0]="todo";
+
+                            for(int i=1;i<supervisoreslist.size();i++){
+                                arryaSupervisores[i]=supervisoreslist.get(i);
+                            }
+
+
+
+
+
+
+
+                            AlertDialog.Builder builder= new AlertDialog.Builder(getContext());
+                            builder.setTitle("Escoger supervisores para el informe");
+                            builder.setMultiChoiceItems(arryaSupervisores, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                                }
+                            });
+                            AlertDialog dialog=builder.create();
+                            dialog.show();
                         }
                         else{
                             Toast.makeText(root.getContext(), "No existe referencia", Toast.LENGTH_SHORT).show();
                         }
+
+                        Toast.makeText(root.getContext(), String.valueOf(supervisoreslist.size()), Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -110,34 +132,6 @@ public class Informe extends Fragment {
                     }
                 });
 
-                supervisoreslist.add("todo");
-
-                checkedItems=new boolean[1];
-                arryaSupervisores=new String[1];
-                checkedItems[0]=false;
-                arryaSupervisores[0]="todo";
-
-                /*
-                int i = 0;
-                while (i < supervisoreslist.size() - 1)
-                {
-                    arryaSupervisores[i]=supervisoreslist.get(i);
-                    i++;
-                }
-*/
-
-
-
-                AlertDialog.Builder builder= new AlertDialog.Builder(getContext());
-                builder.setTitle("Escoger supervisores para el informe");
-                builder.setMultiChoiceItems(arryaSupervisores, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-
-                    }
-                });
-                AlertDialog dialog=builder.create();
-                dialog.show();
 
             }
         });
