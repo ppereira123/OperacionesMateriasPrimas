@@ -18,6 +18,10 @@
         <item>Día</item>
         <item>Tarde</item>
     </string-array>
+    <string-array name="combo_tiposDocumentos">
+        <item>Visual</item>
+        <item>Excel</item>
+    </string-array>
 
 
 
