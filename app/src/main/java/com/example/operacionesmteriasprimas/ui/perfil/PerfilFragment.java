@@ -129,7 +129,9 @@ public class PerfilFragment extends Fragment {
         for(String s:usersData.getOperadores()){
             muestra=muestra+s+"\n";
         }
-        muestra = muestra.substring(0, muestra.length() - 1);
+        if(muestra.length()>0){
+            muestra = muestra.substring(0, muestra.length() - 1);
+        }
         tietOperadores.setText(muestra);
         operadoresSeleccionados=new ArrayList<>();
         operadores=getResources().getStringArray(R.array.combo_nombresOperadores);
