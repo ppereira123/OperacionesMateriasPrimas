@@ -1,11 +1,12 @@
 package com.example.operacionesmteriasprimas;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,34 +22,45 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.operacionesmteriasprimas.ui.informes.Informe.diferenciaDias;
+
 public class InformeVista extends AppCompatActivity {
     ListView listactividades;
     Context context=this;
     List<Reporte> listareportes;
-    TextView txtprincipales,txtextra;
+    TextView txtprincipales,txtextra,txtfechadelreporte;
     Double horasextra=0.0;
     Double horasprincipales=0.0;
+    String fechadesde,fechahasta;
+    List<String> supervisores=new ArrayList<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Vista Informe");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_informe_vista);
         listactividades=findViewById(R.id.listActividades);
         cargarReportes();
-
         txtprincipales=findViewById(R.id.txtprincipales);
         txtextra=findViewById(R.id.txtextras);
-
-
+        fechadesde=getIntent().getStringExtra("Fechadesde");
+        fechahasta=getIntent().getStringExtra("Fechahasta");
+        supervisores= (List<String>) getIntent().getSerializableExtra("Supervisores");
 
 
 
     }
+
+
 
     void cargarReportes(){
         List<String> valores= new ArrayList<>();
@@ -62,9 +74,38 @@ public class InformeVista extends AppCompatActivity {
                     for(DataSnapshot ds:snapshot.getChildren()){
                         GenericTypeIndicator<Reporte> t = new GenericTypeIndicator<Reporte>() {};
                         Reporte m = ds.getValue(t);
-                        if(!listareportes.contains(m)){
-                            listareportes.add(m);
+
+                        if(supervisores.contains("Todos")){
+                            try {
+                                if(diferenciaDias(m.getFecha(),fechadesde)>=0&&diferenciaDias(m.getFecha(),fechahasta)<=0){
+                                    if(!listareportes.contains(m)){
+                                        listareportes.add(m);
+                                    }
+
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                        }else {
+                            if(supervisores.contains(m.getSupervisor())){
+                                try {
+                                    if(diferenciaDias(m.getFecha(),fechadesde)>=0&&diferenciaDias(m.getFecha(),fechahasta)<=0){
+                                        if(!listareportes.contains(m)){
+                                            listareportes.add(m);
+                                        }
+
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
                         }
+
+
+
+
                     }
                     Toast.makeText(context, listareportes.toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -126,22 +167,7 @@ private List<sumas> GetData(List<Reporte> listareportes) {
 
 
 
-                /*
-                int i=0;
-                for (String actividad:operador.getNombreActividades()){
-                    if (actividadeshoras.containsKey(actividad)){
-                        double horas=actividadeshoras.get(actividad)+operador.getActividades().get(i);
-                        actividadeshoras.put(actividad,horas);
 
-                    }else {
-
-                        actividadeshoras.put(actividad, operador.getActividades().get(i));
-
-                    }
-                    i=1+i;
-                }
-
-                 */
             }
 
 

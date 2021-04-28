@@ -7,18 +7,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +23,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.operacionesmteriasprimas.MainActivity;
-import com.example.operacionesmteriasprimas.Modelos.Reporte;
+import com.example.operacionesmteriasprimas.InformeVista;
 import com.example.operacionesmteriasprimas.R;
-import com.example.operacionesmteriasprimas.Splash;
-import com.example.operacionesmteriasprimas.login.LoginFireBase;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,9 +32,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -272,7 +265,7 @@ public class Informe extends Fragment {
     }
 
 
-    public int diferenciaDias(String fecha1,String fecha2) throws ParseException {
+    public static int diferenciaDias(String fecha1,String fecha2) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         Date date1= format.parse(fecha1);
         Date date2=format.parse(fecha2);
@@ -296,9 +289,15 @@ public class Informe extends Fragment {
         if(tipoDocumento.equals("")||fechahasta.equals("")||fechadesde.equals("")||slectSupervisors.size()<1){
             Toast.makeText(context, "Falta completar parametro", Toast.LENGTH_SHORT).show();
         }else {
-            Toast.makeText(context, "comenzando busqueda", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Comenzando busqueda", Toast.LENGTH_SHORT).show();
             if(tipoDocumento.equals("Visual")){
-                Intent intent= new Intent();
+                Intent intent=new Intent(context, InformeVista.class);
+                intent.putExtra("Fechadesde",editFechadesde.getText().toString());
+                intent.putExtra("Fechahasta",editFechahasta.getText().toString());
+                intent.putExtra("Supervisores", (Serializable) slectSupervisors);
+                startActivityForResult(intent,1);
+            }else if(tipoDocumento.equals("Excel")){
+                Toast.makeText(context, "Formato aun no disponible", Toast.LENGTH_SHORT).show();
             }
         }
 
