@@ -1,6 +1,7 @@
 package com.example.operacionesmteriasprimas.Modelos;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UsersData implements Serializable {
     boolean admin;
@@ -8,16 +9,18 @@ public class UsersData implements Serializable {
     String name;
     String photo;
     String email;
+    List<String> operadores;
 
     public UsersData() {
     }
 
-    public UsersData(boolean admin, String id, String name, String photo, String email) {
+    public UsersData(boolean admin, String id, String name, String photo, String email, List<String> operadores) {
         this.admin = admin;
         this.id = id;
         this.name = name;
         this.photo = photo;
         this.email = email;
+        this.operadores = operadores;
     }
 
     public boolean isAdmin() {
@@ -58,5 +61,13 @@ public class UsersData implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<String> getOperadores() {
+        return operadores;
+    }
+
+    public void setOperadores(List<String> operadores) {
+        this.operadores = operadores;
     }
 }

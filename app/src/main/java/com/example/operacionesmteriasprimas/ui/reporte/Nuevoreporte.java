@@ -3,7 +3,8 @@ package com.example.operacionesmteriasprimas.ui.reporte;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,10 +30,12 @@ import android.widget.Filter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.operacionesmteriasprimas.Adapters.BuscadorAdapter;
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
@@ -72,6 +75,8 @@ public class Nuevoreporte extends AppCompatActivity {
     List<String> listaOperadores;
     final int REQUEST_CODE=2;
     AlertDialog dialog;
+    BuscadorAdapter adapter;
+    UsersData usersData;
 
 
 
@@ -88,6 +93,8 @@ public class Nuevoreporte extends AppCompatActivity {
         spinner=findViewById(R.id.spinnerTurno);
         txtTurno=findViewById(R.id.txtEscogerTurno);
         tietOperadores=findViewById(R.id.tietOperadores);
+
+        usersData=new InternalStorage().cargarArchivo(context);
         getUser();
         configFecha(tietFecha);
         llenarSpinner(spinner,txtTurno);
@@ -229,125 +236,137 @@ public class Nuevoreporte extends AppCompatActivity {
         });
     }
 
-
     void llenarLista(){
-        operadoresSeleccionados=new ArrayList<>();
+
         operadores=getResources().getStringArray(R.array.combo_nombresOperadores);
         listaOperadores=new ArrayList<>();
         for(String s: operadores){
         listaOperadores.add(s);
         }
         checkedItems=new boolean[operadores.length];
+        checkActividades();
         tietOperadores.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                AlertDialog.Builder builder= new AlertDialog.Builder(Nuevoreporte.this);
-                builder.setTitle("Escoge los operadores");
-
-                final SearchView searchView= new SearchView(Nuevoreporte.this);
-                searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-                    @Override
-                    public boolean onClose() {
-                        dialog.dismiss();
-                        llenarLista();
-                        return false;
-                    }
-                });
-                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        buscarOperador(query);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-
-                        return false;
-                    }
-                });
-                builder.setView(searchView);
-                builder.setCancelable(false);
-
-
-                builder.setMultiChoiceItems(operadores, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-
-                    }
-                });
-                //builder.setCancelable(false);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        operadoresSeleccionados=new ArrayList<>();
-                        for(int i=0;i<checkedItems.length;i++){
-                            boolean b=checkedItems[i];
-                            if(b) {
-                                if (!operadoresSeleccionados.contains(operadores[i])){
-                                    operadoresSeleccionados.add(operadores[i]);
-                            }
-                                else{
-                                    operadoresSeleccionados.remove(i);
-                                }
-                            }
-                        }
-                            muestra="";
-                         for(String s:operadoresSeleccionados){
-                             muestra=muestra+s+"\n";
-                             tietOperadores.setText(muestra);
-
-                         }
-                        tietOperadores.clearFocus();
-                    }
-                });
-                builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        tietOperadores.clearFocus();
-                    }
-                });
-
-                builder.setNeutralButton("Reiniciar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        muestra="";
-                        tietOperadores.setText(muestra);
-                        operadoresSeleccionados.clear();
-                     for(int i=0;i<checkedItems.length;i++){
-                         checkedItems[i]=false;
-                         tietOperadores.clearFocus();
-
-                     }
-                    }
-                });
-
-
-
-
-                 dialog=builder.create();
-
-
-
-
-                if(hasFocus){
-                    dialog.show();
-                   ListView listView=dialog.getListView();
-                    ViewGroup.MarginLayoutParams lp= (ViewGroup.MarginLayoutParams) listView.getLayoutParams();
-                    lp.height=800;
-                    listView.setLayoutParams(lp);
-                }
-                else{
-                    dialog.dismiss();
-                }
-
-
+                escogerOperadores(hasFocus);
             }
+
         });
 
 
 
+    }
+
+    private void checkActividades() {
+        listaOperadores= new ArrayList<>();
+        operadoresSeleccionados=usersData.getOperadores();
+
+        for(String s: operadores){
+            listaOperadores.add(s);
+        }
+        for(String s:operadoresSeleccionados){
+            int index=listaOperadores.indexOf(s);
+            checkedItems[index]=true;
+        }
+
+        for(String s:operadoresSeleccionados){
+            muestra=muestra+s+"\n";
+        }
+        muestra = muestra.substring(0, muestra.length() - 1);
+        tietOperadores.setText(muestra);
+    }
+
+    private void escogerOperadores(boolean mostrar) {
+        AlertDialog.Builder builder= new AlertDialog.Builder(Nuevoreporte.this);
+        builder.setTitle("Escoge los operadores");
+
+        LayoutInflater mInflate= LayoutInflater.from(context);
+        View view= mInflate.inflate(R.layout.res_buscador,null);
+        final SearchView searchView= view.findViewById(R.id.searchRes);
+        RecyclerView recyclerView = view.findViewById(R.id.rvRes);
+        adapter= new BuscadorAdapter(listaOperadores,context,checkedItems,listaOperadores);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                buscarOperador(newText,recyclerView);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                adapter= new BuscadorAdapter(listaOperadores,context,checkedItems,listaOperadores);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(adapter);
+                return false;
+            }
+        });
+        builder.setView(view);
+        builder.setCancelable(false);
+
+        //builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                checkedItems=adapter.getCheckedItems();
+                operadoresSeleccionados=new ArrayList<>();
+                for(int i=0;i<checkedItems.length;i++){
+                    boolean b=checkedItems[i];
+                    if(b) {
+                        if (!operadoresSeleccionados.contains(operadores[i])){
+                            operadoresSeleccionados.add(operadores[i]);
+                        }
+                        else{
+                            operadoresSeleccionados.remove(i);
+                        }
+                    }
+                }
+                muestra="";
+                for(String s:operadoresSeleccionados){
+                    muestra=muestra+s+"\n";
+                }
+                tietOperadores.setText(muestra);
+                tietOperadores.clearFocus();
+            }
+        });
+        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                tietOperadores.clearFocus();
+            }
+        });
+
+        builder.setNeutralButton("Reiniciar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                muestra="";
+                tietOperadores.setText(muestra);
+                operadoresSeleccionados.clear();
+                for(int i=0;i<checkedItems.length;i++){
+                    checkedItems[i]=false;
+                    tietOperadores.clearFocus();
+
+                }
+            }
+        });
+        AlertDialog dialog=builder.create();
+        if(mostrar) {
+            dialog.show();
+        }
+        else{
+            dialog.dismiss();
+        }
     }
 
 
@@ -365,121 +384,17 @@ public class Nuevoreporte extends AppCompatActivity {
     }
 
 
-    public void buscarOperador(String s) {
-        if (s.length() <= 0) {
-            dialog.dismiss();
-            llenarLista();
-        } else {
-            dialog.dismiss();
-            ArrayList<String> milista = new ArrayList<>();
-            for (String obj : operadores) {
-                if (obj.toLowerCase().contains(s.toLowerCase())) {
-                    milista.add(obj);
-                }
-
+    public void buscarOperador(String s,RecyclerView rvRes) {
+        ArrayList<String> milista = new ArrayList<>();
+        for (String obj : operadores) {
+            if (obj.toLowerCase().contains(s.toLowerCase())) {
+                milista.add(obj);
             }
-            boolean[] estadoOperadores = new boolean[milista.size()];
-            String[] operadoresBuscados = new String[milista.size()];
-            for (int i = 0; i < milista.size(); i++) {
-                operadoresBuscados[i] = milista.get(i);
-                int index = listaOperadores.indexOf(milista.get(i));
-                boolean valor = checkedItems[index];
-                estadoOperadores[i] = valor;
-            }
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(Nuevoreporte.this);
-            builder.setTitle("Escoge los operadores");
-
-            final SearchView searchView = new SearchView(Nuevoreporte.this);
-            searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-                @Override
-                public boolean onClose() {
-                    dialog.dismiss();
-                    llenarLista();
-                    return false;
-                }
-            });
-            searchView.setQuery(s, false);
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    buscarOperador(query);
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-
-                    return false;
-                }
-            });
-            builder.setView(searchView);
-            builder.setCancelable(false);
-
-
-            builder.setMultiChoiceItems(operadoresBuscados, estadoOperadores, new DialogInterface.OnMultiChoiceClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                    checkedItems[listaOperadores.indexOf(milista.get(which))] = isChecked;
-                }
-            });
-            //builder.setCancelable(false);
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    operadoresSeleccionados = new ArrayList<>();
-                    for (int i = 0; i < checkedItems.length; i++) {
-                        boolean b = checkedItems[i];
-                        if (b) {
-                            if (!operadoresSeleccionados.contains(operadores[i])) {
-                                operadoresSeleccionados.add(operadores[i]);
-                            } else {
-                                operadoresSeleccionados.remove(i);
-                            }
-                        }
-                    }
-                    muestra = "";
-                    for (String s : operadoresSeleccionados) {
-                        muestra = muestra + s + "\n";
-                        tietOperadores.setText(muestra);
-
-                    }
-                    tietOperadores.clearFocus();
-                }
-            });
-            builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    tietOperadores.clearFocus();
-                }
-            });
-
-            builder.setNeutralButton("Reiniciar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    muestra = "";
-                    tietOperadores.setText(muestra);
-                    operadoresSeleccionados.clear();
-                    for (int i = 0; i < checkedItems.length; i++) {
-                        checkedItems[i] = false;
-                        tietOperadores.clearFocus();
-
-                    }
-                }
-            });
-
-
-            dialog = builder.create();
-
-            dialog.show();
-            ListView listView = dialog.getListView();
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) listView.getLayoutParams();
-            lp.height = 800;
-            listView.setLayoutParams(lp);
-
-
         }
+        BuscadorAdapter adapter= new BuscadorAdapter(milista,context,checkedItems,listaOperadores);
+        rvRes.setHasFixedSize(true);
+        rvRes.setAdapter(adapter);
+        rvRes.setLayoutManager(new LinearLayoutManager(context));
     }
 
 }

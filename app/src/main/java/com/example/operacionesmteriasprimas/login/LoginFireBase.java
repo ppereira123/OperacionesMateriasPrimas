@@ -35,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LoginFireBase extends AppCompatActivity {
@@ -143,7 +144,7 @@ public class LoginFireBase extends AppCompatActivity {
 
 
                         try {
-                            UsersData data= new UsersData(admin,user.getUid(),user.getDisplayName(), user.getPhotoUrl().toString(),user.getEmail());
+                            UsersData data= new UsersData(admin,user.getUid(),user.getDisplayName(), user.getPhotoUrl().toString(),user.getEmail(),new ArrayList<>());
                             storage.guardarArchivo(data ,this);
                         } catch (IOException e) {
                             e.printStackTrace();

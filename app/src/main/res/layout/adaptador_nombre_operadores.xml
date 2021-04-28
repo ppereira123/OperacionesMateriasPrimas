@@ -7,17 +7,10 @@
 
     <CheckBox
         android:id="@+id/checkBoxOperador"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center|left" />
-
-    <TextView
-        android:id="@+id/txtnombreOperadorLv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Nombre Operador"
-        android:textColor="#000000"
+        android:gravity="center|left"
+        android:text="Operador"
         android:textSize="18sp" />
 
 </LinearLayout>

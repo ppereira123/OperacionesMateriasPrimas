@@ -2,21 +2,23 @@ package com.example.operacionesmteriasprimas.ui.reporte;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Path;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.operacionesmteriasprimas.Adapters.BaseAdapterOperadores;
+import com.example.operacionesmteriasprimas.Adapters.BuscadorAdapter;
 import com.example.operacionesmteriasprimas.Adapters.adaptadorHorasOperadores;
 import com.example.operacionesmteriasprimas.Adapters.adaptadorlistaOperadores;
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
@@ -47,6 +49,7 @@ public class ListaOperadores extends AppCompatActivity {
     List<String> listAllOperadores;
     String [] arryaOperadores;
     boolean[] checkedItems;
+    List<String> listaOperadores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,69 +99,113 @@ public class ListaOperadores extends AppCompatActivity {
     private  void setBtnmodificarOperador(){
 
          arryaOperadores=getResources().getStringArray(R.array.combo_nombresOperadores);
+         listaOperadores=new ArrayList<String>();
+         for(String s: arryaOperadores){
+             listaOperadores.add(s);
+         }
          checkedItems=new boolean[arryaOperadores.length];
          checkActividades();
-         AlertDialog.Builder builder= new AlertDialog.Builder(this);
-         builder.setTitle("Escoge los operadores");
-         builder.setMultiChoiceItems(arryaOperadores, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-             @Override
-             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-
-             }
-         });
-         builder.setCancelable(false);
-         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-             @Override
-             public void onClick(DialogInterface dialog, int which) {
-                 int cont=0;
-                 for(boolean seleccionado:checkedItems){
-                     if(seleccionado){
-                         if(!operadoresSeleccionados.contains(listAllOperadores.get(cont))){
-                             Operador operador= new Operador(new ArrayList<>(),listAllOperadores.get(cont),false,new ArrayList<>());
-                             operadores.add(operador);
-                             operadoresSeleccionados.add(listAllOperadores.get(cont));
-                             hashOperadores.put(operador.getNombre(),operador);
-                         }
-                     }
-                     else {
-                         if(operadoresSeleccionados.contains(listAllOperadores.get(cont))){
-                             operadores.remove(operadoresSeleccionados.indexOf(listAllOperadores.get(cont)));
-                             hashOperadores.remove(listAllOperadores.get(cont));
-                             operadoresSeleccionados.remove(operadoresSeleccionados.indexOf(listAllOperadores.get(cont)));
-                         }
-
-                     }
-                     cont++;
-
-                 }
-                 reporte.setOperadores(hashOperadores);
-                 cargarOperadores();
-                 cargarDatos();
-
-             }
-         });
-         builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-             @Override
-             public void onClick(DialogInterface dialog, int which) {
-                 dialog.dismiss();
-             }
-         });
-
-         builder.setNeutralButton("Reiniciar", new DialogInterface.OnClickListener() {
-             @Override
-             public void onClick(DialogInterface dialog, int which) {
-                 for(int i=0;i<checkedItems.length;i++){
-                     checkedItems[i]=false;
-                     operadoresSeleccionados.clear();
-                 }
-             }
-         });
-         AlertDialog dialog=builder.create();
-             dialog.show();
+         escogerOperadores(true);
 
 
 
      }
+
+    private void escogerOperadores(boolean mostrar) {
+        AlertDialog.Builder builder= new AlertDialog.Builder(ListaOperadores.this);
+        builder.setTitle("Escoge los operadores");
+
+        LayoutInflater mInflate= LayoutInflater.from(context);
+        View view= mInflate.inflate(R.layout.res_buscador,null);
+        final SearchView searchView= view.findViewById(R.id.searchRes);
+        RecyclerView recyclerView = view.findViewById(R.id.rvRes);
+        BuscadorAdapter adapter= new BuscadorAdapter(listaOperadores,context,checkedItems,listAllOperadores);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                buscarOperador(newText,recyclerView);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                BuscadorAdapter adapter= new BuscadorAdapter(listaOperadores,context,checkedItems,listAllOperadores);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(adapter);
+                return false;
+            }
+        });
+        builder.setView(view);
+        builder.setCancelable(false);
+
+        //builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                checkedItems=adapter.getCheckedItems();
+                operadoresSeleccionados=new ArrayList<>();
+                for(int i=0;i<checkedItems.length;i++){
+                    boolean b=checkedItems[i];
+                    if(b) {
+                        if (!operadoresSeleccionados.contains(arryaOperadores[i])){
+                            operadoresSeleccionados.add(arryaOperadores[i]);
+                        }
+                        else{
+                            operadoresSeleccionados.remove(i);
+                        }
+                    }
+                }
+
+            }
+        });
+        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNeutralButton("Reiniciar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                operadoresSeleccionados.clear();
+                for(int i=0;i<checkedItems.length;i++){
+                    checkedItems[i]=false;
+                }
+            }
+        });
+        AlertDialog dialog=builder.create();
+        if(mostrar) {
+            dialog.show();
+        }
+        else{
+            dialog.dismiss();
+        }
+    }
+
+    public void buscarOperador(String s,RecyclerView rvRes) {
+        ArrayList<String> milista = new ArrayList<>();
+        for (String obj : arryaOperadores) {
+            if (obj.toLowerCase().contains(s.toLowerCase())) {
+                milista.add(obj);
+            }
+        }
+        BuscadorAdapter adapter= new BuscadorAdapter(milista,context,checkedItems,listAllOperadores);
+        rvRes.setHasFixedSize(true);
+        rvRes.setAdapter(adapter);
+        rvRes.setLayoutManager(new LinearLayoutManager(context));
+    }
 
     private void checkActividades() {
         listAllOperadores= new ArrayList<>();
