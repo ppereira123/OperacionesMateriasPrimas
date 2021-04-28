@@ -192,6 +192,7 @@ public class PerfilFragment extends Fragment {
                 adapter= new BuscadorAdapter(listaOperadores,root.getContext(),checkedItems,listaOperadores);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setAdapter(adapter);
+                tietOperadores.clearFocus();
                 return false;
             }
         });
@@ -256,6 +257,7 @@ public class PerfilFragment extends Fragment {
         AlertDialog dialog=builder.create();
         if(mostrar) {
             dialog.show();
+            tietOperadores.clearFocus();
         }
         else{
             dialog.dismiss();
@@ -269,10 +271,10 @@ public class PerfilFragment extends Fragment {
                 milista.add(obj);
             }
         }
-        BuscadorAdapter adapter= new BuscadorAdapter(milista,context,checkedItems,listaOperadores);
+        BuscadorAdapter adapter= new BuscadorAdapter(milista,root.getContext(),checkedItems,listaOperadores);
         rvRes.setHasFixedSize(true);
         rvRes.setAdapter(adapter);
-        rvRes.setLayoutManager(new LinearLayoutManager(context));
+        rvRes.setLayoutManager(new LinearLayoutManager(root.getContext()));
     }
 
 }
