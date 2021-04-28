@@ -76,6 +76,7 @@ public class Nuevoreporte extends AppCompatActivity {
     final int REQUEST_CODE=2;
     AlertDialog dialog;
     BuscadorAdapter adapter;
+    UsersData usersData;
 
 
 
@@ -92,6 +93,8 @@ public class Nuevoreporte extends AppCompatActivity {
         spinner=findViewById(R.id.spinnerTurno);
         txtTurno=findViewById(R.id.txtEscogerTurno);
         tietOperadores=findViewById(R.id.tietOperadores);
+
+        usersData=new InternalStorage().cargarArchivo(context);
         getUser();
         configFecha(tietFecha);
         llenarSpinner(spinner,txtTurno);
@@ -234,13 +237,14 @@ public class Nuevoreporte extends AppCompatActivity {
     }
 
     void llenarLista(){
-        operadoresSeleccionados=new ArrayList<>();
+
         operadores=getResources().getStringArray(R.array.combo_nombresOperadores);
         listaOperadores=new ArrayList<>();
         for(String s: operadores){
         listaOperadores.add(s);
         }
         checkedItems=new boolean[operadores.length];
+        checkActividades();
         tietOperadores.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -251,6 +255,25 @@ public class Nuevoreporte extends AppCompatActivity {
 
 
 
+    }
+
+    private void checkActividades() {
+        listaOperadores= new ArrayList<>();
+        operadoresSeleccionados=usersData.getOperadores();
+
+        for(String s: operadores){
+            listaOperadores.add(s);
+        }
+        for(String s:operadoresSeleccionados){
+            int index=listaOperadores.indexOf(s);
+            checkedItems[index]=true;
+        }
+
+        for(String s:operadoresSeleccionados){
+            muestra=muestra+s+"\n";
+        }
+        muestra = muestra.substring(0, muestra.length() - 1);
+        tietOperadores.setText(muestra);
     }
 
     private void escogerOperadores(boolean mostrar) {
@@ -311,9 +334,8 @@ public class Nuevoreporte extends AppCompatActivity {
                 muestra="";
                 for(String s:operadoresSeleccionados){
                     muestra=muestra+s+"\n";
-                    tietOperadores.setText(muestra);
-
                 }
+                tietOperadores.setText(muestra);
                 tietOperadores.clearFocus();
             }
         });
