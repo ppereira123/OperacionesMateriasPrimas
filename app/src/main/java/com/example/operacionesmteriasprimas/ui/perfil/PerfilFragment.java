@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import com.bumptech.glide.Glide;
 
 import com.example.operacionesmteriasprimas.Adapters.BuscadorAdapter;
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
+import com.example.operacionesmteriasprimas.Modelos.Operador;
+import com.example.operacionesmteriasprimas.Modelos.UsersData;
 import com.example.operacionesmteriasprimas.R;
 import com.example.operacionesmteriasprimas.login.LoginFireBase;
 import com.example.operacionesmteriasprimas.ui.reporte.Nuevoreporte;
@@ -38,6 +41,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +63,8 @@ public class PerfilFragment extends Fragment {
     List<String> listaOperadores;
     BuscadorAdapter adapter;
     String muestra;
+    UsersData usersData;
+    List<String> listAllOperadores;
 
     private PerfilViewModel perfilViewModel;
 
@@ -73,15 +79,16 @@ public class PerfilFragment extends Fragment {
         imv_photo = root.findViewById(R.id.imv_foto);
         btn_logout = root.findViewById(R.id.btn_logout);
         tietOperadores=root.findViewById(R.id.tietOperadoresPerfil);
+        usersData=new InternalStorage().cargarArchivo(root.getContext());
         tietOperadores.clearFocus();
         seleccionarOperadores(tietOperadores);
         // Inicializar Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         //Establecer campos
-        txt_id.setText(currentUser.getUid());
-        txt_name.setText(currentUser.getDisplayName());
-        txt_email.setText(currentUser.getEmail());
+        txt_id.setText(usersData.getId());
+        txt_name.setText(usersData.getName());
+        txt_email.setText(usersData.getEmail());
         //cargar imagen con glide
         Glide.with(this).load(currentUser.getPhotoUrl()).into(imv_photo);
 
@@ -118,6 +125,12 @@ public class PerfilFragment extends Fragment {
     }
 
     private void seleccionarOperadores(TextInputEditText tietOperadores) {
+        String muestra="";
+        for(String s:usersData.getOperadores()){
+            muestra=muestra+s+"\n";
+        }
+        muestra = muestra.substring(0, muestra.length() - 1);
+        tietOperadores.setText(muestra);
         operadoresSeleccionados=new ArrayList<>();
         operadores=getResources().getStringArray(R.array.combo_nombresOperadores);
         listaOperadores=new ArrayList<>();
@@ -125,6 +138,7 @@ public class PerfilFragment extends Fragment {
             listaOperadores.add(s);
         }
         checkedItems=new boolean[operadores.length];
+        checkActividades();
         tietOperadores.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -132,6 +146,18 @@ public class PerfilFragment extends Fragment {
             }
 
         });
+    }
+
+    private void checkActividades() {
+        listAllOperadores= new ArrayList<>();
+        operadoresSeleccionados=new ArrayList<>();
+        for(String s: operadores){
+            listAllOperadores.add(s);
+        }
+        for(String s:usersData.getOperadores()){
+            int index=listAllOperadores.indexOf(s);
+            checkedItems[index]=true;
+        }
     }
 
     private void escogerOperadores(boolean mostrar) {
@@ -192,8 +218,16 @@ public class PerfilFragment extends Fragment {
                 muestra="";
                 for(String s:operadoresSeleccionados){
                     muestra=muestra+s+"\n";
-                    tietOperadores.setText(muestra);
 
+
+                }
+                muestra = muestra.substring(0, muestra.length() - 1);
+                tietOperadores.setText(muestra);
+                usersData.setOperadores(operadoresSeleccionados);
+                try {
+                    new InternalStorage().guardarArchivo(usersData,root.getContext());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 tietOperadores.clearFocus();
             }
