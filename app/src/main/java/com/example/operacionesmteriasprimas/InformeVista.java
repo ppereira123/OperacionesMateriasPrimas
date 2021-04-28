@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,7 +35,7 @@ public class InformeVista extends AppCompatActivity {
     ListView listactividades;
     Context context=this;
     List<Reporte> listareportes;
-    TextView txtprincipales,txtextra,txtfechadelreporte;
+    TextView txtprincipales,txtextra,txtfechadelreporte,txttotalhoras;
     Double horasextra=0.0;
     Double horasprincipales=0.0;
     String fechadesde,fechahasta;
@@ -52,12 +53,23 @@ public class InformeVista extends AppCompatActivity {
         cargarReportes();
         txtprincipales=findViewById(R.id.txtprincipales);
         txtextra=findViewById(R.id.txtextras);
+        txtfechadelreporte=findViewById(R.id.txtinformeporfecha);
+        txttotalhoras=findViewById(R.id.txtTotalhoras);
         fechadesde=getIntent().getStringExtra("Fechadesde");
         fechahasta=getIntent().getStringExtra("Fechahasta");
         supervisores= (List<String>) getIntent().getSerializableExtra("Supervisores");
+        txtfechadelreporte.setText(fechadesde+"-"+fechahasta);
 
 
 
+
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        Intent intent = new Intent();
+        setResult(Activity.RESULT_OK, intent);
+        return false;
     }
 
 
@@ -125,6 +137,7 @@ public class InformeVista extends AppCompatActivity {
                 }
                 txtprincipales.setText(String.valueOf(horasprincipales));
                 txtextra.setText(String.valueOf(horasextra));
+                txttotalhoras.setText(String.valueOf(horasextra+horasprincipales));
 
             }
 
