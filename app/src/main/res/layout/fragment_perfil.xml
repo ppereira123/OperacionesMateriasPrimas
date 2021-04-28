@@ -14,7 +14,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:id="@+id/llPerfil">
 
             <TextView
                 android:id="@+id/textView7"
@@ -113,24 +116,22 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:hint="Operadores Seleccionados"
-                    android:nextFocusLeft="@id/txt_correo"
-                    android:nextFocusRight="@id/txt_correo"
-
-                    >
+                    android:nextFocusLeft="@+id/btn_logout"
+                    android:nextFocusRight="@+id/btn_logout">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tietOperadores"
+                        android:id="@+id/tietOperadoresPerfil"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
                         android:editable="false"
                         android:focusable="auto"
                         android:gravity="center|left"
-                        android:nextFocusLeft="@id/txt_correo"
-                        android:nextFocusRight="@id/txt_correo"
+                        android:nextFocusLeft="@+id/btn_logout"
+                        android:nextFocusRight="@+id/btn_logout"
                         android:selectAllOnFocus="false"
                         android:singleLine="false" />
                 </com.google.android.material.textfield.TextInputLayout>
