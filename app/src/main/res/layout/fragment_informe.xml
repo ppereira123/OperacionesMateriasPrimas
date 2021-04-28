@@ -111,6 +111,7 @@
 
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/textinputlayoutFechadesde"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginStart="40dp"
@@ -131,12 +132,14 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/textinputlayoutFechahasta"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginStart="40dp"
                             app:startIconDrawable="@drawable/calendario"
                             app:boxBackgroundMode="outline"
                             app:boxBackgroundColor="@color/white"
+
                             android:layout_marginTop="20dp">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -157,7 +160,7 @@
                             android:layout_marginTop="20dp"
                             android:layout_marginEnd="20dp"
                             app:startIconDrawable="@drawable/documento"
-                            app:boxBackgroundMode="outline"
+
                             android:hint="Tipo de documento:"
                             app:boxBackgroundColor="@color/white"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">

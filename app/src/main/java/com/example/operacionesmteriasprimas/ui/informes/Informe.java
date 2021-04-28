@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -25,8 +26,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.operacionesmteriasprimas.MainActivity;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.R;
+import com.example.operacionesmteriasprimas.Splash;
+import com.example.operacionesmteriasprimas.login.LoginFireBase;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,18 +42,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Informe extends Fragment {
     Button limpiar, buscar;
     TextView name,date;
     String tipoDocumento,fechadesde,fechahasta;
     EditText editFechadesde,editFechahasta,editSupervisora;
-    TextInputLayout edittipoDocumento, textfieldSupervisora;
+    TextInputLayout edittipoDocumento, textfieldSupervisora, textinputlayoutFechahasta,textinputlayoutFechadesde;
     String[] listatipodocumentos;
     AutoCompleteTextView autoCompleteTextViewSpinnnerDopcumentos;
     String fechaview="";
@@ -83,6 +91,8 @@ public class Informe extends Fragment {
         editFechahasta=root.findViewById(R.id.editFechahasta);
         edittipoDocumento=root.findViewById(R.id.edittipoDocumento);
         textfieldSupervisora=root.findViewById(R.id.textfieldtSupervisora);
+        textinputlayoutFechadesde=root.findViewById(R.id.textinputlayoutFechadesde);
+        textinputlayoutFechahasta=root.findViewById(R.id.textinputlayoutFechahasta);
         autoCompleteTextViewSpinnnerDopcumentos=root.findViewById(R.id.autocompleteSpinnerDocumentos);
 
         editSupervisora.setKeyListener(null);
@@ -98,8 +108,8 @@ public class Informe extends Fragment {
         SimpleDateFormat fecc=new SimpleDateFormat("d/MM/yyyy");
         String fechacComplString = fecc.format(d);
         date.setText(fechacComplString);
-        configFecha(editFechadesde);
-        configFecha(editFechahasta);
+        configFecha(editFechadesde,editFechahasta,false,textinputlayoutFechadesde);
+        configFecha(editFechahasta,editFechadesde,true,textinputlayoutFechahasta);
         limpiar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,6 +271,17 @@ public class Informe extends Fragment {
         return root;
     }
 
+
+    public int diferenciaDias(String fecha1,String fecha2) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        Date date1= format.parse(fecha1);
+        Date date2=format.parse(fecha2);
+        int dias = (int) ((date1.getTime() - date2.getTime()) / 86400000);
+        return  dias;
+
+    }
+
+
     private void limpiar(){
         autoCompleteTextViewSpinnnerDopcumentos.setText("");
         editFechadesde.setText("");
@@ -285,8 +306,7 @@ public class Informe extends Fragment {
 
 
 
-    private void configFecha(EditText tietFecha) {
-
+    private void configFecha(EditText tietFecha, EditText tietFecha2,boolean isfechahasta,TextInputLayout textinput) {
 
 
         Calendar calendar= Calendar.getInstance();
@@ -301,10 +321,73 @@ public class Informe extends Fragment {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {
                         month = month+1;
+                        String monthstring,yearstring,daystring;
+                        monthstring=String.valueOf(month);
                         String date= day+"/"+month+"/"+year;
                         fecha=date;
-                        tietFecha.setText(fecha);
-                        fechaview=fecha;
+
+                        ParsePosition pos = new ParsePosition(0);
+                        String fecha2= tietFecha2.getText().toString();
+                        SimpleDateFormat formatter1=new SimpleDateFormat("dd/MM/yyyy");
+
+                        if(!fecha2.equals("")){
+
+                            if(isfechahasta){
+                                try {
+                                    if(diferenciaDias(fecha,fecha2)>=0){
+                                         tietFecha.setText(fecha);
+                                     }
+                                     else {
+                                         Toast.makeText(context, "Error! la fecha debe ser mayor a la de Fecha desde", Toast.LENGTH_SHORT).show();
+                                         tietFecha.setText("");
+                                         int color= tietFecha.getDrawingCacheBackgroundColor();
+                                        textinput.setBoxBackgroundColor(Color.parseColor("#FFCDD2"));
+                                        TimerTask tarea= new TimerTask() {
+                                            @Override
+                                            public void run() {
+                                                textinput.setBoxBackgroundColor(Color.parseColor("#FFFFFF"));
+
+
+
+                                            }
+                                        };
+
+                                        Timer tiempo= new Timer();
+                                        tiempo.schedule(tarea,1000);
+                                     }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                            else {
+                                try {
+                                    if(diferenciaDias(fecha,fecha2)<=0){
+                                        tietFecha.setText(fecha);
+                                    }
+                                    else {
+                                        Toast.makeText(context, "Error! la fecha debe ser menor a la de Fecha hasta", Toast.LENGTH_SHORT).show();
+                                        tietFecha.setText("");
+                                        int color= tietFecha.getDrawingCacheBackgroundColor();
+                                        textinput.setBoxBackgroundColor(Color.parseColor("#FFCDD2"));
+                                        TimerTask tarea= new TimerTask() {
+                                            @Override
+                                            public void run() {
+                                                textinput.setBoxBackgroundColor(Color.parseColor("#FFFFFF"));
+                                            }
+                                        };
+
+                                        Timer tiempo= new Timer();
+                                        tiempo.schedule(tarea,1000);
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }else {
+                            tietFecha.setText(fecha);
+                        }
+
 
                         tietFecha.clearFocus();
 
