@@ -50,10 +50,12 @@ public class adaptadorInformeporOperador extends BaseAdapter {
         horasprincipales=0.0;
         horasextra=0.0;
         sumaInformeOperador datosInforme= (sumaInformeOperador) getItem(position);
-        TextView txtNombreOperadorInforme, txthorasporoperador;
+        TextView txtNombreOperadorInforme, txthorasporoperador,txthorasactprinc,txthorasactextra;
         ListView listActividadesoperadores;
         txtNombreOperadorInforme= convertView.findViewById(R.id.txtNombreOperadorInforme);
         txthorasporoperador=convertView.findViewById(R.id.txthorasporoperador);
+        txthorasactprinc=convertView.findViewById(R.id.txthorasactextra);
+        txthorasactextra=convertView.findViewById(R.id.txthorasactextra);
         listActividadesoperadores=convertView.findViewById(R.id.listActividadesoperadores);
         txtNombreOperadorInforme.setText(datosInforme.getNombreOperador());
         adaptadorVistaHoras adapter = new adaptadorVistaHoras(context, datosInforme.getListaactividades());
@@ -67,7 +69,9 @@ public class adaptadorInformeporOperador extends BaseAdapter {
             }
         }
         total=horasprincipales+horasextra;
-
+        txthorasporoperador.setText(String.valueOf(total));
+        txthorasactextra.setText(String.valueOf(horasextra));
+        txthorasactprinc.setText(String.valueOf(horasprincipales));
 
         return convertView;
     }

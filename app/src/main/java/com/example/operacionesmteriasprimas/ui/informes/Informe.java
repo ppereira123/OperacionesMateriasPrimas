@@ -306,6 +306,7 @@ public class Informe extends Fragment {
                 intent.putExtra("Fechahasta",fechahasta);
                 intent.putExtra("TipoInforme",tipoInforme);
                 intent.putExtra("Supervisores", (Serializable) slectSupervisors);
+                intent.putExtra("TipoInforme",tipoInforme);
                 startActivityForResult(intent,1);
             }else if(tipoDocumento.equals("Excel")){
                 Toast.makeText(context, "Formato aun no disponible", Toast.LENGTH_SHORT).show();
