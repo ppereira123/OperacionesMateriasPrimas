@@ -159,8 +159,8 @@
                             android:layout_marginStart="40dp"
                             android:layout_marginTop="20dp"
                             android:layout_marginEnd="20dp"
+                            app:boxBackgroundMode="outline"
                             app:startIconDrawable="@drawable/documento"
-
                             android:hint="Tipo de documento:"
                             app:boxBackgroundColor="@color/white"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
@@ -170,10 +170,32 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:backgroundTint="@color/white"
+                                />
 
-                                android:inputType="none" />
+                            </com.google.android.material.textfield.TextInputLayout>
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/edittipodeinforme"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="40dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginEnd="20dp"
+                            app:boxBackgroundMode="outline"
+                            android:hint="Tipo de informe:"
+                            app:boxBackgroundColor="@color/white"
+
+                            app:startIconDrawable="@drawable/informe">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autocompleteSpinnertipoinforme"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/white"
+                                />
+
+                        </com.google.android.material.textfield.TextInputLayout>
 
 
 

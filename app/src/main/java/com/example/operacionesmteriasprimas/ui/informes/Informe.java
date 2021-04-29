@@ -48,12 +48,12 @@ import java.util.TimerTask;
 public class Informe extends Fragment {
     Button limpiar, buscar;
     TextView name,date;
-    String tipoDocumento,fechadesde,fechahasta;
+    String tipoDocumento,fechadesde,fechahasta,tipoInforme;
     EditText editFechadesde,editFechahasta,editSupervisora;
-    TextInputLayout edittipoDocumento, textfieldSupervisora, textinputlayoutFechahasta,textinputlayoutFechadesde;
-    String[] listatipodocumentos;
-    AutoCompleteTextView autoCompleteTextViewSpinnnerDopcumentos;
-    String fechaview="";
+    TextInputLayout edittipoDocumento, textfieldSupervisora, textinputlayoutFechahasta,textinputlayoutFechadesde, edittipoInforme;
+    String[] listatipodocumentos,listatipoinforme;
+    AutoCompleteTextView autoCompleteTextViewSpinnnerDopcumentos,autoCompleteTextViewSpinnnerInformes;
+
 
     private FirebaseAuth mAuth;
     public List<String> supervisoreslist;
@@ -87,7 +87,12 @@ public class Informe extends Fragment {
         textinputlayoutFechadesde=root.findViewById(R.id.textinputlayoutFechadesde);
         textinputlayoutFechahasta=root.findViewById(R.id.textinputlayoutFechahasta);
         autoCompleteTextViewSpinnnerDopcumentos=root.findViewById(R.id.autocompleteSpinnerDocumentos);
+        edittipoInforme=root.findViewById(R.id.edittipodeinforme);
+        autoCompleteTextViewSpinnnerInformes=root.findViewById(R.id.autocompleteSpinnertipoinforme);
 
+
+        autoCompleteTextViewSpinnnerInformes.setKeyListener(null);
+        autoCompleteTextViewSpinnnerDopcumentos.setKeyListener(null);
         editSupervisora.setKeyListener(null);
         editFechahasta.setKeyListener(null);
         editFechadesde.setKeyListener(null);
@@ -250,16 +255,17 @@ public class Informe extends Fragment {
 
             }
         });
+
+        //spinner tipo documentos llenado
         listatipodocumentos=getResources().getStringArray(R.array.combo_tiposDocumentos);
-        ArrayAdapter<String> adapterTipos=new ArrayAdapter<>(context, R.layout.dropdow_item,listatipodocumentos);
-        autoCompleteTextViewSpinnnerDopcumentos.setAdapter(adapterTipos);
+        ArrayAdapter<String> adapterTipoDocumento=new ArrayAdapter<>(context, R.layout.dropdow_item,listatipodocumentos);
+        autoCompleteTextViewSpinnnerDopcumentos.setAdapter(adapterTipoDocumento);
         tipoDocumento=autoCompleteTextViewSpinnnerDopcumentos.getText().toString();
-
-
-
-
-
-
+        //spinner tipo informe llenado
+        listatipoinforme=getResources().getStringArray(R.array.combo_tipoInforme);
+        ArrayAdapter<String> adapterTipoinforme=new ArrayAdapter<>(context, R.layout.dropdow_item,listatipoinforme);
+        autoCompleteTextViewSpinnnerInformes.setAdapter(adapterTipoinforme);
+        tipoInforme=autoCompleteTextViewSpinnnerInformes.getText().toString();
 
         return root;
     }
@@ -280,20 +286,25 @@ public class Informe extends Fragment {
         editFechadesde.setText("");
         editFechahasta.setText("");
         editSupervisora.setText("");
+        autoCompleteTextViewSpinnnerInformes.setText("");
     }
     private  void buscar(){
         tipoDocumento=autoCompleteTextViewSpinnnerDopcumentos.getText().toString();
         fechadesde=editFechadesde.getText().toString();
         fechahasta=editFechahasta.getText().toString();
+        tipoInforme=autoCompleteTextViewSpinnnerInformes.getText().toString();
 
-        if(tipoDocumento.equals("")||fechahasta.equals("")||fechadesde.equals("")||slectSupervisors.size()<1){
+
+
+        if(tipoDocumento.equals("")||fechahasta.equals("")||fechadesde.equals("")||slectSupervisors.size()<1||tipoInforme.equals("")){
             Toast.makeText(context, "Falta completar parametro", Toast.LENGTH_SHORT).show();
         }else {
             Toast.makeText(context, "Comenzando busqueda", Toast.LENGTH_SHORT).show();
             if(tipoDocumento.equals("Visual")){
                 Intent intent=new Intent(context, InformeVista.class);
-                intent.putExtra("Fechadesde",editFechadesde.getText().toString());
-                intent.putExtra("Fechahasta",editFechahasta.getText().toString());
+                intent.putExtra("Fechadesde",fechadesde);
+                intent.putExtra("Fechahasta",fechahasta);
+                intent.putExtra("TipoInforme",tipoInforme);
                 intent.putExtra("Supervisores", (Serializable) slectSupervisors);
                 startActivityForResult(intent,1);
             }else if(tipoDocumento.equals("Excel")){
