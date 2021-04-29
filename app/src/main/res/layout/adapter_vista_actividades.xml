@@ -6,38 +6,61 @@
     android:layout_height="wrap_content"
     android:elevation="20dp">
 
-    <TableLayout
-        android:id="@+id/tablaPrestamos"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <TableRow
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/txtactividadview"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="7"
+                android:layout_height="wrap_content"
                 android:background="@color/tab"
-                android:gravity="center_horizontal"
-                android:padding="10sp"
-                android:text="Actividad"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/txthorasview"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/txtactividadview"
+
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="7"
+                    android:gravity="center_horizontal"
+                    android:padding="10sp"
+                    android:text="Actividad"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/txthorasview"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
+                android:layout_height="0dp"
+                android:layout_weight="3"
                 android:gravity="center_horizontal"
                 android:padding="10sp"
                 android:text="Horas"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-        </TableRow>
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline14"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </TableLayout>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.65" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
 </LinearLayout>

@@ -23,7 +23,9 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="5dp"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="5dp"
+
             android:background="#FFFFFF">
 
             <TextView
@@ -32,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/ic_launcher_background"
                 android:gravity="center"
-                android:text="Seleccionar Fecha"
+                android:text="Llenar datos del reporte"
                 android:textSize="16sp" />
         </androidx.cardview.widget.CardView>
 
@@ -40,6 +42,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
+            app:startIconDrawable="@drawable/calendario"
+            app:boxBackgroundMode="outline"
+            app:boxBackgroundColor="@color/white"
             android:nextFocusLeft="@id/llReportes"
             android:nextFocusRight="@id/llReportes">
 
@@ -49,10 +54,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:background="@color/white"
-                android:editable="false"
-                android:gravity="center"
+
                 android:hint="Fecha:"
+
                 android:selectAllOnFocus="false"
                 android:focusableInTouchMode="true"
                 android:singleLine="true"
@@ -84,28 +88,18 @@
             android:layout_margin="5dp"
             android:layout_weight="1" />
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp">
 
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/ic_launcher_background"
-                android:gravity="center"
-
-                android:textSize="16sp" />
-        </androidx.cardview.widget.CardView>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
+            app:startIconDrawable="@drawable/operadores"
+            app:boxBackgroundMode="outline"
+            app:boxBackgroundColor="@color/white"
             android:nextFocusLeft="@id/llReportes"
             android:nextFocusRight="@id/llReportes"
-            android:hint="Operadores Seleccionados">
+            android:hint="Operadores Seleccionados: ">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tietOperadores"
@@ -113,7 +107,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:background="@color/white"
                 android:editable="false"
                 android:gravity="center|left"
                 android:nextFocusLeft="@id/llReportes"
