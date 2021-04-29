@@ -65,8 +65,10 @@ public class ListaOperadores extends AppCompatActivity {
         listOperadores=findViewById(R.id.listOperadores);
         btnmodificarOperador= findViewById(R.id.btnmodificarOperadores);
 
+
         reporte=(Reporte)getIntent().getSerializableExtra("reporte");
         cargarDatos();
+        hashOperadores=reporte.getOperadores();
         cargarOperadores();
         btnmodificarOperador.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,6 +168,19 @@ public class ListaOperadores extends AppCompatActivity {
                         }
                     }
                 }
+                HashMap<String,Operador> newOperadores= new HashMap<>();
+                for(String s: operadoresSeleccionados){
+                    Operador operador=null;
+                    if(!hashOperadores.containsKey(s)){
+                        operador = new Operador(new ArrayList<Double>(), s, false, new ArrayList<>());
+                    }
+                    else{
+                        operador= hashOperadores.get(s);
+                    }
+                    newOperadores.put(s, operador);
+                }
+                hashOperadores=newOperadores;
+                cargarOperadores();
 
             }
         });
@@ -221,7 +236,6 @@ public class ListaOperadores extends AppCompatActivity {
     }
 
     private void cargarOperadores() {
-        hashOperadores=reporte.getOperadores();
         operadores=new ArrayList<>();
         operadores=hashToList(hashOperadores);
         adaptadorlistaOperadores adaptadorlistaOperadores=new adaptadorlistaOperadores(context, operadores,reporte,this);
@@ -233,7 +247,6 @@ public class ListaOperadores extends AppCompatActivity {
         if(reporte.getRestantes()==0){
             reporte.setCompletado(true);
         }
-
         else{
             reporte.setCompletado(false);
         }
