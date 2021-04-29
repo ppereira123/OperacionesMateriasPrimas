@@ -113,9 +113,11 @@
                     android:layout_margin="5dp"
                     android:hint="Operadores Seleccionados"
                     android:focusable="false"
+
                     app:startIconDrawable="@drawable/calendario"
                     app:boxBackgroundMode="outline"
                     app:boxBackgroundColor="@color/white"
+
                     android:nextFocusLeft="@+id/btn_logout"
                     android:nextFocusRight="@+id/btn_logout">
 
