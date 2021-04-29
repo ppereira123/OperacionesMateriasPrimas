@@ -61,7 +61,6 @@ public class ReporteFragment extends Fragment {
     String fecha="";
     String turno="";
     Context context;
-    Button verhoras;
 
     HashMap<String, Reporte> hashReportes;
     List<Reporte> reportes;
@@ -75,7 +74,7 @@ public class ReporteFragment extends Fragment {
         listReporte=root.findViewById(R.id.listReporte);
         fab=root.findViewById(R.id.fabNuevoReporte);
         swipe=root.findViewById(R.id.swipeReporte);
-        verhoras=root.findViewById(R.id.verhoras);
+
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -86,13 +85,7 @@ public class ReporteFragment extends Fragment {
         cargarReportes();
         configFab();
         context=root.getContext();
-        verhoras.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(root.getContext(),InformeVista.class);
-                startActivityForResult(intent,1);
-            }
-        });
+
         return root;
 
     }

@@ -3,26 +3,40 @@ package com.example.operacionesmteriasprimas;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.operacionesmteriasprimas.Adapters.BuscadorAdapter;
 import com.example.operacionesmteriasprimas.Adapters.adaptadorVistaHoras;
+import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
+import com.example.operacionesmteriasprimas.Modelos.sumaInformeOperador;
 import com.example.operacionesmteriasprimas.Modelos.sumas;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.Repo;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,9 +50,11 @@ public class InformeVista extends AppCompatActivity {
     Context context=this;
     List<Reporte> listareportes;
     TextView txtprincipales,txtextra,txtfechadelreporte,txttotalhoras;
+    TextInputLayout textinputlayoutoperadores;
+    TextInputEditText editoperadores;
     Double horasextra=0.0;
     Double horasprincipales=0.0;
-    String fechadesde,fechahasta;
+    String fechadesde,fechahasta,tipoinforme;
     List<String> supervisores=new ArrayList<>();
 
 
@@ -55,10 +71,16 @@ public class InformeVista extends AppCompatActivity {
         txtextra=findViewById(R.id.txtextras);
         txtfechadelreporte=findViewById(R.id.txtinformeporfecha);
         txttotalhoras=findViewById(R.id.txtTotalhoras);
+        textinputlayoutoperadores=findViewById(R.id.textinputlayoutoperadores);
+        editoperadores=findViewById(R.id.editoperadores);
         fechadesde=getIntent().getStringExtra("Fechadesde");
         fechahasta=getIntent().getStringExtra("Fechahasta");
         supervisores= (List<String>) getIntent().getSerializableExtra("Supervisores");
+        tipoinforme=getIntent().getStringExtra("TipoInforme");
         txtfechadelreporte.setText(fechadesde+"-"+fechahasta);
+        if(tipoinforme.equals("Por operador")){
+            textinputlayoutoperadores.setVisibility(View.VISIBLE);
+        }
 
 
 
@@ -167,29 +189,25 @@ private List<sumas> GetData(List<Reporte> listareportes) {
                         sumas suma = new sumas(actividad, sumar);
 
                         lista.set(existeactividad(lista,actividad),suma);
-
-
                     }
-
-
-
-
-
-
                 }
-
-
-
-
             }
+        }
+        return lista;
+    }
+
+   
+    private  List<sumaInformeOperador> GetDataInformeporoperador(List<Reporte> listareportes){
+        List<sumaInformeOperador> lista=new ArrayList<>();
+        for (Reporte reporte: listareportes){
 
 
         }
 
 
-
         return lista;
     }
+
     private int existeactividad(List<sumas> list, String actividad){
         List<String> contenido=new ArrayList<>();
 
@@ -202,6 +220,7 @@ private List<sumas> GetData(List<Reporte> listareportes) {
 
 
     }
+
     private List<Operador> listReporteToHash(HashMap<String, Operador> hashoperador) {
         List<Operador> lista= new ArrayList<>();
         for(Map.Entry<String,Operador> m:hashoperador.entrySet()){
@@ -209,6 +228,7 @@ private List<sumas> GetData(List<Reporte> listareportes) {
         }
         return lista;
     }
+
     private List<sumas> listsumaToHash(HashMap<String, Double> hashhoras) {
         List<sumas> lista= new ArrayList<>();
         for(Map.Entry<String,Double> m:hashhoras.entrySet()){
