@@ -14,18 +14,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.operacionesmteriasprimas.Adapters.BuscadorAdapter;
+import com.example.operacionesmteriasprimas.Adapters.adaptadorInformeporOperador;
 import com.example.operacionesmteriasprimas.Adapters.adaptadorVistaHoras;
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.Modelos.sumaInformeOperador;
 import com.example.operacionesmteriasprimas.Modelos.sumas;
+import com.example.operacionesmteriasprimas.ui.reporte.Nuevoreporte;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -48,14 +52,22 @@ import static com.example.operacionesmteriasprimas.ui.informes.Informe.diferenci
 public class InformeVista extends AppCompatActivity {
     ListView listactividades;
     Context context=this;
+    LinearLayout tituloactividades;
     List<Reporte> listareportes;
+    Button btnAgregarOperadores;
     TextView txtprincipales,txtextra,txtfechadelreporte,txttotalhoras;
-    TextInputLayout textinputlayoutoperadores;
-    TextInputEditText editoperadores;
+
     Double horasextra=0.0;
     Double horasprincipales=0.0;
     String fechadesde,fechahasta,tipoinforme;
+    String muestra="";
     List<String> supervisores=new ArrayList<>();
+    List<String> operadoresSeleccionados=new ArrayList<>();
+    List<String> listaOperadores;
+    String[] operadores;
+    boolean[] checkedItems;
+    AlertDialog dialog;
+    BuscadorAdapter adapter;
 
 
 
@@ -71,16 +83,18 @@ public class InformeVista extends AppCompatActivity {
         txtextra=findViewById(R.id.txtextras);
         txtfechadelreporte=findViewById(R.id.txtinformeporfecha);
         txttotalhoras=findViewById(R.id.txtTotalhoras);
-        textinputlayoutoperadores=findViewById(R.id.textinputlayoutoperadores);
-        editoperadores=findViewById(R.id.editoperadores);
+        btnAgregarOperadores=findViewById(R.id.btnAgregarOperadoresInforme)
+        tituloactividades=findViewById(R.id.tituloactividades);
         fechadesde=getIntent().getStringExtra("Fechadesde");
         fechahasta=getIntent().getStringExtra("Fechahasta");
         supervisores= (List<String>) getIntent().getSerializableExtra("Supervisores");
         tipoinforme=getIntent().getStringExtra("TipoInforme");
         txtfechadelreporte.setText(fechadesde+"-"+fechahasta);
         if(tipoinforme.equals("Por operador")){
-            textinputlayoutoperadores.setVisibility(View.VISIBLE);
+            btnAgregarOperadores.setVisibility(View.VISIBLE);
+            tituloactividades.setVisibility(View.GONE);
         }
+        llenarLista();
 
 
 
@@ -93,8 +107,6 @@ public class InformeVista extends AppCompatActivity {
         setResult(Activity.RESULT_OK, intent);
         return false;
     }
-
-
 
     void cargarReportes(){
         List<String> valores= new ArrayList<>();
@@ -136,10 +148,6 @@ public class InformeVista extends AppCompatActivity {
 
                             }
                         }
-
-
-
-
                     }
                     Toast.makeText(context, listareportes.toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -147,19 +155,35 @@ public class InformeVista extends AppCompatActivity {
                     Toast.makeText(context, "No existe referencia", Toast.LENGTH_SHORT).show();
                 }
 
-                adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,GetData(listareportes));
-                listactividades.setAdapter(adapter);
-                for(sumas suma:GetData(listareportes)){
-                    if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
-                        horasprincipales=horasprincipales+suma.getHoras();
+                if(tipoinforme.equals("Por operador")){
+
+                    btnAgregarOperadores.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+
+                        }
+                    });
+
+
+
+                }else if(tipoinforme.equals("General por actividad")){
+                    adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,GetData(listareportes));
+                    listactividades.setAdapter(adapter);
+                    for(sumas suma:GetData(listareportes)){
+                        if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
+                            horasprincipales=horasprincipales+suma.getHoras();
+                        }
+                        else {
+                            horasextra=horasextra+suma.getHoras();
+                        }
                     }
-                    else {
-                        horasextra=horasextra+suma.getHoras();
-                    }
+                    txtprincipales.setText(String.valueOf(horasprincipales));
+                    txtextra.setText(String.valueOf(horasextra));
+                    txttotalhoras.setText(String.valueOf(horasextra+horasprincipales));
                 }
-                txtprincipales.setText(String.valueOf(horasprincipales));
-                txtextra.setText(String.valueOf(horasextra));
-                txttotalhoras.setText(String.valueOf(horasextra+horasprincipales));
+
+
 
             }
 
@@ -172,7 +196,7 @@ public class InformeVista extends AppCompatActivity {
 
     }
 
-private List<sumas> GetData(List<Reporte> listareportes) {
+    private List<sumas> GetData(List<Reporte> listareportes) {
         //HashMap<String, Double> actividadeshoras = new HashMap<String, Double>();
         List<sumas> lista=new ArrayList<sumas>();
         for (Reporte reporte:listareportes){
@@ -196,17 +220,202 @@ private List<sumas> GetData(List<Reporte> listareportes) {
         return lista;
     }
 
-   
     private  List<sumaInformeOperador> GetDataInformeporoperador(List<Reporte> listareportes){
+
         List<sumaInformeOperador> lista=new ArrayList<>();
-        for (Reporte reporte: listareportes){
+        for(String operador: operadoresSeleccionados){
+            List<sumas> listasuma=new ArrayList<sumas>();
+            for (Reporte reporte: listareportes){
+                List<Operador> operadores=listReporteToHash(reporte.getOperadores());
+                int existe=existeOperadorenList(operadores,operador);
+                if (!(existe==-1)){
+                    for (String actividad:operadores.get(existe).getNombreActividades()){
+                        if(existeactividad(listasuma,actividad)==-1) {
+                            sumas suma = new sumas(actividad, operadores.get(existe).getActividades().get(operadores.get(existe).getNombreActividades().indexOf(actividad)));
+                            listasuma.add(suma);
+                        }else {
+                            double sumar=operadores.get(existe).getActividades().get(operadores.get(existe).getNombreActividades().indexOf(actividad))+listasuma.get(existeactividad(listasuma,actividad)).getHoras();
+                            sumas suma = new sumas(actividad, sumar);
+
+                            listasuma.set(existeactividad(listasuma,actividad),suma);
+                        }
+                    }
+
+                }
+
+            }
+            sumaInformeOperador info= new sumaInformeOperador(operador,listasuma);
+            lista.add(info);
+        }
+        return lista;
+    }
+
+    private int existeOperadorenList(List<Operador> operadores, String operador){
+        List<String> contenido=new ArrayList<>();
+
+        for(Operador x:operadores){
+            contenido.add(x.getNombre());
+        }
+        int posicion=contenido.indexOf(operador);
+        return posicion;
+    }
 
 
+    void llenarLista(){
+
+        operadores=getResources().getStringArray(R.array.combo_nombresOperadores);
+        listaOperadores=new ArrayList<>();
+        for(String s: operadores){
+            listaOperadores.add(s);
+        }
+        checkedItems=new boolean[operadores.length];
+        checkActividades();
+        escogerOperadores();
+
+
+    }
+
+    private void checkActividades() {
+        listaOperadores= new ArrayList<>();
+
+        for(String s: operadores){
+            listaOperadores.add(s);
+        }
+        for(String s:operadoresSeleccionados){
+            int index=listaOperadores.indexOf(s);
+            checkedItems[index]=true;
         }
 
 
-        return lista;
+        for(String s:operadoresSeleccionados){
+            muestra=muestra+s+"\n";
+        }
+        if(muestra.length()>0){
+            muestra = muestra.substring(0, muestra.length() - 1);
+        }
+
     }
+
+    private void escogerOperadores(boolean mostrar) {
+        AlertDialog.Builder builder= new AlertDialog.Builder(InformeVista.this);
+        builder.setTitle("Escoge los operadores");
+
+        LayoutInflater mInflate= LayoutInflater.from(context);
+        View view= mInflate.inflate(R.layout.res_buscador,null);
+        final SearchView searchView= view.findViewById(R.id.searchRes);
+        RecyclerView recyclerView = view.findViewById(R.id.rvRes);
+        adapter= new BuscadorAdapter(listaOperadores,context,checkedItems,listaOperadores);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                buscarOperador(newText,recyclerView);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                adapter= new BuscadorAdapter(listaOperadores,context,checkedItems,listaOperadores);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(adapter);
+                return false;
+            }
+        });
+        builder.setView(view);
+        builder.setCancelable(false);
+
+        //builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                checkedItems=adapter.getCheckedItems();
+                operadoresSeleccionados=new ArrayList<>();
+                for(int i=0;i<checkedItems.length;i++){
+                    boolean b=checkedItems[i];
+                    if(b) {
+                        if (!operadoresSeleccionados.contains(operadores[i])){
+                            operadoresSeleccionados.add(operadores[i]);
+                        }
+                        else{
+                            operadoresSeleccionados.remove(i);
+                        }
+                    }
+                }
+                muestra="";
+                for(String s:operadoresSeleccionados){
+                    muestra=muestra+s+"\n";
+                }
+                adaptadorInformeporOperador adapterporOperador = new adaptadorInformeporOperador(context,GetDataInformeporoperador(listareportes));
+                listactividades.setAdapter(adapterporOperador);
+                for(sumaInformeOperador sumaporoperador:GetDataInformeporoperador(listareportes)){
+                    for(sumas suma:sumaporoperador.getListaactividades()){
+                        if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
+                            horasprincipales=horasprincipales+suma.getHoras();
+                        }
+                        else {
+                            horasextra=horasextra+suma.getHoras();
+                        }
+                    }
+                    txtprincipales.setText(String.valueOf(horasprincipales));
+                    txtextra.setText(String.valueOf(horasextra));
+                    txttotalhoras.setText(String.valueOf(horasextra+horasprincipales));
+
+                }
+
+            }
+        });
+        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNeutralButton("Reiniciar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                muestra="";
+
+                operadoresSeleccionados.clear();
+                for(int i=0;i<checkedItems.length;i++){
+                    checkedItems[i]=false;
+
+
+                }
+            }
+        });
+        AlertDialog dialog=builder.create();
+        if(mostrar) {
+            dialog.show();
+        }
+        else{
+            dialog.dismiss();
+        }
+    }
+
+    public void buscarOperador(String s,RecyclerView rvRes) {
+        ArrayList<String> milista = new ArrayList<>();
+        for (String obj : operadores) {
+            if (obj.toLowerCase().contains(s.toLowerCase())) {
+                milista.add(obj);
+            }
+        }
+        BuscadorAdapter adapter= new BuscadorAdapter(milista,context,checkedItems,listaOperadores);
+        rvRes.setHasFixedSize(true);
+        rvRes.setAdapter(adapter);
+        rvRes.setLayoutManager(new LinearLayoutManager(context));
+    }
+
 
     private int existeactividad(List<sumas> list, String actividad){
         List<String> contenido=new ArrayList<>();

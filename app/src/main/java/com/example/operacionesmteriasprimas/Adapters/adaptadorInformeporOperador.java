@@ -5,7 +5,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -54,12 +57,14 @@ public class adaptadorInformeporOperador extends BaseAdapter {
         ListView listActividadesoperadores;
         txtNombreOperadorInforme= convertView.findViewById(R.id.txtNombreOperadorInforme);
         txthorasporoperador=convertView.findViewById(R.id.txthorasporoperador);
-        txthorasactprinc=convertView.findViewById(R.id.txthorasactextra);
+        txthorasactprinc=convertView.findViewById(R.id.txthorasactprinc);
         txthorasactextra=convertView.findViewById(R.id.txthorasactextra);
         listActividadesoperadores=convertView.findViewById(R.id.listActividadesoperadores);
         txtNombreOperadorInforme.setText(datosInforme.getNombreOperador());
         adaptadorVistaHoras adapter = new adaptadorVistaHoras(context, datosInforme.getListaactividades());
         listActividadesoperadores.setAdapter(adapter);
+
+        listActividadesoperadores.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, (int) convertDpToPx(context,49*datosInforme.getListaactividades().size())));
         for(sumas suma: datosInforme.getListaactividades()){
             if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
                 horasprincipales=horasprincipales+suma.getHoras();
@@ -74,5 +79,8 @@ public class adaptadorInformeporOperador extends BaseAdapter {
         txthorasactprinc.setText(String.valueOf(horasprincipales));
 
         return convertView;
+    }
+    public float convertDpToPx(Context context, float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
     }
 }
