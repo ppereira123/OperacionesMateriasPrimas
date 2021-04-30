@@ -14,22 +14,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+
 import android.widget.Button;
 import android.widget.LinearLayout;
+
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.operacionesmteriasprimas.Adapters.BuscadorAdapter;
+
 import com.example.operacionesmteriasprimas.Adapters.adaptadorInformeporOperador;
+
 import com.example.operacionesmteriasprimas.Adapters.adaptadorVistaHoras;
 import com.example.operacionesmteriasprimas.Modelos.InternalStorage;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.Modelos.Reporte;
 import com.example.operacionesmteriasprimas.Modelos.sumaInformeOperador;
 import com.example.operacionesmteriasprimas.Modelos.sumas;
+
 import com.example.operacionesmteriasprimas.ui.reporte.Nuevoreporte;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -57,10 +63,12 @@ public class InformeVista extends AppCompatActivity {
     Button btnAgregarOperadores;
     TextView txtprincipales,txtextra,txtfechadelreporte,txttotalhoras;
 
+
     Double horasextra=0.0;
     Double horasprincipales=0.0;
     String fechadesde,fechahasta,tipoinforme;
     String muestra="";
+
     List<String> supervisores=new ArrayList<>();
     List<String> operadoresSeleccionados=new ArrayList<>();
     List<String> listaOperadores;
@@ -83,18 +91,22 @@ public class InformeVista extends AppCompatActivity {
         txtextra=findViewById(R.id.txtextras);
         txtfechadelreporte=findViewById(R.id.txtinformeporfecha);
         txttotalhoras=findViewById(R.id.txtTotalhoras);
+
         btnAgregarOperadores=findViewById(R.id.btnAgregarOperadoresInforme)
         tituloactividades=findViewById(R.id.tituloactividades);
+
         fechadesde=getIntent().getStringExtra("Fechadesde");
         fechahasta=getIntent().getStringExtra("Fechahasta");
         supervisores= (List<String>) getIntent().getSerializableExtra("Supervisores");
         tipoinforme=getIntent().getStringExtra("TipoInforme");
         txtfechadelreporte.setText(fechadesde+"-"+fechahasta);
         if(tipoinforme.equals("Por operador")){
+
             btnAgregarOperadores.setVisibility(View.VISIBLE);
             tituloactividades.setVisibility(View.GONE);
         }
         llenarLista();
+
 
 
 
@@ -213,6 +225,7 @@ public class InformeVista extends AppCompatActivity {
                         sumas suma = new sumas(actividad, sumar);
 
                         lista.set(existeactividad(lista,actividad),suma);
+
                     }
                 }
             }
@@ -285,6 +298,10 @@ public class InformeVista extends AppCompatActivity {
             int index=listaOperadores.indexOf(s);
             checkedItems[index]=true;
         }
+   
+    private  List<sumaInformeOperador> GetDataInformeporoperador(List<Reporte> listareportes){
+        List<sumaInformeOperador> lista=new ArrayList<>();
+        for (Reporte reporte: listareportes){
 
 
         for(String s:operadoresSeleccionados){
@@ -295,6 +312,7 @@ public class InformeVista extends AppCompatActivity {
         }
 
     }
+
 
     private void escogerOperadores(boolean mostrar) {
         AlertDialog.Builder builder= new AlertDialog.Builder(InformeVista.this);
@@ -403,6 +421,7 @@ public class InformeVista extends AppCompatActivity {
         }
     }
 
+
     public void buscarOperador(String s,RecyclerView rvRes) {
         ArrayList<String> milista = new ArrayList<>();
         for (String obj : operadores) {
@@ -415,6 +434,7 @@ public class InformeVista extends AppCompatActivity {
         rvRes.setAdapter(adapter);
         rvRes.setLayoutManager(new LinearLayoutManager(context));
     }
+
 
 
     private int existeactividad(List<sumas> list, String actividad){

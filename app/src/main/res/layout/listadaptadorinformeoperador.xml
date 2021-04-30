@@ -71,7 +71,9 @@
             <ListView
                 android:id="@+id/listActividadesoperadores"
                 android:layout_width="match_parent"
+
                 android:layout_height="70dp"
+
                 android:background="@color/white"
                 android:fillViewport="true"
                 android:scrollbarStyle="outsideOverlay" />

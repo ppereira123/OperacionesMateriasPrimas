@@ -57,7 +57,9 @@ public class adaptadorInformeporOperador extends BaseAdapter {
         ListView listActividadesoperadores;
         txtNombreOperadorInforme= convertView.findViewById(R.id.txtNombreOperadorInforme);
         txthorasporoperador=convertView.findViewById(R.id.txthorasporoperador);
+
         txthorasactprinc=convertView.findViewById(R.id.txthorasactprinc);
+
         txthorasactextra=convertView.findViewById(R.id.txthorasactextra);
         listActividadesoperadores=convertView.findViewById(R.id.listActividadesoperadores);
         txtNombreOperadorInforme.setText(datosInforme.getNombreOperador());
