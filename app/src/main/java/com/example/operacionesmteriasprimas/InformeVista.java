@@ -92,7 +92,7 @@ public class InformeVista extends AppCompatActivity {
         txtfechadelreporte=findViewById(R.id.txtinformeporfecha);
         txttotalhoras=findViewById(R.id.txtTotalhoras);
 
-        btnAgregarOperadores=findViewById(R.id.btnAgregarOperadoresInforme)
+        btnAgregarOperadores=findViewById(R.id.btnAgregarOperadoresInforme);
         tituloactividades=findViewById(R.id.tituloactividades);
 
         fechadesde=getIntent().getStringExtra("Fechadesde");
@@ -105,7 +105,7 @@ public class InformeVista extends AppCompatActivity {
             btnAgregarOperadores.setVisibility(View.VISIBLE);
             tituloactividades.setVisibility(View.GONE);
         }
-        llenarLista();
+
 
 
 
@@ -172,6 +172,7 @@ public class InformeVista extends AppCompatActivity {
                     btnAgregarOperadores.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            llenarLista();
 
 
                         }
@@ -257,7 +258,7 @@ public class InformeVista extends AppCompatActivity {
                 }
 
             }
-            sumaInformeOperador info= new sumaInformeOperador(operador,listasuma);
+            sumaInformeOperador info= new sumaInformeOperador(operador,`listasuma`);
             lista.add(info);
         }
         return lista;
@@ -289,40 +290,28 @@ public class InformeVista extends AppCompatActivity {
     }
 
     private void checkActividades() {
-        listaOperadores= new ArrayList<>();
+        listaOperadores = new ArrayList<>();
 
-        for(String s: operadores){
+        for (String s : operadores) {
             listaOperadores.add(s);
         }
-        for(String s:operadoresSeleccionados){
-            int index=listaOperadores.indexOf(s);
-            checkedItems[index]=true;
+        for (String s : operadoresSeleccionados) {
+            int index = listaOperadores.indexOf(s);
+            checkedItems[index] = true;
         }
-   
-    private  List<sumaInformeOperador> GetDataInformeporoperador(List<Reporte> listareportes){
-        List<sumaInformeOperador> lista=new ArrayList<>();
-        for (Reporte reporte: listareportes){
-
-
-        for(String s:operadoresSeleccionados){
-            muestra=muestra+s+"\n";
-        }
-        if(muestra.length()>0){
-            muestra = muestra.substring(0, muestra.length() - 1);
-        }
-
     }
 
 
-    private void escogerOperadores(boolean mostrar) {
-        AlertDialog.Builder builder= new AlertDialog.Builder(InformeVista.this);
+
+        private void escogerOperadores (){
+        AlertDialog.Builder builder = new AlertDialog.Builder(InformeVista.this);
         builder.setTitle("Escoge los operadores");
 
-        LayoutInflater mInflate= LayoutInflater.from(context);
-        View view= mInflate.inflate(R.layout.res_buscador,null);
-        final SearchView searchView= view.findViewById(R.id.searchRes);
+        LayoutInflater mInflate = LayoutInflater.from(context);
+        View view = mInflate.inflate(R.layout.res_buscador, null);
+        final SearchView searchView = view.findViewById(R.id.searchRes);
         RecyclerView recyclerView = view.findViewById(R.id.rvRes);
-        adapter= new BuscadorAdapter(listaOperadores,context,checkedItems,listaOperadores);
+        adapter = new BuscadorAdapter(listaOperadores, context, checkedItems, listaOperadores);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -335,7 +324,7 @@ public class InformeVista extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                buscarOperador(newText,recyclerView);
+                buscarOperador(newText, recyclerView);
                 return false;
             }
         });
@@ -343,7 +332,7 @@ public class InformeVista extends AppCompatActivity {
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                adapter= new BuscadorAdapter(listaOperadores,context,checkedItems,listaOperadores);
+                adapter = new BuscadorAdapter(listaOperadores, context, checkedItems, listaOperadores);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setAdapter(adapter);
                 return false;
@@ -356,37 +345,35 @@ public class InformeVista extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                checkedItems=adapter.getCheckedItems();
-                operadoresSeleccionados=new ArrayList<>();
-                for(int i=0;i<checkedItems.length;i++){
-                    boolean b=checkedItems[i];
-                    if(b) {
-                        if (!operadoresSeleccionados.contains(operadores[i])){
+                checkedItems = adapter.getCheckedItems();
+                operadoresSeleccionados = new ArrayList<>();
+                for (int i = 0; i < checkedItems.length; i++) {
+                    boolean b = checkedItems[i];
+                    if (b) {
+                        if (!operadoresSeleccionados.contains(operadores[i])) {
                             operadoresSeleccionados.add(operadores[i]);
-                        }
-                        else{
+                        } else {
                             operadoresSeleccionados.remove(i);
                         }
                     }
                 }
-                muestra="";
-                for(String s:operadoresSeleccionados){
-                    muestra=muestra+s+"\n";
+                muestra = "";
+                for (String s : operadoresSeleccionados) {
+                    muestra = muestra + s + "\n";
                 }
-                adaptadorInformeporOperador adapterporOperador = new adaptadorInformeporOperador(context,GetDataInformeporoperador(listareportes));
+                adaptadorInformeporOperador adapterporOperador = new adaptadorInformeporOperador(context, GetDataInformeporoperador(listareportes));
                 listactividades.setAdapter(adapterporOperador);
-                for(sumaInformeOperador sumaporoperador:GetDataInformeporoperador(listareportes)){
-                    for(sumas suma:sumaporoperador.getListaactividades()){
-                        if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
-                            horasprincipales=horasprincipales+suma.getHoras();
-                        }
-                        else {
-                            horasextra=horasextra+suma.getHoras();
+                for (sumaInformeOperador sumaporoperador : GetDataInformeporoperador(listareportes)) {
+                    for (sumas suma : sumaporoperador.getListaactividades()) {
+                        if (suma.getActividad().equals("Extracción") || suma.getActividad().equals("Esteril")) {
+                            horasprincipales = horasprincipales + suma.getHoras();
+                        } else {
+                            horasextra = horasextra + suma.getHoras();
                         }
                     }
                     txtprincipales.setText(String.valueOf(horasprincipales));
                     txtextra.setText(String.valueOf(horasextra));
-                    txttotalhoras.setText(String.valueOf(horasextra+horasprincipales));
+                    txttotalhoras.setText(String.valueOf(horasextra + horasprincipales));
 
                 }
 
@@ -402,70 +389,69 @@ public class InformeVista extends AppCompatActivity {
         builder.setNeutralButton("Reiniciar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                muestra="";
+                muestra = "";
 
                 operadoresSeleccionados.clear();
-                for(int i=0;i<checkedItems.length;i++){
-                    checkedItems[i]=false;
+                for (int i = 0; i < checkedItems.length; i++) {
+                    checkedItems[i] = false;
 
 
                 }
             }
         });
-        AlertDialog dialog=builder.create();
-        if(mostrar) {
+        AlertDialog dialog = builder.create();
+
             dialog.show();
-        }
-        else{
-            dialog.dismiss();
-        }
+
     }
 
 
-    public void buscarOperador(String s,RecyclerView rvRes) {
+
+        public void buscarOperador (String s, RecyclerView rvRes){
         ArrayList<String> milista = new ArrayList<>();
         for (String obj : operadores) {
             if (obj.toLowerCase().contains(s.toLowerCase())) {
                 milista.add(obj);
             }
         }
-        BuscadorAdapter adapter= new BuscadorAdapter(milista,context,checkedItems,listaOperadores);
+        BuscadorAdapter adapter = new BuscadorAdapter(milista, context, checkedItems, listaOperadores);
         rvRes.setHasFixedSize(true);
         rvRes.setAdapter(adapter);
         rvRes.setLayoutManager(new LinearLayoutManager(context));
     }
 
 
+        private int existeactividad (List < sumas > list, String actividad){
+        List<String> contenido = new ArrayList<>();
 
-    private int existeactividad(List<sumas> list, String actividad){
-        List<String> contenido=new ArrayList<>();
 
-
-        for(sumas x:list){
+        for (sumas x : list) {
             contenido.add(x.getActividad());
         }
-        int posicion=contenido.indexOf(actividad);
+        int posicion = contenido.indexOf(actividad);
         return posicion;
 
 
     }
 
-    private List<Operador> listReporteToHash(HashMap<String, Operador> hashoperador) {
-        List<Operador> lista= new ArrayList<>();
-        for(Map.Entry<String,Operador> m:hashoperador.entrySet()){
+        private List<Operador> listReporteToHash (HashMap < String, Operador > hashoperador){
+        List<Operador> lista = new ArrayList<>();
+        for (Map.Entry<String, Operador> m : hashoperador.entrySet()) {
             lista.add(m.getValue());
         }
         return lista;
     }
 
-    private List<sumas> listsumaToHash(HashMap<String, Double> hashhoras) {
-        List<sumas> lista= new ArrayList<>();
-        for(Map.Entry<String,Double> m:hashhoras.entrySet()){
+        private  List<sumas> listsumaToHash (HashMap < String, Double > hashhoras){
+        List<sumas> lista = new ArrayList<>();
+        for (Map.Entry<String, Double> m : hashhoras.entrySet()) {
 
-            sumas suma=new sumas(m.getKey(),m.getValue());
+            sumas suma = new sumas(m.getKey(), m.getValue());
             lista.add(suma);
         }
         return lista;
     }
 
-}
+
+
+        }
