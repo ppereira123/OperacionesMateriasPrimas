@@ -50,7 +50,7 @@
 
                 <TextView
                     android:id="@+id/txt5"
-                    android:layout_width="wrap_content"
+                    android:layout_width="152dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:text="Actividades extra: " />
@@ -201,13 +201,19 @@
             android:id="@+id/listActividades"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="#FFFFFF"
+            android:divider="@color/black"
+            android:dividerHeight="4px"
+            android:elevation="20dp"
             android:minHeight="400dp"
             android:scrollIndicators="left|right"
             android:scrollbarStyle="outsideOverlay"
             app:layout_constraintBottom_toTopOf="@+id/guideline17"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline13" />
+            app:layout_constraintTop_toTopOf="@+id/guideline13"
+            app:layout_constraintVertical_bias="0.0" />
 
         <LinearLayout
             android:id="@+id/linearLayout5"
