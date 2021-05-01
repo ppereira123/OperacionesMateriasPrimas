@@ -253,8 +253,6 @@ public class Nuevoreporte extends AppCompatActivity {
 
         });
 
-
-
     }
 
     private void checkActividades() {
@@ -272,7 +270,9 @@ public class Nuevoreporte extends AppCompatActivity {
         for(String s:operadoresSeleccionados){
             muestra=muestra+s+"\n";
         }
-        muestra = muestra.substring(0, muestra.length() - 1);
+        if(muestra.length()>0){
+            muestra = muestra.substring(0, muestra.length() - 1);
+        }
         tietOperadores.setText(muestra);
     }
 

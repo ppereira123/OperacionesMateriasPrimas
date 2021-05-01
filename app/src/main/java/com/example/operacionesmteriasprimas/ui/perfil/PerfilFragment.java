@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +50,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PerfilFragment extends Fragment {
     View root;
-    TextView txt_id, txt_name, txt_email;
+    TextView txt_id;
+    EditText txt_name, txt_email;
     TextInputEditText tietOperadores;
     CircleImageView imv_photo;
     Button btn_logout;
@@ -74,8 +76,8 @@ public class PerfilFragment extends Fragment {
                 new ViewModelProvider(this).get(PerfilViewModel.class);
         root = inflater.inflate(R.layout.fragment_perfil, container, false);
         txt_id = root.findViewById(R.id.txt_userId);
-        txt_name = root.findViewById(R.id.txt_nombre);
-        txt_email = root.findViewById(R.id.txt_correo);
+        txt_name = root.findViewById(R.id.editusuarioPerfil);
+        txt_email = root.findViewById(R.id.editcorreoPerfil);
         imv_photo = root.findViewById(R.id.imv_foto);
         btn_logout = root.findViewById(R.id.btn_logout);
         tietOperadores=root.findViewById(R.id.tietOperadoresPerfil);
