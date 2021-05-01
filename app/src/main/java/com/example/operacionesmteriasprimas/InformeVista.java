@@ -258,7 +258,7 @@ public class InformeVista extends AppCompatActivity {
                 }
 
             }
-            sumaInformeOperador info= new sumaInformeOperador(operador,`listasuma`);
+            sumaInformeOperador info= new sumaInformeOperador(operador,listasuma);
             lista.add(info);
         }
         return lista;
