@@ -180,9 +180,12 @@ public class InformeVista extends AppCompatActivity {
 
 
 
-                }else if(tipoinforme.equals("General por actividad")){
+                }else if(tipoinforme.equals("Generar por actividad")){
                     adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,GetData(listareportes));
                     listactividades.setAdapter(adapter);
+                    listactividades.setDividerHeight(4);
+                    listactividades.setBackgroundColor(getResources().getColor(R.color.white));
+
                     for(sumas suma:GetData(listareportes)){
                         if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
                             horasprincipales=horasprincipales+suma.getHoras();
@@ -363,6 +366,8 @@ public class InformeVista extends AppCompatActivity {
                 }
                 adaptadorInformeporOperador adapterporOperador = new adaptadorInformeporOperador(context, GetDataInformeporoperador(listareportes));
                 listactividades.setAdapter(adapterporOperador);
+                listactividades.setDividerHeight(0);
+                listactividades.setBackgroundColor(getResources().getColor(R.color.tab));
                 for (sumaInformeOperador sumaporoperador : GetDataInformeporoperador(listareportes)) {
                     for (sumas suma : sumaporoperador.getListaactividades()) {
                         if (suma.getActividad().equals("Extracción") || suma.getActividad().equals("Esteril")) {
