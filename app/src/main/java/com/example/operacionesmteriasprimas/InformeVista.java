@@ -189,6 +189,9 @@ public class InformeVista extends AppCompatActivity {
                     List<sumas> lista= (List<sumas>) GetData(listareportes);
                     adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,lista);
                     listactividades.setAdapter(adapter);
+                    listactividades.setDividerHeight(4);
+                    listactividades.setBackgroundColor(getResources().getColor(R.color.white));
+
                     for(sumas suma:GetData(listareportes)){
                         if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
                             horasprincipales=horasprincipales+suma.getHoras();

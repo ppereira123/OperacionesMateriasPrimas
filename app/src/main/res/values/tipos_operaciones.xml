@@ -23,7 +23,7 @@
         <item>Excel</item>
     </string-array>
     <string-array name="combo_tipoInforme">
-        <item>General por actividad</item>
+        <item>Generar por actividad</item>
         <item>Por operador</item>
     </string-array>
 
