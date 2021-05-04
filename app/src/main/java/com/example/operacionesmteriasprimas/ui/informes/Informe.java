@@ -19,11 +19,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+
+
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.operacionesmteriasprimas.InformeVista;
+import com.example.operacionesmteriasprimas.Modelos.Reporte;
+import com.example.operacionesmteriasprimas.Modelos.sumaInformeOperador;
+import com.example.operacionesmteriasprimas.Modelos.sumas;
 import com.example.operacionesmteriasprimas.R;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +48,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -53,6 +62,7 @@ public class Informe extends Fragment {
     TextInputLayout edittipoDocumento, textfieldSupervisora, textinputlayoutFechahasta,textinputlayoutFechadesde, edittipoInforme;
     String[] listatipodocumentos,listatipoinforme;
     AutoCompleteTextView autoCompleteTextViewSpinnnerDopcumentos,autoCompleteTextViewSpinnnerInformes;
+    List<Reporte> listReportes=new ArrayList<>();
 
 
     private FirebaseAuth mAuth;
@@ -123,136 +133,139 @@ public class Informe extends Fragment {
 
 
 
-        editSupervisora.setOnClickListener(new View.OnClickListener() {
+
+        editSupervisora.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View v) {
-                List<String> supervisoresSeleccionados=new ArrayList<>();
-                supervisoreslist=new ArrayList<>();
-                supervisoreslist.add("Todos");
-                FirebaseDatabase database= FirebaseDatabase.getInstance();
-                DatabaseReference ref=database.getReference("Reportes");
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()){
-                            for(DataSnapshot dataSnapshot:snapshot.getChildren()){
-                                DataSnapshot ds=dataSnapshot.child("supervisor");
-                                if(ds.exists()){
-                                    String supervisor=ds.getValue().toString();
-                                    if(!supervisoreslist.contains(supervisor)){
-                                        supervisoreslist.add(supervisor);
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    List<String> supervisoresSeleccionados=new ArrayList<>();
+                    supervisoreslist=new ArrayList<>();
+                    supervisoreslist.add("Todos");
+                    FirebaseDatabase database= FirebaseDatabase.getInstance();
+                    DatabaseReference ref=database.getReference("Reportes");
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists()){
+                                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                    DataSnapshot ds=dataSnapshot.child("supervisor");
+                                    if(ds.exists()){
+                                        String supervisor=ds.getValue().toString();
+                                        if(!supervisoreslist.contains(supervisor)){
+                                            supervisoreslist.add(supervisor);
+                                        }
                                     }
                                 }
-                            }
-                            checkedItems=new boolean[supervisoreslist.size()];
-                            arryaSupervisores=new String[supervisoreslist.size()];
+                                checkedItems=new boolean[supervisoreslist.size()];
+                                arryaSupervisores=new String[supervisoreslist.size()];
 
-                            for(int i=0;i<supervisoreslist.size();i=i+1){
-                                arryaSupervisores[i]=supervisoreslist.get(i);
-                                checkedItems[i]=false;
-                            }
+                                for(int i=0;i<supervisoreslist.size();i=i+1){
+                                    arryaSupervisores[i]=supervisoreslist.get(i);
+                                    checkedItems[i]=false;
+                                }
 
 
-                            AlertDialog.Builder builder= new AlertDialog.Builder(getContext());
-                            builder.setTitle("Escoger supervisores para el informe");
-                            builder.setMultiChoiceItems(arryaSupervisores, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                    if(arryaSupervisores[which].equals("Todos")){
+                                AlertDialog.Builder builder= new AlertDialog.Builder(getContext());
+                                builder.setTitle("Escoger supervisores para el informe");
+                                builder.setMultiChoiceItems(arryaSupervisores, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                                        if(arryaSupervisores[which].equals("Todos")){
 
-                                        final AlertDialog alertDialog = (AlertDialog) dialog;
-                                        final ListView alertDialogList = alertDialog.getListView();
+                                            final AlertDialog alertDialog = (AlertDialog) dialog;
+                                            final ListView alertDialogList = alertDialog.getListView();
 
-                                        for (int position = 0; position < alertDialogList.getChildCount(); position++)
-                                        {
-                                            if (position != which) {
-                                                if(isChecked){
-                                                    alertDialogList.getChildAt(position).setVisibility(View.GONE);
-                                                    supervisoresSeleccionados.clear();
-                                                    supervisoresSeleccionados.add(arryaSupervisores[which]);
-                                                }else {
-                                                    supervisoresSeleccionados.clear();
-                                                    alertDialogList.getChildAt(position).setVisibility(View.VISIBLE);
+                                            for (int position = 0; position < alertDialogList.getChildCount(); position++)
+                                            {
+                                                if (position != which) {
+                                                    if(isChecked){
+                                                        alertDialogList.getChildAt(position).setVisibility(View.GONE);
+                                                        supervisoresSeleccionados.clear();
+                                                        supervisoresSeleccionados.add(arryaSupervisores[which]);
+                                                    }else {
+                                                        supervisoresSeleccionados.clear();
+                                                        alertDialogList.getChildAt(position).setVisibility(View.VISIBLE);
+                                                    }
+
+
+
                                                 }
+                                            }
+                                        }else {
+                                            if(supervisoresSeleccionados.contains("Todos")){
+                                                supervisoresSeleccionados.remove(supervisoresSeleccionados.indexOf("Todos"));
+                                            }
 
-
+                                            if(supervisoresSeleccionados.contains(arryaSupervisores[which])){
+                                                supervisoresSeleccionados.remove(supervisoresSeleccionados.indexOf(arryaSupervisores[which]));
 
                                             }
-                                        }
-                                    }else {
-                                        if(supervisoresSeleccionados.contains("Todos")){
-                                            supervisoresSeleccionados.remove(supervisoresSeleccionados.indexOf("Todos"));
-                                        }
-
-                                        if(supervisoresSeleccionados.contains(arryaSupervisores[which])){
-                                            supervisoresSeleccionados.remove(supervisoresSeleccionados.indexOf(arryaSupervisores[which]));
-
-                                        }
-                                        else {
-                                            supervisoresSeleccionados.add(arryaSupervisores[which]);
-                                        }
-
-                                    }
-
-
-
-
-                                }
-                            });
-                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    slectSupervisors.clear();
-
-                                    if(!supervisoresSeleccionados.contains("Todos")){
-                                        int cont=0;
-
-                                        for(boolean seleccionado:checkedItems){
-                                            if(seleccionado){
-                                                slectSupervisors.add(arryaSupervisores[cont]);
-
+                                            else {
+                                                supervisoresSeleccionados.add(arryaSupervisores[which]);
                                             }
-                                            cont++;
+
                                         }
 
-                                    }else {
-                                        slectSupervisors.add("Todos");
+
 
 
                                     }
-                                    String muestra="";
-                                    for(String s:slectSupervisors){
-                                        muestra=muestra+s+"\n";
+                                });
+                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        slectSupervisors.clear();
+                                        editSupervisora.clearFocus();
+
+                                        if(!supervisoresSeleccionados.contains("Todos")){
+                                            int cont=0;
+
+                                            for(boolean seleccionado:checkedItems){
+                                                if(seleccionado){
+                                                    slectSupervisors.add(arryaSupervisores[cont]);
+
+                                                }
+                                                cont++;
+                                            }
+
+                                        }else {
+                                            slectSupervisors.add("Todos");
+
+
+                                        }
+                                        String muestra="";
+                                        for(String s:slectSupervisors){
+                                            muestra=muestra+s+"\n";
+                                        }
+                                        editSupervisora.setText(muestra);
+
+
                                     }
-                                    editSupervisora.setText(muestra);
+                                });
+                                builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        editSupervisora.clearFocus();
+                                    }
+                                });
 
+                                AlertDialog dialog=builder.create();
+                                dialog.show();
+                            }
+                            else{
+                                Toast.makeText(root.getContext(), "No existe referencia", Toast.LENGTH_SHORT).show();
+                            }
 
-                                }
-                            });
-                            builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-
-                            AlertDialog dialog=builder.create();
-                            dialog.show();
                         }
-                        else{
-                            Toast.makeText(root.getContext(), "No existe referencia", Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
-
-                        Toast.makeText(root.getContext(), String.valueOf(supervisoreslist.size()), Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-
+                    });
+                    editSupervisora.clearFocus();
+                }
             }
         });
 
@@ -434,4 +447,78 @@ public class Informe extends Fragment {
 
 
     }
+    public void cargardatos(){
+
+    }
+    public void crearExcelactividadesGenerales(sumas data){
+
+    }
+    public void crearEcelPorOperador(sumaInformeOperador data){
+
+
+    }
+    /*
+    private static Map<String, CellStyle> createStyles(Workbook wb){
+        Map<String, CellStyle> styles = new HashMap<>();
+        CellStyle style;
+        Font titleFont = wb.createFont();
+        titleFont.setFontHeightInPoints((short)18);
+        titleFont.setBold(true);
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFont(titleFont);
+        styles.put("title", style);
+
+        Font itemFont = wb.createFont();
+        itemFont.setFontHeightInPoints((short)12);
+        itemFont.setFontName("Trebuchet MS");
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.LEFT);
+        style.setFont(titleFont);
+        style.setFont(itemFont);
+        styles.put("item_left", style);
+
+        Font itemresFont = wb.createFont();
+        itemresFont.setFontHeightInPoints((short)12);
+        itemresFont.setFontName("Trebuchet MS");
+        itemresFont.setBold(true);
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.LEFT);
+        style.setFont(itemresFont);
+        styles.put("item_left1", style);
+
+
+
+        Font monthFont = wb.createFont();
+        monthFont.setFontHeightInPoints((short)12);
+        monthFont.setColor(IndexedColors.WHITE.getIndex());
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFont(monthFont);
+        style.setWrapText(true);
+        styles.put("header", style);
+
+        Font cellFont = wb.createFont();
+        cellFont.setFontHeightInPoints((short)12);
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(BorderStyle.THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setFont(cellFont);
+        style.setWrapText(true);
+        styles.put("cell", style);
+        return styles;
+    }
+
+     */
 }
