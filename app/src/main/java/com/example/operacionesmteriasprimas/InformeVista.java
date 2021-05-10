@@ -138,6 +138,7 @@ public class InformeVista extends AppCompatActivity {
                         GenericTypeIndicator<Reporte> t = new GenericTypeIndicator<Reporte>() {};
                         Reporte m = ds.getValue(t);
 
+
                         if(supervisores.contains("Todos")){
                             try {
                                 if(diferenciaDias(m.getFecha(),fechadesde)>=0&&diferenciaDias(m.getFecha(),fechahasta)<=0){
