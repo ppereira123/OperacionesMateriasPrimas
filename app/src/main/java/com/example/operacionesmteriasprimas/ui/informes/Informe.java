@@ -19,10 +19,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-
-
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -41,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -48,9 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -349,6 +344,7 @@ public class Informe extends Fragment {
                         monthstring=String.valueOf(month);
                         String date= day+"/"+month+"/"+year;
                         fecha=date;
+
 
                         ParsePosition pos = new ParsePosition(0);
                         String fecha2= tietFecha2.getText().toString();
