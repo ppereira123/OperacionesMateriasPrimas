@@ -192,6 +192,7 @@ public class InformeVista extends AppCompatActivity {
                     listactividades.setAdapter(adapter);
                     listactividades.setDividerHeight(4);
                     listactividades.setBackgroundColor(getResources().getColor(R.color.white));
+                    
 
                     for(sumas suma:GetData(listareportes)){
                         if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
