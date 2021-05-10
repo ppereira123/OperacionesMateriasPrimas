@@ -116,6 +116,7 @@ public class ListaOperadores extends AppCompatActivity {
     private void escogerOperadores(boolean mostrar) {
         AlertDialog.Builder builder= new AlertDialog.Builder(ListaOperadores.this);
         builder.setTitle("Escoge los operadores");
+        //Correccion operadores
 
         LayoutInflater mInflate= LayoutInflater.from(context);
         View view= mInflate.inflate(R.layout.res_buscador,null);
