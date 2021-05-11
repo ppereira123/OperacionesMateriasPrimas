@@ -17,6 +17,8 @@ import com.example.operacionesmteriasprimas.Modelos.sumas;
 import com.example.operacionesmteriasprimas.R;
 
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class adaptadorInformeporOperador extends BaseAdapter {
@@ -66,7 +68,7 @@ public class adaptadorInformeporOperador extends BaseAdapter {
         adaptadorVistaHoras adapter = new adaptadorVistaHoras(context, datosInforme.getListaactividades());
         listActividadesoperadores.setAdapter(adapter);
 
-        listActividadesoperadores.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, (int) convertDpToPx(context,49*datosInforme.getListaactividades().size())));
+        listActividadesoperadores.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, (int) convertDpToPx(context,56*datosInforme.getListaactividades().size())));
         for(sumas suma: datosInforme.getListaactividades()){
             if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
                 horasprincipales=horasprincipales+suma.getHoras();
@@ -76,13 +78,20 @@ public class adaptadorInformeporOperador extends BaseAdapter {
             }
         }
         total=horasprincipales+horasextra;
-        txthorasporoperador.setText(String.valueOf(total));
-        txthorasactextra.setText(String.valueOf(horasextra));
-        txthorasactprinc.setText(String.valueOf(horasprincipales));
+        BigDecimal bd = new BigDecimal(total).setScale(0, RoundingMode.HALF_UP);
+        int val1 = (int) bd.doubleValue();
+        BigDecimal bd2 = new BigDecimal(horasextra).setScale(0, RoundingMode.HALF_UP);
+        int val2 = (int) bd2.doubleValue();
+        BigDecimal bd3 = new BigDecimal(horasprincipales).setScale(0, RoundingMode.HALF_UP);
+        int val3 = (int) bd3.doubleValue();
+
+        txthorasporoperador.setText(String.valueOf(val1));
+        txthorasactextra.setText(String.valueOf(val2));
+        txthorasactprinc.setText(String.valueOf(val3));
 
         return convertView;
     }
-    public float convertDpToPx(Context context, float dp) {
+    public static float convertDpToPx(Context context, float dp) {
         return dp * context.getResources().getDisplayMetrics().density;
     }
 }

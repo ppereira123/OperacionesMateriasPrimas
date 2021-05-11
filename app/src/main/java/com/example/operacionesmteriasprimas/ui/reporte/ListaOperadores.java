@@ -118,6 +118,7 @@ public class ListaOperadores extends AppCompatActivity {
     private void escogerOperadores(boolean mostrar) {
         AlertDialog.Builder builder= new AlertDialog.Builder(ListaOperadores.this);
         builder.setTitle("Escoge los operadores");
+        //Correccion operadores
 
         LayoutInflater mInflate= LayoutInflater.from(context);
         View view= mInflate.inflate(R.layout.res_buscador,null);
@@ -241,6 +242,7 @@ public class ListaOperadores extends AppCompatActivity {
 
     private void cargarOperadores() {
         operadores=new ArrayList<>();
+        hashOperadores=reporte.getOperadores();
         operadores=hashToList(hashOperadores);
         adaptadorlistaOperadores adaptadorlistaOperadores=new adaptadorlistaOperadores(context, operadores,reporte,this);
         listOperadores.setAdapter(adaptadorlistaOperadores);
@@ -374,11 +376,10 @@ public class ListaOperadores extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==3){
             reporte= (Reporte) data.getSerializableExtra("reporte");
             cargarOperadores();
             cargarDatos();
-        }
+
     }
 
     public void eliminarOperador(Operador operador){

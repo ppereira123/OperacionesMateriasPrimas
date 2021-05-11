@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.example.operacionesmteriasprimas.Modelos.sumas;
 import com.example.operacionesmteriasprimas.R;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +52,10 @@ public class adaptadorVistaHoras extends BaseAdapter {
         actividad=convertView.findViewById(R.id.txtactividadview);
         horas=convertView.findViewById(R.id.txthorasview);
         actividad.setText(currentItem.getActividad());
-        horas.setText(currentItem.getHoras().toString());
+        double hora=currentItem.getHoras();
+        BigDecimal bd = new BigDecimal(hora).setScale(0, RoundingMode.HALF_UP);
+        int val1 = (int) bd.doubleValue();
+        horas.setText(String.valueOf(val1));
         return convertView;
     }
 }

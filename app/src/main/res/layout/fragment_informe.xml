@@ -79,6 +79,10 @@
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
                             android:text="Parametros de busqueda"
+                            android:focusable="true"
+                            android:nextFocusLeft="@+id/textView4"
+                            android:nextFocusRight="@+id/textView4"
+                            android:focusableInTouchMode="true"
                             android:textColor="@color/black" />
                     </LinearLayout>
 
@@ -86,28 +90,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/textfieldtSupervisora"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="40dp"
-                            android:layout_marginTop="20dp"
-                            app:boxBackgroundMode="outline"
-                            app:boxBackgroundColor="@color/white"
-                            app:startIconDrawable="@drawable/operadores">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/editSupervisora"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="20dp"
-                                android:hint="Supervisores:"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/ic_launcher_background" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-
 
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -122,7 +104,7 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/editFechadesde"
-                                android:drawableLeft="@drawable/calendario"
+
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="20dp"
@@ -152,6 +134,35 @@
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/ic_launcher_background" />
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/textfieldtSupervisora"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="40dp"
+                            android:layout_marginTop="20dp"
+                            android:focusable="false"
+                            android:focusableInTouchMode="true"
+                            android:nextFocusLeft="@+id/textView4"
+                            android:nextFocusRight="@+id/textView4"
+                            app:boxBackgroundColor="@color/white"
+                            app:boxBackgroundMode="outline"
+                            app:startIconDrawable="@drawable/ingenieros">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editSupervisora"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="20dp"
+                                android:focusable="auto"
+                                android:focusableInTouchMode="true"
+                                android:hint="Supervisores:"
+                                android:nextFocusLeft="@+id/textView4"
+                                android:nextFocusRight="@+id/textView4"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/ic_launcher_background" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
