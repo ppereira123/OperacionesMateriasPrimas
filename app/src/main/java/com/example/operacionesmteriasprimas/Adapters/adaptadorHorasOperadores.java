@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.example.operacionesmteriasprimas.Modelos.Operador;
 import com.example.operacionesmteriasprimas.R;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,12 +53,15 @@ public class adaptadorHorasOperadores extends BaseAdapter {
         for (Double i: horas){
             sumahoras=sumahoras+i;
         }
+
         hora.setText(sumahoras.toString());
-        if (sumahoras>=12||sumahoras<=7.5){
+        if (sumahoras<=7.5){
+            hora.setBackgroundColor(Color.parseColor("#FF5555"));
+        } else if (sumahoras>=8&&sumahoras<12){
+            hora.setBackgroundColor(Color.parseColor("#FFFF00"));
+        }else if(sumahoras>=12){
             hora.setBackgroundColor(Color.parseColor("#FF5555"));
         }
-
-
 
 
 

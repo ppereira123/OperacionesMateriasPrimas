@@ -135,7 +135,7 @@
 
                     android:hint="Operadores Seleccionados:"
                     android:focusable="false"
-                    app:startIconDrawable="@drawable/operadores"
+                    app:startIconDrawable="@drawable/ingenieros"
                     app:boxBackgroundMode="outline"
                     app:boxBackgroundColor="@color/white"
 

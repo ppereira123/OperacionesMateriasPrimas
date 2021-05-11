@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -33,6 +34,13 @@ public class Splash extends AppCompatActivity {
         TextView txtLogo= findViewById(R.id.txtlogo);
         imgSplash.setAnimation(animation);
         txtLogo.setAnimation(animation2);
+        TextView txtSlpash=findViewById(R.id.version);
+        txtSlpash.setAnimation(animation2);
+
+
+        TextView txtversion=findViewById(R.id.version);
+        txtversion.setText("Version "+getVersionName(context));
+        txtversion.setAnimation(animation);
 
 
         TimerTask tarea= new TimerTask() {
@@ -56,5 +64,13 @@ public class Splash extends AppCompatActivity {
         Timer tiempo= new Timer();
         tiempo.schedule(tarea,2000);
 
+    }
+    public String getVersionName(Context ctx){
+        try {
+            return ctx.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

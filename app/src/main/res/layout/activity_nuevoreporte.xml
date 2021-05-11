@@ -94,7 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            app:startIconDrawable="@drawable/operadores"
+            app:startIconDrawable="@drawable/ingenieros"
             app:boxBackgroundMode="outline"
             app:boxBackgroundColor="@color/white"
             android:nextFocusLeft="@id/llReportes"
