@@ -67,8 +67,6 @@ public class InformeVista extends AppCompatActivity {
     List<Reporte> listareportes;
     Button btnAgregarOperadores;
     TextView txtprincipales,txtextra,txtfechadelreporte,txttotalhoras;
-
-
     Double horasextra=0.0;
     Double horasprincipales=0.0;
     String fechadesde,fechahasta,tipoinforme;
@@ -184,11 +182,10 @@ public class InformeVista extends AppCompatActivity {
                         }
                     });
 
-
-
-                }else if(tipoinforme.equals("General por actividad")){
+                }else if(tipoinforme.equals("Generar por actividad")){
                     List<sumas> lista= (List<sumas>) GetData(listareportes);
                     adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,lista);
+
                     listactividades.setAdapter(adapter);
                     listactividades.setDividerHeight(4);
                     listactividades.setBackgroundColor(getResources().getColor(R.color.white));
@@ -205,10 +202,9 @@ public class InformeVista extends AppCompatActivity {
                     txtprincipales.setText(String.valueOf(horasprincipales));
                     txtextra.setText(String.valueOf(horasextra));
                     txttotalhoras.setText(String.valueOf(horasextra+horasprincipales));
+                }else {
+                    Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
                 }
-
-
-
             }
 
             @Override
@@ -384,6 +380,11 @@ public class InformeVista extends AppCompatActivity {
                             horasextra = horasextra + suma.getHoras();
                         }
                     }
+
+                    txtprincipales.setText(String.valueOf(horasprincipales));
+                    txtextra.setText(String.valueOf(horasextra));
+                    txttotalhoras.setText(String.valueOf(horasextra + horasprincipales));
+
                     BigDecimal bd = new BigDecimal(horasprincipales).setScale(0, RoundingMode.HALF_UP);
                     double val1 = bd.doubleValue();
                     BigDecimal bd2 = new BigDecimal(horasextra).setScale(0, RoundingMode.HALF_UP);
@@ -396,7 +397,6 @@ public class InformeVista extends AppCompatActivity {
                     txttotalhoras.setText(String.valueOf(val3));
 
                 }
-
             }
         });
         builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {

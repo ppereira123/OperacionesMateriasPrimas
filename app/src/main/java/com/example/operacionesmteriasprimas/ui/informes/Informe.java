@@ -38,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -129,7 +130,8 @@ public class Informe extends Fragment {
 
 
 
-        editSupervisora.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        editSupervisora.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
@@ -443,6 +445,7 @@ public class Informe extends Fragment {
 
 
     }
+
     public void cargardatos(){
 
     }
@@ -454,6 +457,7 @@ public class Informe extends Fragment {
 
     }
     /*
+
     private static Map<String, CellStyle> createStyles(Workbook wb){
         Map<String, CellStyle> styles = new HashMap<>();
         CellStyle style;
@@ -517,4 +521,5 @@ public class Informe extends Fragment {
     }
 
      */
+
 }
