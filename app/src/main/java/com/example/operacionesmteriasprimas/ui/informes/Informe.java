@@ -34,6 +34,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -123,7 +125,13 @@ public class Informe extends Fragment {
 
 
 
+<<<<<<< Updated upstream
         editSupervisora.setOnClickListener(new View.OnClickListener() {
+=======
+
+
+        editSupervisora.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+>>>>>>> Stashed changes
             @Override
             public void onClick(View v) {
                 List<String> supervisoresSeleccionados=new ArrayList<>();
@@ -434,4 +442,84 @@ public class Informe extends Fragment {
 
 
     }
+<<<<<<< Updated upstream
+=======
+    public void cargardatos(){
+
+    }
+    public void crearExcelactividadesGenerales(sumas data){
+
+    }
+    public void crearEcelPorOperador(sumaInformeOperador data){
+
+
+    }
+    /*
+
+    private static Map<String, CellStyle> createStyles(Workbook wb){
+        Map<String, CellStyle> styles = new HashMap<>();
+        CellStyle style;
+        Font titleFont = wb.createFont();
+        titleFont.setFontHeightInPoints((short)18);
+        titleFont.setBold(true);
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFont(titleFont);
+        styles.put("title", style);
+
+        Font itemFont = wb.createFont();
+        itemFont.setFontHeightInPoints((short)12);
+        itemFont.setFontName("Trebuchet MS");
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.LEFT);
+        style.setFont(titleFont);
+        style.setFont(itemFont);
+        styles.put("item_left", style);
+
+        Font itemresFont = wb.createFont();
+        itemresFont.setFontHeightInPoints((short)12);
+        itemresFont.setFontName("Trebuchet MS");
+        itemresFont.setBold(true);
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.LEFT);
+        style.setFont(itemresFont);
+        styles.put("item_left1", style);
+
+
+
+        Font monthFont = wb.createFont();
+        monthFont.setFontHeightInPoints((short)12);
+        monthFont.setColor(IndexedColors.WHITE.getIndex());
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFont(monthFont);
+        style.setWrapText(true);
+        styles.put("header", style);
+
+        Font cellFont = wb.createFont();
+        cellFont.setFontHeightInPoints((short)12);
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(BorderStyle.THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setFont(cellFont);
+        style.setWrapText(true);
+        styles.put("cell", style);
+        return styles;
+    }
+
+     */
+
+
+>>>>>>> Stashed changes
 }

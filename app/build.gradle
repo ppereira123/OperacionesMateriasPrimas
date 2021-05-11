@@ -12,7 +12,11 @@ android {
         minSdkVersion 25
         targetSdkVersion 30
         versionCode 1
+<<<<<<< Updated upstream
         versionName "1.0"
+=======
+        versionName "1.0111"
+>>>>>>> Stashed changes
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -62,8 +62,6 @@ public class InformeVista extends AppCompatActivity {
     List<Reporte> listareportes;
     Button btnAgregarOperadores;
     TextView txtprincipales,txtextra,txtfechadelreporte,txttotalhoras;
-
-
     Double horasextra=0.0;
     Double horasprincipales=0.0;
     String fechadesde,fechahasta,tipoinforme;
@@ -177,11 +175,17 @@ public class InformeVista extends AppCompatActivity {
 
                         }
                     });
+<<<<<<< Updated upstream
 
 
 
                 }else if(tipoinforme.equals("General por actividad")){
                     adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,GetData(listareportes));
+=======
+                }else if(tipoinforme.equals("Generar por actividad")){
+                    List<sumas> lista= (List<sumas>) GetData(listareportes);
+                    adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,lista);
+>>>>>>> Stashed changes
                     listactividades.setAdapter(adapter);
                     for(sumas suma:GetData(listareportes)){
                         if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
@@ -194,10 +198,9 @@ public class InformeVista extends AppCompatActivity {
                     txtprincipales.setText(String.valueOf(horasprincipales));
                     txtextra.setText(String.valueOf(horasextra));
                     txttotalhoras.setText(String.valueOf(horasextra+horasprincipales));
+                }else {
+                    Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
                 }
-
-
-
             }
 
             @Override
@@ -371,12 +374,24 @@ public class InformeVista extends AppCompatActivity {
                             horasextra = horasextra + suma.getHoras();
                         }
                     }
+<<<<<<< Updated upstream
                     txtprincipales.setText(String.valueOf(horasprincipales));
                     txtextra.setText(String.valueOf(horasextra));
                     txttotalhoras.setText(String.valueOf(horasextra + horasprincipales));
 
+=======
+                    BigDecimal bd = new BigDecimal(horasprincipales).setScale(0, RoundingMode.HALF_UP);
+                    double val1 = bd.doubleValue();
+                    BigDecimal bd2 = new BigDecimal(horasextra).setScale(0, RoundingMode.HALF_UP);
+                    double val2 = bd2.doubleValue();
+                    double total=horasextra + horasprincipales;
+                    BigDecimal bd3 = new BigDecimal(total).setScale(0, RoundingMode.HALF_UP);
+                    double val3 = bd3.doubleValue();
+                    txtprincipales.setText(String.valueOf(val1));
+                    txtextra.setText(String.valueOf(val2));
+                    txttotalhoras.setText(String.valueOf(val3));
+>>>>>>> Stashed changes
                 }
-
             }
         });
         builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {

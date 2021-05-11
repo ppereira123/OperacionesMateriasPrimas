@@ -68,7 +68,9 @@ public class ListaOperadores extends AppCompatActivity {
 
         reporte=(Reporte)getIntent().getSerializableExtra("reporte");
         cargarDatos();
+        operadores=new ArrayList<>();
         hashOperadores=reporte.getOperadores();
+        operadores=hashToList(hashOperadores);
         cargarOperadores();
         btnmodificarOperador.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,6 +182,8 @@ public class ListaOperadores extends AppCompatActivity {
                     newOperadores.put(s, operador);
                 }
                 hashOperadores=newOperadores;
+                reporte.setOperadores(hashOperadores);
+
                 cargarOperadores();
 
             }
