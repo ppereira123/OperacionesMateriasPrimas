@@ -7,10 +7,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class HolcimQuarry extends Application {
 
-
-
-
-
     @Override
     public void onCreate() {
         super.onCreate();

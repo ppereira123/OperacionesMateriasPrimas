@@ -67,6 +67,8 @@ public class InformeVista extends AppCompatActivity {
     List<Reporte> listareportes;
     Button btnAgregarOperadores;
     TextView txtprincipales,txtextra,txtfechadelreporte,txttotalhoras;
+
+
     Double horasextra=0.0;
     Double horasprincipales=0.0;
     String fechadesde,fechahasta,tipoinforme;
@@ -136,7 +138,6 @@ public class InformeVista extends AppCompatActivity {
                         GenericTypeIndicator<Reporte> t = new GenericTypeIndicator<Reporte>() {};
                         Reporte m = ds.getValue(t);
 
-
                         if(supervisores.contains("Todos")){
                             try {
                                 if(diferenciaDias(m.getFecha(),fechadesde)>=0&&diferenciaDias(m.getFecha(),fechahasta)<=0){
@@ -182,14 +183,15 @@ public class InformeVista extends AppCompatActivity {
                         }
                     });
 
+
+
                 }else if(tipoinforme.equals("Generar por actividad")){
                     List<sumas> lista= (List<sumas>) GetData(listareportes);
-                    adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,lista);
 
+                    adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,lista);
                     listactividades.setAdapter(adapter);
                     listactividades.setDividerHeight(4);
                     listactividades.setBackgroundColor(getResources().getColor(R.color.white));
-                    
 
                     for(sumas suma:GetData(listareportes)){
                         if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
@@ -199,12 +201,16 @@ public class InformeVista extends AppCompatActivity {
                             horasextra=horasextra+suma.getHoras();
                         }
                     }
+
                     txtprincipales.setText(String.valueOf(horasprincipales));
                     txtextra.setText(String.valueOf(horasextra));
                     txttotalhoras.setText(String.valueOf(horasextra+horasprincipales));
-                }else {
-                    Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+
+
                 }
+
+
+
             }
 
             @Override
@@ -216,7 +222,7 @@ public class InformeVista extends AppCompatActivity {
 
     }
 
-    private static List<sumas> GetData(List<Reporte> listareportes) {
+    public static List<sumas> GetData(List<Reporte> listareportes) {
         //HashMap<String, Double> actividadeshoras = new HashMap<String, Double>();
         List<sumas> lista=new ArrayList<sumas>();
         for (Reporte reporte:listareportes){
@@ -310,7 +316,7 @@ public class InformeVista extends AppCompatActivity {
 
 
 
-        private void escogerOperadores (){
+    private void escogerOperadores (){
         AlertDialog.Builder builder = new AlertDialog.Builder(InformeVista.this);
         builder.setTitle("Escoge los operadores");
 
@@ -380,11 +386,6 @@ public class InformeVista extends AppCompatActivity {
                             horasextra = horasextra + suma.getHoras();
                         }
                     }
-
-                    txtprincipales.setText(String.valueOf(horasprincipales));
-                    txtextra.setText(String.valueOf(horasextra));
-                    txttotalhoras.setText(String.valueOf(horasextra + horasprincipales));
-
                     BigDecimal bd = new BigDecimal(horasprincipales).setScale(0, RoundingMode.HALF_UP);
                     double val1 = bd.doubleValue();
                     BigDecimal bd2 = new BigDecimal(horasextra).setScale(0, RoundingMode.HALF_UP);
@@ -397,6 +398,7 @@ public class InformeVista extends AppCompatActivity {
                     txttotalhoras.setText(String.valueOf(val3));
 
                 }
+
             }
         });
         builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
@@ -421,13 +423,13 @@ public class InformeVista extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
 
-            dialog.show();
+        dialog.show();
 
     }
 
 
 
-        public void buscarOperador (String s, RecyclerView rvRes){
+    public void buscarOperador (String s, RecyclerView rvRes){
         ArrayList<String> milista = new ArrayList<>();
         for (String obj : operadores) {
             if (obj.toLowerCase().contains(s.toLowerCase())) {
@@ -441,7 +443,7 @@ public class InformeVista extends AppCompatActivity {
     }
 
 
-        public static int existeactividad (List < sumas > list, String actividad){
+    public static int existeactividad (List < sumas > list, String actividad){
         List<String> contenido = new ArrayList<>();
 
 
@@ -454,7 +456,7 @@ public class InformeVista extends AppCompatActivity {
 
     }
 
-        public static List<Operador> listReporteToHash (HashMap < String, Operador > hashoperador){
+    public static List<Operador> listReporteToHash (HashMap < String, Operador > hashoperador){
         List<Operador> lista = new ArrayList<>();
         for (Map.Entry<String, Operador> m : hashoperador.entrySet()) {
             lista.add(m.getValue());
@@ -462,7 +464,7 @@ public class InformeVista extends AppCompatActivity {
         return lista;
     }
 
-        private  List<sumas> listsumaToHash (HashMap < String, Double > hashhoras){
+    private  List<sumas> listsumaToHash (HashMap < String, Double > hashhoras){
         List<sumas> lista = new ArrayList<>();
         for (Map.Entry<String, Double> m : hashhoras.entrySet()) {
 
@@ -474,4 +476,4 @@ public class InformeVista extends AppCompatActivity {
 
 
 
-        }
+}

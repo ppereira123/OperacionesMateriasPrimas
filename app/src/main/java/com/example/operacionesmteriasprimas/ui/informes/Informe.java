@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,20 +36,46 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.Repo;
 
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Delayed;
+
+import static com.example.operacionesmteriasprimas.InformeVista.GetData;
+import static java.lang.Thread.sleep;
 
 public class Informe extends Fragment {
     Button limpiar, buscar;
@@ -77,6 +104,7 @@ public class Informe extends Fragment {
         slideshowViewModel =
                 new ViewModelProvider(this).get(SlideshowViewModel.class);
         View root = inflater.inflate(R.layout.fragment_informe, container, false);
+        cargardatos();
         context=root.getContext();
         tipoDocumento="";
         fechahasta="";
@@ -130,16 +158,19 @@ public class Informe extends Fragment {
 
 
 
-        editSupervisora.setOnClickListener(new View.OnClickListener() {
+        editSupervisora.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus){
+
                     List<String> supervisoresSeleccionados=new ArrayList<>();
                     supervisoreslist=new ArrayList<>();
                     supervisoreslist.add("Todos");
                     FirebaseDatabase database= FirebaseDatabase.getInstance();
                     DatabaseReference ref=database.getReference("Reportes");
+                    ref.keepSynced(true);
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -319,7 +350,11 @@ public class Informe extends Fragment {
                 intent.putExtra("TipoInforme",tipoInforme);
                 startActivityForResult(intent,1);
             }else if(tipoDocumento.equals("Excel")){
-                Toast.makeText(context, "Formato aun no disponible", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(context, listReportes.toString(), Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(context, listReportes.toString(), Toast.LENGTH_SHORT).show();
+                crearExcelactividadesGenerales(filtrarDatos(fechadesde,fechahasta,listReportes));
             }
         }
 
@@ -448,15 +483,190 @@ public class Informe extends Fragment {
 
     public void cargardatos(){
 
+        List<Reporte> list=new ArrayList<>();
+        list.clear();
+        FirebaseDatabase database= FirebaseDatabase.getInstance();
+        DatabaseReference ref=database.getReference("Reportes");
+        ref.keepSynced(true);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        GenericTypeIndicator<Reporte> t = new GenericTypeIndicator<Reporte>() {};
+                        Reporte m = dataSnapshot.getValue(t);
+                        list.add(m);
+
+
+
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        listReportes=list;
     }
-    public void crearExcelactividadesGenerales(sumas data){
+
+    public void crearExcelactividadesGenerales(List<Reporte> listReportes){
+        Workbook wb= new HSSFWorkbook();
+        Map<String, CellStyle> styles= createStyles(wb);
+        Sheet sheet= wb.createSheet("Informe");
+        sheet.setFitToPage(true);
+        sheet.setHorizontallyCenter(true);
+
+        //title row
+        String rango;
+        int nRow=0;
+        int nCell=0;
+        Row titleRow = sheet.createRow(nRow);
+        titleRow.setHeightInPoints(20);
+        Cell titleCell = titleRow.createCell(nCell);
+        titleCell.setCellValue("Informe General ");
+        titleCell.setCellStyle(styles.get("title"));
+        rango="$A$"+(nRow+1)+":$K$"+(nRow+1);
+
+        sheet.addMergedRegion(CellRangeAddress.valueOf(rango));
+        //Datos
+        //nombre de la empresa
+        nRow=nRow+1;
+        Row row = sheet.createRow(nRow);
+        Cell cell = row.createCell(nCell);
+        cell.setCellValue("Empresa: ");
+        cell.setCellStyle(styles.get("item_left1"));
+        rango="$A$"+(nRow+1)+":$B$"+(nRow+1);
+        sheet.addMergedRegion(CellRangeAddress.valueOf(rango));
+        nRow=nRow+1;
+        cell = row.createCell(nRow);
+        cell.setCellValue("Holcim Ecuador");
+        cell.setCellStyle(styles.get("item_left"));
+
+        //fecha
+        row = sheet.createRow(nRow);
+        cell = row.createCell(nCell);
+        cell.setCellValue("Fecha del reporte: ");
+        cell.setCellStyle(styles.get("item_left1"));
+
+
+        cell = row.createCell(nRow);
+        cell.setCellValue(editFechadesde.getText().toString()+" - "+editFechahasta.getText().toString());
+        cell.setCellStyle(styles.get("item_left"));
+
+
+        //Titulo actividades
+        nRow=nRow+3;
+        nCell=nCell+1;
+
+        row = sheet.createRow(nRow);
+        cell = row.createCell(nCell);
+        cell.setCellValue("Actividades");
+        cell.setCellStyle(styles.get("header"));
+
+        cell = row.createCell(nCell+6);
+        cell.setCellValue("Total");
+        cell.setCellStyle(styles.get("header"));
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                1, //first column (0-based)
+                6 //last column  (0-based)
+        ));
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                7, //first column (0-based)
+                8 //last column  (0-based)
+        ));
+        //actividades
+        List<sumas> lista=GetData(listReportes);
+        for(sumas suma:lista){
+            nRow=nRow+1;
+            row = sheet.createRow(nRow);
+            cell = row.createCell(nCell);
+            cell.setCellValue(suma.getActividad());
+            cell.setCellStyle(styles.get("cell"));
+            cell = row.createCell(nCell+6);
+            double hora=suma.getHoras();
+            BigDecimal bd = new BigDecimal(hora).setScale(0, RoundingMode.HALF_UP);
+            int val1 = (int) bd.doubleValue();
+            cell.setCellValue(val1);
+            cell.setCellStyle(styles.get("cell"));
+            cell = row.createCell(nCell+7);
+            cell.setCellValue("");
+            cell.setCellStyle(styles.get("cell"));
+
+
+            for (int n = (nCell+1); n < (nCell+6); n++) {
+                cell = row.createCell(n);
+                cell.setCellStyle(styles.get("cell"));
+            }
+
+
+            //merge de las celdas
+
+
+            sheet.addMergedRegion(new CellRangeAddress(
+                    nRow, //first row (0-based)
+                    nRow, //last row  (0-based)
+                    1, //first column (0-based)
+                    6 //last column  (0-based)
+            ));
+            sheet.addMergedRegion(new CellRangeAddress(
+                    nRow, //first row (0-based)
+                    nRow, //last row  (0-based)
+                    7, //first column (0-based)
+                    8 //last column  (0-based)
+            ));
+
+        }
+
+
+        /*
+        rango="$C$"+(nRow)+":$F$"+(nRow);
+        sheet.addMergedRegion(CellRangeAddress.valueOf(rango));
+
+         */
+
+
+
+
+
+
+
+
+        //creacion del documento
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(Calendar.getInstance().getTime());
+        String nombreFile="InformeGeneral.xls";
+        File file = new File(context.getExternalFilesDir(null),nombreFile);
+        FileOutputStream outputStream = null;
+
+        try {
+            outputStream = new FileOutputStream(file);
+            wb.write(outputStream);
+            Toast.makeText(context.getApplicationContext(),"Reporte generado correctamente",Toast.LENGTH_LONG).show();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+
+            Toast.makeText(context.getApplicationContext(),"NO OK",Toast.LENGTH_LONG).show();
+            try {
+                outputStream.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+
+
+
+
 
     }
-    public void crearEcelPorOperador(sumaInformeOperador data){
+    public void crearExelPorOperador(sumaInformeOperador data){
 
 
     }
-    /*
 
     private static Map<String, CellStyle> createStyles(Workbook wb){
         Map<String, CellStyle> styles = new HashMap<>();
@@ -519,7 +729,31 @@ public class Informe extends Fragment {
         styles.put("cell", style);
         return styles;
     }
+    public List<Reporte> filtrarDatos(String fechadesde, String fechahasta, List<Reporte> list){
+        List<Reporte> lista=new ArrayList<>();
+        try {
+            for(Reporte m:list){
+                if(diferenciaDias(m.getFecha(),fechadesde)>=0&&diferenciaDias(m.getFecha(),fechahasta)<=0){
+                    lista.add(m);
 
-     */
+                    if(slectSupervisors.contains("Todos")){
+                        lista.add(m);
+
+                    }else {
+                        if(slectSupervisors.contains(m.getSupervisor())){
+                            lista.add(m);
+                        }
+
+                    }
+
+
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
 
 }
