@@ -173,7 +173,12 @@ public class ListaActividadOperadores extends AppCompatActivity {
         operador.setActividades(valores);
         operador.setNombreActividades(actividades);
         if(operador.getActividadesPendientes()<=0){
-            operador.setCompleto(true);
+            if(!(valores.size()<=0)) {
+                operador.setCompleto(true);
+            }
+            else{
+                operador.setCompleto(false);
+            }
         }
         else{
             operador.setCompleto(false);
