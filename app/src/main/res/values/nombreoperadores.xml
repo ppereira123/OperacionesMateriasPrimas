@@ -1,31 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="combo_nombresOperadores">
-        <item>ALMEIDA YESSENIA NATALIA</item>
         <item>PAZMIÑO JUAN CARLOS</item>
         <item>CORDOVA EDISON FREDDY</item>
         <item>PIGUAVE CARLOS VICENTE</item>
         <item>LAAZ CHRISTIAN PAUL</item>
         <item>TIGRERO PABLO BERNABE</item>
-        <item>CHAVEZ JUAN LORENZO</item>
         <item>VELARDE HECTOR LEONARDO</item>
         <item>PEZO CARLOS FREDDY</item>
-        <item>YAGUAL CARLOS LEONARDO</item>
-        <item>IVIS MANUEL</item>
         <item>MUÑOZ YENNY ROCIO</item>
-        <item>ESPINOZA DIANA DEL CONSUELO</item>
         <item>QUINDE ALEX URBANO</item>
         <item>NAVARRETE CARLOS ALBERTO</item>
-        <item>TOVAR RAFAEL ANTONIO</item>
         <item>GARCIA JESUS NICOLAS</item>
-        <item>COSTA LUIS VICENTE</item>
         <item>VARELA WILSON AURELIO</item>
-        <item>CONTRERAS EDUARDO ALFREDO</item>
-        <item>TOMALA LUIS SANTO</item>
-        <item>ALVEAR IVÁN JOSÉ</item>
-        <item>QUIJIJE DIEGO XAVIER</item>
-        <item>CANTO JOFFRE CRISTIAN</item>
-        <item>ESPINOZA MAX EDISON</item>
         <item>LEMA NELSON EDUARDO</item>
         <item>BAJAÑA YIMMI ERLIN</item>
         <item>LUCERO CRISTHIAN OMAR</item>
@@ -34,37 +21,24 @@
         <item>CASTRO FERNANDO AUGUSTO</item>
         <item>REYES EDISON JAVIER</item>
         <item>MACIAS HORACIO RAFAEL</item>
-        <item>CANDO MIRIAM ELIZABETH</item>
-        <item>AYABACA CÉSAR DAVID</item>
         <item>APONTE RUBY ESTEFANIA</item>
-        <item>YAGUARSHUNGO ANA MARIA</item>
         <item>CALDERÓN GABRIEL ANDRÉS</item>
         <item>DOMINGUEZ LEONARDO RAFAEL</item>
         <item>FIGUEROA DIEGO HERNANDO</item>
         <item>MINA VICTOR SANTIAGO</item>
         <item>MOLINA KLEBER AGUSTIN</item>
         <item>NARVAEZ JORGE HUMBERTO</item>
-        <item>MUÑOZ LUIS ALFONSO</item>
         <item>BANCHON KLEBER ADRIAN</item>
         <item>MINA FERNANDO MAYER</item>
-        <item>QUIJIJE MANUEL EDUARDO</item>
-        <item>TOALA LUIS DAVID</item>
         <item>ESTRELLA JAIRO OMAR</item>
         <item>BARBERAN CARLOS DANIEL</item>
         <item>ACOSTA JIMMY ERNESTO</item>
-        <item>GONZALEZ JULIO EDUARDO</item>
         <item>LEON JORGE ENRIQUE</item>
-        <item>ALMAGRO OMAR ALFREDO</item>
-        <item>MEDINA ALFREDO JOSE</item>
         <item>GUARANDA CESAR ANTONIO</item>
         <item>MERINO LUIS ADALBERTO</item>
         <item>LAZO VICTOR STANLY</item>
         <item>HUACON MOISES GREGORIO</item>
         <item>LEITON DANIEL ISAIAS</item>
-        <item>PADILLA JOHN PETER</item>
-        <item>AYALA CHRISTIAN DWIGHT</item>
-        <item>SOLORZANO WILLINTON NEVARDO</item>
-        <item>TUAREZ NIVALDO JOEL</item>
     </string-array>
 
 </resources>
