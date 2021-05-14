@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -75,6 +78,8 @@ import java.util.TimerTask;
 import java.util.concurrent.Delayed;
 
 import static com.example.operacionesmteriasprimas.InformeVista.GetData;
+import static com.example.operacionesmteriasprimas.InformeVista.GetDataInformeporoperador;
+import static com.example.operacionesmteriasprimas.InformeVista.indexActividadeenSuma;
 import static java.lang.Thread.sleep;
 
 public class Informe extends Fragment {
@@ -83,6 +88,7 @@ public class Informe extends Fragment {
     String tipoDocumento,fechadesde,fechahasta,tipoInforme;
     EditText editFechadesde,editFechahasta,editSupervisora;
     TextInputLayout edittipoDocumento, textfieldSupervisora, textinputlayoutFechahasta,textinputlayoutFechadesde, edittipoInforme;
+    private String correo="";
     String[] listatipodocumentos,listatipoinforme;
     AutoCompleteTextView autoCompleteTextViewSpinnnerDopcumentos,autoCompleteTextViewSpinnnerInformes;
     List<Reporte> listReportes=new ArrayList<>();
@@ -104,7 +110,7 @@ public class Informe extends Fragment {
         slideshowViewModel =
                 new ViewModelProvider(this).get(SlideshowViewModel.class);
         View root = inflater.inflate(R.layout.fragment_informe, container, false);
-        cargardatos();
+
         context=root.getContext();
         tipoDocumento="";
         fechahasta="";
@@ -350,11 +356,8 @@ public class Informe extends Fragment {
                 intent.putExtra("TipoInforme",tipoInforme);
                 startActivityForResult(intent,1);
             }else if(tipoDocumento.equals("Excel")){
+                cargardatos(tipoInforme);
 
-                Toast.makeText(context, listReportes.toString(), Toast.LENGTH_SHORT).show();
-
-                Toast.makeText(context, listReportes.toString(), Toast.LENGTH_SHORT).show();
-                crearExcelactividadesGenerales(filtrarDatos(fechadesde,fechahasta,listReportes));
             }
         }
 
@@ -481,33 +484,40 @@ public class Informe extends Fragment {
 
     }
 
-    public void cargardatos(){
+    public List<Reporte> cargardatos(String tipodeInforme){
 
         List<Reporte> list=new ArrayList<>();
         list.clear();
         FirebaseDatabase database= FirebaseDatabase.getInstance();
         DatabaseReference ref=database.getReference("Reportes");
         ref.keepSynced(true);
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         GenericTypeIndicator<Reporte> t = new GenericTypeIndicator<Reporte>() {};
                         Reporte m = dataSnapshot.getValue(t);
-                        list.add(m);
-
-
+                        if(!list.contains(m)){
+                        list.add(m);}
 
                     }
+
+
+                    pedirCorreo(tipodeInforme,list);
+
+
+
                 }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        listReportes=list;
+        return list;
     }
+
+
 
     public void crearExcelactividadesGenerales(List<Reporte> listReportes){
         Workbook wb= new HSSFWorkbook();
@@ -545,7 +555,7 @@ public class Informe extends Fragment {
         //fecha
         row = sheet.createRow(nRow);
         cell = row.createCell(nCell);
-        cell.setCellValue("Fecha del reporte: ");
+        cell.setCellValue("Fecha: ");
         cell.setCellStyle(styles.get("item_left1"));
 
 
@@ -580,7 +590,8 @@ public class Informe extends Fragment {
                 8 //last column  (0-based)
         ));
         //actividades
-        List<sumas> lista=GetData(listReportes);
+        List<sumas> lista=GetData(listReportes,context);
+
         for(sumas suma:lista){
             nRow=nRow+1;
             row = sheet.createRow(nRow);
@@ -621,23 +632,138 @@ public class Informe extends Fragment {
             ));
 
         }
+        //calculos
+        double horasprincipales=0.0, horasextra=0.0,horatotal=0.0;
+
+        for(sumas suma:lista){
+            if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
+                horasprincipales=horasprincipales+suma.getHoras();
+            }
+            else {
+                horasextra=horasextra+suma.getHoras();
+            }
+        }
+        horatotal=horasextra+horasprincipales;
+
+        //total actividades principales
+        nRow=nRow+1;
+        row = sheet.createRow(nRow);
+        cell = row.createCell(nCell);
+        cell.setCellValue("Total actividades principales");
+        cell.setCellStyle(styles.get("header2"));
+        cell = row.createCell(nCell+6);
 
 
-        /*
-        rango="$C$"+(nRow)+":$F$"+(nRow);
-        sheet.addMergedRegion(CellRangeAddress.valueOf(rango));
+        BigDecimal bd2 = new BigDecimal(horasprincipales).setScale(0, RoundingMode.HALF_UP);
+        int val2 = (int) bd2.doubleValue();
 
-         */
+        cell.setCellValue(val2);
+        cell.setCellStyle(styles.get("cell"));
+        cell = row.createCell(nCell+7);
+        cell.setCellValue("");
+        cell.setCellStyle(styles.get("cell"));
+
+        for (int n = (nCell+1); n < (nCell+6); n++) {
+            cell = row.createCell(n);
+            cell.setCellStyle(styles.get("cell"));
+        }
+
+
+        //merge de las celdas
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                1, //first column (0-based)
+                6 //last column  (0-based)
+        ));
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                7, //first column (0-based)
+                8 //last column  (0-based)
+        ));
+        //total actividades secundarias
+        nRow=nRow+1;
+        row = sheet.createRow(nRow);
+        cell = row.createCell(nCell);
+        cell.setCellValue("Total actividades secundarias");
+        cell.setCellStyle(styles.get("header2"));
+        cell = row.createCell(nCell+6);
+
+
+        BigDecimal bd3 = new BigDecimal(horasprincipales).setScale(0, RoundingMode.HALF_UP);
+        int val3 = (int) bd3.doubleValue();
+
+        cell.setCellValue(val3);
+        cell.setCellStyle(styles.get("cell"));
+        cell = row.createCell(nCell+7);
+        cell.setCellValue("");
+        cell.setCellStyle(styles.get("cell"));
+
+        for (int n = (nCell+1); n < (nCell+6); n++) {
+            cell = row.createCell(n);
+            cell.setCellStyle(styles.get("cell"));
+        }
+
+
+        //merge de las celdas
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                1, //first column (0-based)
+                6 //last column  (0-based)
+        ));
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                7, //first column (0-based)
+                8 //last column  (0-based)
+        ));
+
+
+
+        //total
+        nRow=nRow+1;
+        row = sheet.createRow(nRow);
+        cell = row.createCell(nCell);
+        cell.setCellValue("Total");
+        cell.setCellStyle(styles.get("header2"));
+        cell = row.createCell(nCell+6);
 
 
 
 
+        BigDecimal bd = new BigDecimal(horatotal).setScale(0, RoundingMode.HALF_UP);
+        int val1 = (int) bd.doubleValue();
+
+        cell.setCellValue(val1);
+        cell.setCellStyle(styles.get("cell"));
+        cell = row.createCell(nCell+7);
+        cell.setCellValue("");
+        cell.setCellStyle(styles.get("cell"));
+        for (int n = (nCell+1); n < (nCell+6); n++) {
+            cell = row.createCell(n);
+            cell.setCellStyle(styles.get("cell"));
+        }
+
+        //merge de las celdas
 
 
-
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                1, //first column (0-based)
+                6 //last column  (0-based)
+        ));
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                7, //first column (0-based)
+                8 //last column  (0-based)
+        ));
 
         //creacion del documento
-        String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(Calendar.getInstance().getTime());
+
         String nombreFile="InformeGeneral.xls";
         File file = new File(context.getExternalFilesDir(null),nombreFile);
         FileOutputStream outputStream = null;
@@ -646,6 +772,23 @@ public class Informe extends Fragment {
             outputStream = new FileOutputStream(file);
             wb.write(outputStream);
             Toast.makeText(context.getApplicationContext(),"Reporte generado correctamente",Toast.LENGTH_LONG).show();
+            String[] mailto = {correo};
+            Uri uri = FileProvider.getUriForFile(
+                    context,
+                    "com.example.operacionesmteriasprimas", //(use your app signature + ".provider" )
+                    file);
+
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, mailto);
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Reporte de horas de las actividades realizadas "+editFechadesde.getText().toString()+" - "+editFechahasta.getText().toString());
+            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,"Fecha de reporte:  "+editFechadesde.getText().toString()+" - "+editFechahasta.getText().toString()+".\nTipo: General"+".\nAtentamente HolcimQuarry.");
+            emailIntent.setType("application/pdf");
+            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            context.startActivity(Intent.createChooser(emailIntent, "Send email using:"));
+
+
+
+
         } catch (java.io.IOException e) {
             e.printStackTrace();
 
@@ -663,7 +806,395 @@ public class Informe extends Fragment {
 
 
     }
-    public void crearExelPorOperador(sumaInformeOperador data){
+
+
+    public void crearExelPorOperador(List<Reporte> listReportes){
+        String[] actividadesM =  context.getResources().getStringArray(R.array.combo_tiposOperaciones);
+        String[] actividadesPrincipales =  context.getResources().getStringArray(R.array.combo_tiposOperacionesPrinciapales);
+        String[] actividadesSecundarias =  context.getResources().getStringArray(R.array.combo_tiposOperacionesSecundarias);
+        Workbook wb= new HSSFWorkbook();
+        Map<String, CellStyle> styles= createStyles(wb);
+        Sheet sheet= wb.createSheet("Informe");
+        sheet.setFitToPage(true);
+        sheet.setHorizontallyCenter(true);
+
+        //title row
+        String rango;
+        int nRow=0;
+        int nCell=0;
+        Row titleRow = sheet.createRow(nRow);
+        titleRow.setHeightInPoints(20);
+        Cell titleCell = titleRow.createCell(nCell);
+        titleCell.setCellValue("Informe General por Operador");
+        titleCell.setCellStyle(styles.get("title"));
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                0, //first column (0-based)
+                actividadesM.length+7 //last column  (0-based)
+        ));
+        //Datos
+        //nombre de la empresa
+        nRow=nRow+1;
+        Row row = sheet.createRow(nRow);
+        Cell cell = row.createCell(nCell);
+        cell.setCellValue("Empresa: ");
+        cell.setCellStyle(styles.get("item_left1"));
+        rango="$A$"+(nRow+1)+":$B$"+(nRow+1);
+        sheet.addMergedRegion(CellRangeAddress.valueOf(rango));
+        nRow=nRow+1;
+        cell = row.createCell(nRow);
+        cell.setCellValue("Holcim Ecuador");
+        cell.setCellStyle(styles.get("item_left"));
+
+
+        //fecha
+        row = sheet.createRow(nRow);
+        cell = row.createCell(nCell);
+        cell.setCellValue("Fecha: ");
+        cell.setCellStyle(styles.get("item_left1"));
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                0, //first column (0-based)
+                1 //last column  (0-based)
+        ));
+
+
+        cell = row.createCell(nRow);
+        cell.setCellValue(editFechadesde.getText().toString()+" - "+editFechahasta.getText().toString());
+        cell.setCellStyle(styles.get("item_left"));
+
+        nRow=nRow+1;
+
+        //fecha
+        row = sheet.createRow(nRow);
+        cell = row.createCell(nCell);
+        cell.setCellValue("Actividades Prinpales:");
+        cell.setCellStyle(styles.get("item_left1"));
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                0, //first column (0-based)
+                2 //last column  (0-based)
+        ));
+        int i=0;
+        for(String n:actividadesPrincipales){
+            i=i+1;
+            nRow=nRow+1;
+            row = sheet.createRow(nRow);
+            cell = row.createCell(nCell);
+            cell.setCellValue(i);
+            cell.setCellStyle(styles.get("item_leftamarillo"));
+            cell = row.createCell(nCell+1);
+            cell.setCellValue(n);
+            cell.setCellStyle(styles.get("item_left"));
+
+        }
+        nRow=nRow+1;
+
+        row = sheet.createRow(nRow);
+        cell = row.createCell(nCell);
+        cell.setCellValue("Actividades Secundarias:");
+        cell.setCellStyle(styles.get("item_left1"));
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                0, //first column (0-based)
+                2 //last column  (0-based)
+        ));
+
+        for(String n:actividadesSecundarias){
+            i=i+1;
+            nRow=nRow+1;
+            row = sheet.createRow(nRow);
+            cell = row.createCell(nCell);
+            cell.setCellValue(i);
+            cell.setCellStyle(styles.get("item_leflime"));
+
+            cell = row.createCell(nCell+1);
+            cell.setCellValue(n);
+            cell.setCellStyle(styles.get("item_left"));
+
+
+        }
+
+
+
+
+
+        //titulo
+
+        nRow=nRow+3;
+        nCell=nCell+1;
+
+
+        row = sheet.createRow(nRow);
+        cell = row.createCell(nCell);
+        cell.setCellValue("Operadores");
+        cell.setCellStyle(styles.get("headerAzul"));
+
+        for (int n = (nCell+1); n < (nCell+3); n++) {
+            cell = row.createCell(n);
+            cell.setCellStyle(styles.get("headerAzul"));
+        }
+
+
+
+        cell = row.createCell(nCell+3);
+        cell.setCellValue("Actividades");
+        cell.setCellStyle(styles.get("headerAzul"));
+
+        for (int n = (nCell+4); n < (nCell+actividadesM.length+5); n++) {
+            cell = row.createCell(n);
+            cell.setCellStyle(styles.get("headerAzul"));
+        }
+
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow+1, //last row  (0-based)
+                1, //first column (0-based)
+                3 //last column  (0-based)
+        ));
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                4, //first column (0-based)
+                actividadesM.length+5 //last column  (0-based)
+        ));
+
+        cell = row.createCell(nCell+actividadesM.length+5);
+        cell.setCellValue("Total");
+        cell.setCellStyle(styles.get("headerAzul"));
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow+1, //last row  (0-based)
+                actividadesM.length+6, //first column (0-based)
+                actividadesM.length+6 //last column  (0-based)
+        ));
+
+        cell.setCellStyle(styles.get("headerAzul"));
+
+        nRow=nRow+1;
+        int index=0;
+        row = sheet.createRow(nRow);
+        for (int n = (nCell+3); n < (nCell+actividadesPrincipales.length+3); n++) {
+            cell = row.createCell(n);
+            cell.setCellValue(String.valueOf(index+1));
+            cell.setCellStyle(styles.get("headerAmarillo"));
+            index=index+1;
+        }
+
+        cell = row.createCell(nCell+3+actividadesPrincipales.length);
+        cell.setCellValue("T.P.");
+        cell.setCellStyle(styles.get("headerAzul"));
+        for (int n = (nCell+4+actividadesPrincipales.length); n < (nCell+actividadesSecundarias.length+4+actividadesPrincipales.length); n++) {
+            cell = row.createCell(n);
+            cell.setCellValue(String.valueOf(index+1));
+            cell.setCellStyle(styles.get("headerLime"));
+            index=index+1;
+        }
+
+        cell = row.createCell(nCell+4+actividadesPrincipales.length+actividadesSecundarias.length);
+        cell.setCellValue("T.S.");
+        cell.setCellStyle(styles.get("headerAzul"));
+
+
+        //contenido
+        nRow=nRow+1;
+        String[] operadores =  context.getResources().getStringArray(R.array.combo_nombresOperadores);
+
+        List<sumaInformeOperador> listaOperadores=GetDataInformeporoperador(listReportes,asListString(operadores),context);
+        List<Double> sumasActividadesPrinpales=new ArrayList<>();
+        Double totalTodasPrincipales=0.0, totalTodasSecundarias=0.0;
+        for(String n:actividadesPrincipales){
+            sumasActividadesPrinpales.add(0.0);
+        }
+        List<Double> sumasActividadesSecundarias=new ArrayList<>();
+        for(String n:actividadesSecundarias){
+            sumasActividadesSecundarias.add(0.0);
+        }
+
+
+        for(sumaInformeOperador operador:listaOperadores){
+            row = sheet.createRow(nRow);
+            cell = row.createCell(nCell);
+            cell.setCellValue(operador.getNombreOperador());
+            cell.setCellStyle(styles.get("cell"));
+
+            for (int n = (nCell+1); n < (nCell+3); n++) {
+                cell = row.createCell(n);
+                cell.setCellStyle(styles.get("cell"));
+            }
+            sheet.addMergedRegion(new CellRangeAddress(
+                    nRow, //first row (0-based)
+                    nRow, //last row  (0-based)
+                    1, //first column (0-based)
+                    3 //last column  (0-based)
+            ));
+            int index2=0;
+            double totalPrincipales=0.0;
+            for (int n = (nCell+3); n < (nCell+actividadesPrincipales.length+3); n++) {
+                cell = row.createCell(n);
+                double total= 0.0;
+
+               int posicion=indexActividadeenSuma(operador.getListaactividades(),actividadesPrincipales[index2]);
+                if (posicion!=-1){
+                    total=operador.getListaactividades().get(posicion).getHoras();
+                }
+                totalPrincipales=totalPrincipales+total;
+
+                BigDecimal bdtotal = new BigDecimal(total).setScale(0, RoundingMode.HALF_UP);
+                int valtotal = (int) bdtotal.doubleValue();
+
+
+                cell.setCellValue(valtotal);
+                cell.setCellStyle(styles.get("cell"));
+                sumasActividadesPrinpales.set(index2,sumasActividadesPrinpales.get(index2)+total);
+                index2=index2+1;
+            }
+            BigDecimal bdprinciaples = new BigDecimal(totalPrincipales).setScale(0, RoundingMode.HALF_UP);
+            int valprinciaples = (int) bdprinciaples.doubleValue();
+            cell = row.createCell(nCell+3+actividadesPrincipales.length);
+            cell.setCellValue(valprinciaples);
+            cell.setCellStyle(styles.get("cell"));
+            int index3=0;
+            double totalSecundaria=0.0;
+            for (int n = (nCell+4+actividadesPrincipales.length); n < (nCell+actividadesSecundarias.length+4+actividadesPrincipales.length); n++) {
+                cell = row.createCell(n);
+                double total= 0.0;
+
+                int posicion=indexActividadeenSuma(operador.getListaactividades(),actividadesSecundarias[index3]);
+                if (posicion!=-1){
+                    total=operador.getListaactividades().get(posicion).getHoras();
+                }
+                totalSecundaria=totalSecundaria+total;
+                BigDecimal bdtotal = new BigDecimal(total).setScale(0, RoundingMode.HALF_UP);
+                int valtotal = (int) bdtotal.doubleValue();
+                cell.setCellValue(valtotal);
+                cell.setCellStyle(styles.get("cell"));
+                sumasActividadesSecundarias.set(index3,sumasActividadesSecundarias.get(index3)+total);
+                index3=index3+1;
+            }
+
+
+            BigDecimal bdtotal = new BigDecimal(totalSecundaria).setScale(0, RoundingMode.HALF_UP);
+            int valtotal = (int) bdtotal.doubleValue();
+            cell = row.createCell(nCell+4+actividadesPrincipales.length+actividadesSecundarias.length);
+            cell.setCellValue(valtotal);
+            cell.setCellStyle(styles.get("cell"));
+            cell = row.createCell(nCell+actividadesM.length+5);
+            BigDecimal bdtotaltotal = new BigDecimal(totalPrincipales+totalSecundaria).setScale(0, RoundingMode.HALF_UP);
+            int valtotaltotal = (int) bdtotaltotal.doubleValue();
+            cell.setCellValue(valtotaltotal);
+            cell.setCellStyle(styles.get("headerAzul"));
+
+
+
+
+
+            nRow=nRow+1;
+        }
+        row = sheet.createRow(nRow);
+        cell = row.createCell(nCell);
+        cell.setCellValue("Total");
+        cell.setCellStyle(styles.get("headerAzul"));
+
+        for (int n = (nCell+1); n < (nCell+3); n++) {
+            cell = row.createCell(n);
+            cell.setCellStyle(styles.get("headerAzul"));
+        }
+        sheet.addMergedRegion(new CellRangeAddress(
+                nRow, //first row (0-based)
+                nRow, //last row  (0-based)
+                1, //first column (0-based)
+                3 //last column  (0-based)
+        ));
+        int index4=0;
+        for (int n = (nCell+3); n < (nCell+actividadesPrincipales.length+3); n++) {
+            cell = row.createCell(n);
+            BigDecimal bdtotaltotal = new BigDecimal(sumasActividadesPrinpales.get(index4)).setScale(0, RoundingMode.HALF_UP);
+            int valtotaltotal = (int) bdtotaltotal.doubleValue();
+            cell.setCellValue(valtotaltotal);
+            cell.setCellStyle(styles.get("headerAmarillo"));
+            index4=index4+1;
+        }
+        for(Double n:sumasActividadesPrinpales){
+            totalTodasPrincipales=totalTodasPrincipales+n;
+        }
+
+        cell = row.createCell(nCell+3+actividadesPrincipales.length);
+        BigDecimal bdtotaltotal = new BigDecimal(totalTodasPrincipales).setScale(0, RoundingMode.HALF_UP);
+        int valtotaltotal = (int) bdtotaltotal.doubleValue();
+        cell.setCellValue(valtotaltotal);
+        cell.setCellStyle(styles.get("headerAzul"));
+
+
+        int index5=0;
+        for (int n = (nCell+4+actividadesPrincipales.length); n < (nCell+actividadesSecundarias.length+4+actividadesPrincipales.length); n++) {
+            cell = row.createCell(n);
+            BigDecimal bdtotalS = new BigDecimal(sumasActividadesSecundarias.get(index5)).setScale(0, RoundingMode.HALF_UP);
+            int valtotalS = (int) bdtotalS.doubleValue();
+            cell.setCellValue(valtotalS);
+            cell.setCellStyle(styles.get("headerLime"));
+            index5=index5+1;
+        }
+        for(Double n:sumasActividadesSecundarias){
+            totalTodasSecundarias=totalTodasSecundarias+n;
+        }
+        cell = row.createCell(nCell+4+actividadesPrincipales.length+actividadesSecundarias.length);
+        BigDecimal bdtotalS = new BigDecimal(totalTodasSecundarias).setScale(0, RoundingMode.HALF_UP);
+        int valtotalS = (int) bdtotalS.doubleValue();
+        cell.setCellValue(valtotalS);
+        cell.setCellStyle(styles.get("headerAzul"));
+        cell = row.createCell(nCell+5+actividadesPrincipales.length+actividadesSecundarias.length);
+        BigDecimal bdtotalSP = new BigDecimal(totalTodasSecundarias+totalTodasPrincipales).setScale(0, RoundingMode.HALF_UP);
+        int valtotalSP = (int) bdtotalSP.doubleValue();
+        cell.setCellValue(valtotalSP);
+        cell.setCellStyle(styles.get("headerAzul"));
+
+
+
+
+
+
+        //creacion del documento
+
+        String nombreFile= "InformeGeneralPorOperador.xls";
+        File file = new File(context.getExternalFilesDir(null),nombreFile);
+        FileOutputStream outputStream = null;
+
+        try {
+            outputStream = new FileOutputStream(file);
+            wb.write(outputStream);
+            Toast.makeText(context.getApplicationContext(),"Reporte generado correctamente",Toast.LENGTH_LONG).show();
+            String[] mailto = {correo};
+            Uri uri = FileProvider.getUriForFile(
+                    context,
+                    "com.example.operacionesmteriasprimas", //(use your app signature + ".provider" )
+                    file);
+
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, mailto);
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Reporte de horas de las actividades realizadas "+editFechadesde.getText().toString()+" - "+editFechahasta.getText().toString());
+            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT,"Fecha de reporte:  "+editFechadesde.getText().toString()+" - "+editFechahasta.getText().toString()+".\nTipo: General por operador"+".\nAtentamente HolcimQuarry.");
+            emailIntent.setType("application/pdf");
+            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            context.startActivity(Intent.createChooser(emailIntent, "Send email using:"));
+
+
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+
+            Toast.makeText(context.getApplicationContext(),"NO OK",Toast.LENGTH_LONG).show();
+            try {
+                outputStream.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
 
 
     }
@@ -685,6 +1216,7 @@ public class Informe extends Fragment {
         itemFont.setFontName("Trebuchet MS");
         style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.LEFT);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setFont(titleFont);
         style.setFont(itemFont);
         styles.put("item_left", style);
@@ -695,8 +1227,37 @@ public class Informe extends Fragment {
         itemresFont.setBold(true);
         style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.LEFT);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setFont(itemresFont);
         styles.put("item_left1", style);
+
+
+        Font itemFontcenter = wb.createFont();
+        itemFontcenter.setFontHeightInPoints((short)12);
+        itemFontcenter.setFontName("Trebuchet MS");
+        style = wb.createCellStyle();
+        style.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFont(titleFont);
+        style.setFont(itemFontcenter);
+        styles.put("item_leftamarillo", style);
+
+
+
+        Font itemFontcenterlime = wb.createFont();
+        itemFontcenterlime.setFontHeightInPoints((short)12);
+        itemFontcenterlime.setFontName("Trebuchet MS");
+        style = wb.createCellStyle();
+        style.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFillForegroundColor(IndexedColors.LIME.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFont(titleFont);
+        style.setFont(itemFontcenterlime);
+        styles.put("item_leflime", style);
 
 
 
@@ -712,10 +1273,73 @@ public class Informe extends Fragment {
         style.setWrapText(true);
         styles.put("header", style);
 
+
+        Font monthFont2 = wb.createFont();
+        monthFont2.setFontHeightInPoints((short)12);
+        monthFont2.setFontName("Trebuchet MS");
+        //monthFont2.setColor(IndexedColors.WHITE.getIndex());
+        style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(BorderStyle.THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setFont(monthFont2);
+        style.setWrapText(true);
+        styles.put("header2", style);
+
+
+
+
+
+        Font headerFont = wb.createFont();
+        headerFont.setBold(true);
+        style = createBorderedStyle(wb);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFont(headerFont);
+
+        styles.put("headerAzul", style);
+
+
+
+        Font headerFont2 = wb.createFont();
+        headerFont2.setBold(true);
+        style = createBorderedStyle(wb);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFont(headerFont2);
+
+        styles.put("headerAmarillo", style);
+
+
+        Font headerFont3 = wb.createFont();
+        headerFont3.setBold(true);
+        style = createBorderedStyle(wb);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setFillForegroundColor(IndexedColors.LIME.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFont(headerFont3);
+        styles.put("headerLime", style);
+
+
         Font cellFont = wb.createFont();
         cellFont.setFontHeightInPoints((short)12);
         style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setBorderRight(BorderStyle.THIN);
         style.setRightBorderColor(IndexedColors.BLACK.getIndex());
         style.setBorderLeft(BorderStyle.THIN);
@@ -734,8 +1358,6 @@ public class Informe extends Fragment {
         try {
             for(Reporte m:list){
                 if(diferenciaDias(m.getFecha(),fechadesde)>=0&&diferenciaDias(m.getFecha(),fechahasta)<=0){
-                    lista.add(m);
-
                     if(slectSupervisors.contains("Todos")){
                         lista.add(m);
 
@@ -753,6 +1375,61 @@ public class Informe extends Fragment {
             e.printStackTrace();
         }
         return lista;
+    }
+    private static CellStyle createBorderedStyle(Workbook wb){
+        BorderStyle thin = BorderStyle.THIN;
+        short black = IndexedColors.BLACK.getIndex();
+
+        CellStyle style = wb.createCellStyle();
+        style.setBorderRight(thin);
+        style.setRightBorderColor(black);
+        style.setBorderBottom(thin);
+        style.setBottomBorderColor(black);
+        style.setBorderLeft(thin);
+        style.setLeftBorderColor(black);
+        style.setBorderTop(thin);
+        style.setTopBorderColor(black);
+        return style;
+    }
+    public static List<String> asListString(String[] array){
+        List<String> lista= new ArrayList<>();
+        for(String i:array){
+            lista.add(i);
+        }
+        return lista;
+    }
+    void pedirCorreo(String tipo, List<Reporte> list ){
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context);
+        builder.setTitle("Ingresa correo al que deseas enviar");
+
+// Set up the input
+        final EditText input = new EditText(context);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        builder.setView(input);
+
+// Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                correo = input.getText().toString();
+                if (tipo.equals("Generar por actividad")){
+                    crearExcelactividadesGenerales(filtrarDatos(fechadesde,fechahasta,list));
+
+                }else if(tipo.equals("Por operador")){
+                    crearExelPorOperador(filtrarDatos(fechadesde,fechahasta,list));
+
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
 

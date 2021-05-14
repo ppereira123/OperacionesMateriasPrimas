@@ -29,6 +29,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     Context context=this;
 
@@ -53,6 +56,54 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         checkVersion();
+        //arreglo
+        FirebaseDatabase database= FirebaseDatabase.getInstance();
+        DatabaseReference ref=database.getReference("Reportes");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                               @Override
+                                               public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                   String key1,key2,key3;
+                                                   List<String> list=new ArrayList<>();
+                                                   if(snapshot.exists()) {
+                                                       for (DataSnapshot ds : snapshot.getChildren()) {
+
+                                                           if(ds.exists()) {
+                                                               key1=ds.getKey().toString();
+                                                               for (DataSnapshot ds2 : ds.child("operadores").getChildren()) {
+                                                                   key2=ds2.getKey().toString();
+
+                                                                   if(ds2.exists()) {
+                                                                       for (DataSnapshot ds3 : ds2.child("nombreActividades").getChildren()) {
+                                                                           key3=ds3.getKey().toString();
+                                                                           if(ds3.getValue().toString().equals("Mantenimiento Vial")){
+                                                                               ref.child(key1).child("operadores").child(key2).child("nombreActividades").child(key3).setValue("Mantenimiento Vial Exterior a Cantera");
+                                                                               Toast.makeText(context, key1+key2+key3, Toast.LENGTH_SHORT).show();
+
+                                                                           }
+
+                                                                       }
+
+                                                                   }
+
+
+                                                               }
+                                                           }
+
+                                                       }
+                                                   }
+
+
+                                               }
+
+                                               @Override
+                                               public void onCancelled(@NonNull DatabaseError error) {
+
+                                               }
+                                           });
+
+                //
+
 
     }
 

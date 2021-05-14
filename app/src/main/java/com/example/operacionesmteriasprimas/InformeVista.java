@@ -53,11 +53,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.example.operacionesmteriasprimas.Adapters.adaptadorInformeporOperador.convertDpToPx;
+import static com.example.operacionesmteriasprimas.ui.informes.Informe.asListString;
 import static com.example.operacionesmteriasprimas.ui.informes.Informe.diferenciaDias;
 
 public class InformeVista extends AppCompatActivity {
@@ -186,14 +189,16 @@ public class InformeVista extends AppCompatActivity {
 
 
                 }else if(tipoinforme.equals("Generar por actividad")){
-                    List<sumas> lista= (List<sumas>) GetData(listareportes);
+                    Toast.makeText(context, String.valueOf(listareportes.size()), Toast.LENGTH_SHORT).show();
+                    List<sumas> lista= (List<sumas>) GetData(listareportes,context);
 
                     adaptadorVistaHoras adapter = new adaptadorVistaHoras(context,lista);
+
                     listactividades.setAdapter(adapter);
                     listactividades.setDividerHeight(4);
                     listactividades.setBackgroundColor(getResources().getColor(R.color.white));
 
-                    for(sumas suma:GetData(listareportes)){
+                    for(sumas suma:GetData(listareportes,context)){
                         if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
                             horasprincipales=horasprincipales+suma.getHoras();
                         }
@@ -201,10 +206,16 @@ public class InformeVista extends AppCompatActivity {
                             horasextra=horasextra+suma.getHoras();
                         }
                     }
+                    BigDecimal bd = new BigDecimal(horasprincipales).setScale(0, RoundingMode.HALF_UP);
+                    int val1 = (int) bd.doubleValue();
+                    BigDecimal bd2 = new BigDecimal(horasextra).setScale(0, RoundingMode.HALF_UP);
+                    int val2 = (int) bd2.doubleValue();
+                    BigDecimal bd3 = new BigDecimal(horasextra+horasprincipales).setScale(0, RoundingMode.HALF_UP);
+                    int val3 = (int) bd3.doubleValue();
 
-                    txtprincipales.setText(String.valueOf(horasprincipales));
-                    txtextra.setText(String.valueOf(horasextra));
-                    txttotalhoras.setText(String.valueOf(horasextra+horasprincipales));
+                    txtprincipales.setText(String.valueOf(val1));
+                    txtextra.setText(String.valueOf(val2));
+                    txttotalhoras.setText(String.valueOf(val3));
 
 
                 }
@@ -222,32 +233,48 @@ public class InformeVista extends AppCompatActivity {
 
     }
 
-    public static List<sumas> GetData(List<Reporte> listareportes) {
+    public static List<sumas> GetData(List<Reporte> listareportes, Context context) {
         //HashMap<String, Double> actividadeshoras = new HashMap<String, Double>();
+        String[] operadores =  context.getResources().getStringArray(R.array.combo_nombresOperadores);
+        List<String> listaoperadores=asListString(operadores);
         List<sumas> lista=new ArrayList<sumas>();
         for (Reporte reporte:listareportes){
             for(Operador operador:listReporteToHash(reporte.getOperadores())){
+                if(listaoperadores.contains(operador.getNombre())){
+                    for (String actividad:operador.getNombreActividades()){
+                        if(existeactividad(lista,actividad)==-1) {
 
-                for (String actividad:operador.getNombreActividades()){
-                    if(existeactividad(lista,actividad)==-1) {
 
+                            sumas suma = new sumas(actividad, operador.getActividades().get(operador.getNombreActividades().indexOf(actividad)));
+                            lista.add(suma);
+                        }else {
+                            double sumar=operador.getActividades().get(operador.getNombreActividades().indexOf(actividad))+lista.get(existeactividad(lista,actividad)).getHoras();
+                            sumas suma = new sumas(actividad, sumar);
 
-                        sumas suma = new sumas(actividad, operador.getActividades().get(operador.getNombreActividades().indexOf(actividad)));
-                        lista.add(suma);
-                    }else {
-                        double sumar=operador.getActividades().get(operador.getNombreActividades().indexOf(actividad))+lista.get(existeactividad(lista,actividad)).getHoras();
-                        sumas suma = new sumas(actividad, sumar);
+                            lista.set(existeactividad(lista,actividad),suma);
 
-                        lista.set(existeactividad(lista,actividad),suma);
-
+                        }
                     }
                 }
+
+
             }
         }
-        return lista;
+        List<sumas> listaordenada=new ArrayList<sumas>();
+
+        String[] actividadesM =  context.getResources().getStringArray(R.array.combo_tiposOperaciones);
+        for(String activida:actividadesM){
+            int ubicacion=indexActividadeenSuma(lista,activida);
+            if(ubicacion!=-1){
+                listaordenada.add(lista.get(ubicacion));
+            }
+
+        }
+
+        return listaordenada;
     }
 
-    public static   List<sumaInformeOperador> GetDataInformeporoperador(List<Reporte> listareportes, List<String> operadoresSeleccionados){
+    public static   List<sumaInformeOperador> GetDataInformeporoperador(List<Reporte> listareportes, List<String> operadoresSeleccionados, Context context){
 
         List<sumaInformeOperador> lista=new ArrayList<>();
         for(String operador: operadoresSeleccionados){
@@ -271,10 +298,32 @@ public class InformeVista extends AppCompatActivity {
                 }
 
             }
-            sumaInformeOperador info= new sumaInformeOperador(operador,listasuma);
+            List<sumas> listaordenada=new ArrayList<sumas>();
+            String[] actividadesM =  context.getResources().getStringArray(R.array.combo_tiposOperaciones);
+            for(String activida:actividadesM){
+                int ubicacion=indexActividadeenSuma(listasuma,activida);
+                if(ubicacion!=-1){
+                    listaordenada.add(listasuma.get(ubicacion));
+                }
+            }
+            sumaInformeOperador info= new sumaInformeOperador(operador,listaordenada);
             lista.add(info);
         }
+        Collections.sort(lista, new Comparator<sumaInformeOperador>() {
+            @Override
+            public int compare(sumaInformeOperador o1, sumaInformeOperador o2) {
+                return (o1.getNombreOperador().compareTo(o2.getNombreOperador()));
+            }
+        });
         return lista;
+    }
+    public static int indexActividadeenSuma(List<sumas> lista, String actividad){
+        List<String> actividades=new ArrayList<>();
+        for(sumas suma:lista){
+            actividades.add(suma.getActividad());
+        }
+
+        return actividades.indexOf(actividad);
     }
 
     public static int existeOperadorenList(List<Operador> operadores, String operador){
@@ -374,11 +423,11 @@ public class InformeVista extends AppCompatActivity {
                 for (String s : operadoresSeleccionados) {
                     muestra = muestra + s + "\n";
                 }
-                adaptadorInformeporOperador adapterporOperador = new adaptadorInformeporOperador(context, GetDataInformeporoperador(listareportes, operadoresSeleccionados));
+                adaptadorInformeporOperador adapterporOperador = new adaptadorInformeporOperador(context, GetDataInformeporoperador(listareportes, operadoresSeleccionados,context));
                 listactividades.setAdapter(adapterporOperador);
                 ColorDrawable sage = new ColorDrawable(Color.parseColor("#FFFFFF"));
                 listactividades.setDivider(sage);
-                for (sumaInformeOperador sumaporoperador : GetDataInformeporoperador(listareportes, operadoresSeleccionados)) {
+                for (sumaInformeOperador sumaporoperador : GetDataInformeporoperador(listareportes, operadoresSeleccionados,context)) {
                     for (sumas suma : sumaporoperador.getListaactividades()) {
                         if (suma.getActividad().equals("Extracción") || suma.getActividad().equals("Esteril")) {
                             horasprincipales = horasprincipales + suma.getHoras();
