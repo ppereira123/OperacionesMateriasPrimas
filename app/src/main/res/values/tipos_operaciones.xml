@@ -16,9 +16,9 @@
     <string-array name="combo_tiposOperacionesPrinciapales">
         <item>Extracción</item>
         <item>Esteril</item>
+        <item>Mantenimiento Vial Cantera</item>
     </string-array>
     <string-array name="combo_tiposOperacionesSecundarias">
-        <item>Mantenimiento Vial Cantera</item>
         <item>Mantenimiento Vial Exterior a Cantera</item>
         <item>Movimiento de materiales</item>
         <item>Recepción y descarga de embarques de materias primas</item>

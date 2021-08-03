@@ -72,6 +72,7 @@ public class InformeVista extends AppCompatActivity {
     TextView txtprincipales,txtextra,txtfechadelreporte,txttotalhoras;
 
 
+
     Double horasextra=0.0;
     Double horasprincipales=0.0;
     String fechadesde,fechahasta,tipoinforme;
@@ -84,6 +85,8 @@ public class InformeVista extends AppCompatActivity {
     boolean[] checkedItems;
     AlertDialog dialog;
     BuscadorAdapter adapter;
+
+    String[] actividadesPrincipales,actividadesSecundarias;
 
 
 
@@ -99,6 +102,9 @@ public class InformeVista extends AppCompatActivity {
         txtextra=findViewById(R.id.txtextras);
         txtfechadelreporte=findViewById(R.id.txtinformeporfecha);
         txttotalhoras=findViewById(R.id.txtTotalhoras);
+        actividadesPrincipales =  context.getResources().getStringArray(R.array.combo_tiposOperacionesPrinciapales);
+        actividadesSecundarias =  context.getResources().getStringArray(R.array.combo_tiposOperacionesSecundarias);
+
 
         btnAgregarOperadores=findViewById(R.id.btnAgregarOperadoresInforme);
         tituloactividades=findViewById(R.id.tituloactividades);
@@ -133,6 +139,7 @@ public class InformeVista extends AppCompatActivity {
         listareportes=new ArrayList<>();
         FirebaseDatabase database= FirebaseDatabase.getInstance();
         DatabaseReference ref=database.getReference("Reportes");
+        ref.keepSynced(true);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -199,7 +206,8 @@ public class InformeVista extends AppCompatActivity {
                     listactividades.setBackgroundColor(getResources().getColor(R.color.white));
 
                     for(sumas suma:GetData(listareportes,context)){
-                        if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
+
+                        if (asListString(actividadesPrincipales).contains(suma.getActividad())){
                             horasprincipales=horasprincipales+suma.getHoras();
                         }
                         else {
@@ -429,10 +437,11 @@ public class InformeVista extends AppCompatActivity {
                 listactividades.setDivider(sage);
                 for (sumaInformeOperador sumaporoperador : GetDataInformeporoperador(listareportes, operadoresSeleccionados,context)) {
                     for (sumas suma : sumaporoperador.getListaactividades()) {
-                        if (suma.getActividad().equals("Extracción") || suma.getActividad().equals("Esteril")) {
-                            horasprincipales = horasprincipales + suma.getHoras();
-                        } else {
-                            horasextra = horasextra + suma.getHoras();
+                        if (asListString(actividadesPrincipales).contains(suma.getActividad())){
+                            horasprincipales=horasprincipales+suma.getHoras();
+                        }
+                        else {
+                            horasextra=horasextra+suma.getHoras();
                         }
                     }
                     BigDecimal bd = new BigDecimal(horasprincipales).setScale(0, RoundingMode.HALF_UP);

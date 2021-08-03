@@ -92,6 +92,7 @@ public class Informe extends Fragment {
     String[] listatipodocumentos,listatipoinforme;
     AutoCompleteTextView autoCompleteTextViewSpinnnerDopcumentos,autoCompleteTextViewSpinnnerInformes;
     List<Reporte> listReportes=new ArrayList<>();
+    String[] actividadesPrincipales,actividadesSecundarias;
 
 
     private FirebaseAuth mAuth;
@@ -115,6 +116,8 @@ public class Informe extends Fragment {
         tipoDocumento="";
         fechahasta="";
         fechadesde="";
+        actividadesPrincipales =  context.getResources().getStringArray(R.array.combo_tiposOperacionesPrinciapales);
+        actividadesSecundarias =  context.getResources().getStringArray(R.array.combo_tiposOperacionesSecundarias);
         limpiar=root.findViewById(R.id.btnLimpiar);
         buscar=root.findViewById(R.id.btnBuscarInforme);
         name=root.findViewById(R.id.txtnameUsuario);
@@ -636,7 +639,7 @@ public class Informe extends Fragment {
         double horasprincipales=0.0, horasextra=0.0,horatotal=0.0;
 
         for(sumas suma:lista){
-            if (suma.getActividad().equals("Extracción")||suma.getActividad().equals("Esteril")){
+            if (asListString(actividadesPrincipales).contains(suma.getActividad())){
                 horasprincipales=horasprincipales+suma.getHoras();
             }
             else {
@@ -691,7 +694,7 @@ public class Informe extends Fragment {
         cell = row.createCell(nCell+6);
 
 
-        BigDecimal bd3 = new BigDecimal(horasprincipales).setScale(0, RoundingMode.HALF_UP);
+        BigDecimal bd3 = new BigDecimal(horasextra).setScale(0, RoundingMode.HALF_UP);
         int val3 = (int) bd3.doubleValue();
 
         cell.setCellValue(val3);
@@ -925,29 +928,29 @@ public class Informe extends Fragment {
 
         //titulo
 
-        nRow=nRow+3;
-        nCell=nCell+1;
+                    nRow=nRow+3;
+            nCell=nCell+1;
 
 
-        row = sheet.createRow(nRow);
-        cell = row.createCell(nCell);
-        cell.setCellValue("Operadores");
-        cell.setCellStyle(styles.get("headerAzul"));
-
-        for (int n = (nCell+1); n < (nCell+3); n++) {
-            cell = row.createCell(n);
+            row = sheet.createRow(nRow);
+            cell = row.createCell(nCell);
+            cell.setCellValue("Operadores");
             cell.setCellStyle(styles.get("headerAzul"));
-        }
+
+            for (int n = (nCell+1); n < (nCell+3); n++) {
+                cell = row.createCell(n);
+                cell.setCellStyle(styles.get("headerAzul"));
+            }
 
 
 
-        cell = row.createCell(nCell+3);
-        cell.setCellValue("Actividades");
-        cell.setCellStyle(styles.get("headerAzul"));
-
-        for (int n = (nCell+4); n < (nCell+actividadesM.length+5); n++) {
-            cell = row.createCell(n);
+            cell = row.createCell(nCell+3);
+            cell.setCellValue("Actividades");
             cell.setCellStyle(styles.get("headerAzul"));
+
+            for (int n = (nCell+4); n < (nCell+actividadesM.length+5); n++) {
+                cell = row.createCell(n);
+                cell.setCellStyle(styles.get("headerAzul"));
         }
 
 
@@ -1069,6 +1072,9 @@ public class Informe extends Fragment {
                 if (posicion!=-1){
                     total=operador.getListaactividades().get(posicion).getHoras();
                 }
+
+
+
                 totalSecundaria=totalSecundaria+total;
                 BigDecimal bdtotal = new BigDecimal(total).setScale(0, RoundingMode.HALF_UP);
                 int valtotal = (int) bdtotal.doubleValue();

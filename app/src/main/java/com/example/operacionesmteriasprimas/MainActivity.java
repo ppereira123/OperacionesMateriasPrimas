@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         DatabaseReference myRef = database.getReference("Version");
+        myRef.keepSynced(true);
         myRef.child("numero").
 
                 addValueEventListener(new ValueEventListener() {

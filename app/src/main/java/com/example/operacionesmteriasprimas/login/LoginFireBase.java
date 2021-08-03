@@ -50,6 +50,7 @@ public class LoginFireBase extends AppCompatActivity {
     boolean admin;
     AlertDialog alert;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +135,15 @@ public class LoginFireBase extends AppCompatActivity {
                                 if(snapshot.exists()){
                                     admin=true;
                                 }
+                                try {
+                                    UsersData data= new UsersData(admin,user.getUid(),user.getDisplayName(), user.getPhotoUrl().toString(),user.getEmail(),new ArrayList<>());
+                                    storage.guardarArchivo(data ,context);
+                                    Intent intent = new Intent(context, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
 
                             @Override
@@ -143,17 +153,11 @@ public class LoginFireBase extends AppCompatActivity {
                         });
 
 
-                        try {
-                            UsersData data= new UsersData(admin,user.getUid(),user.getDisplayName(), user.getPhotoUrl().toString(),user.getEmail(),new ArrayList<>());
-                            storage.guardarArchivo(data ,this);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
 
-                        Intent intent = new Intent(this, MainActivity.class);
+
+
                         alert.dismiss();
-                        startActivity(intent);
-                        finish();
+
 
 
                     } else {
