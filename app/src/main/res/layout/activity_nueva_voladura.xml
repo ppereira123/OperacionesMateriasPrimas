@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nuevaVoladura"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.Voladura.NuevaVoladura">
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:text="Nuevo Reporte de Voladura"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/ic_launcher_background"
+        android:textSize="18sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nextFocusLeft="@id/textView14"
+                    android:nextFocusRight="@id/textView14"
+                    android:nextFocusUp="@id/textView14"
+                    android:nextFocusDown="@id/textView14"
+                    android:nextFocusForward="@id/textView14"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editLongitudPerforacionVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Longitud de Perforacion:"
+                        android:inputType="number"
+                        android:nextFocusLeft="@id/textView14"
+                        android:nextFocusRight="@id/textView14"
+                        android:nextFocusUp="@id/textView14"
+                        android:nextFocusDown="@id/textView14"
+                        android:nextFocusForward="@id/textView14" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editFechaNuevaVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+
+                        android:focusableInTouchMode="true"
+
+                        android:hint="Fecha:"
+
+                        android:selectAllOnFocus="false"
+                        android:singleLine="true" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nextFocusLeft="@id/textView14"
+                    android:nextFocusRight="@id/textView14"
+                    android:nextFocusUp="@id/textView14"
+                    android:nextFocusDown="@id/textView14"
+                    android:nextFocusForward="@id/textView14"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editEdipoVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Equipo:"
+                        android:nextFocusLeft="@id/textView14"
+                        android:nextFocusRight="@id/textView14"
+                        android:nextFocusUp="@id/textView14"
+                        android:nextFocusDown="@id/textView14"
+                        android:nextFocusForward="@id/textView14" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editEspaciamientoVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Espaciamiento:"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nextFocusLeft="@id/textView14"
+                    android:nextFocusRight="@id/textView14"
+                    android:nextFocusUp="@id/textView14"
+                    android:nextFocusDown="@id/textView14"
+                    android:nextFocusForward="@id/textView14"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editAlturaBancoVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Altura de banco:"
+                        android:inputType="number"
+                        android:nextFocusLeft="@id/textView14"
+                        android:nextFocusRight="@id/textView14"
+                        android:nextFocusUp="@id/textView14"
+                        android:nextFocusDown="@id/textView14"
+                        android:nextFocusForward="@id/textView14" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nextFocusLeft="@id/textView14"
+                    android:nextFocusRight="@id/textView14"
+                    android:nextFocusUp="@id/textView14"
+                    android:nextFocusDown="@id/textView14"
+                    android:nextFocusForward="@id/textView14"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editSobrePerforacionVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Sobre Perforación:"
+                        android:inputType="number"
+                        android:nextFocusLeft="@id/textView14"
+                        android:nextFocusRight="@id/textView14"
+                        android:nextFocusUp="@id/textView14"
+                        android:nextFocusDown="@id/textView14"
+                        android:nextFocusForward="@id/textView14" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputlayoutCVoladura"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nextFocusLeft="@id/textView14"
+                    android:nextFocusRight="@id/textView14"
+                    android:nextFocusUp="@id/textView14"
+                    android:nextFocusDown="@id/textView14"
+                    android:nextFocusForward="@id/textView14"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editCodigoVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Codigo de Voladura:"
+                        android:nextFocusLeft="@id/textView14"
+                        android:nextFocusRight="@id/textView14"
+                        android:nextFocusUp="@id/textView14"
+                        android:nextFocusDown="@id/textView14"
+                        android:nextFocusForward="@id/textView14"
+                        android:selectAllOnFocus="false" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nextFocusLeft="@id/textView14"
+                    android:nextFocusRight="@id/textView14"
+                    android:nextFocusUp="@id/textView14"
+                    android:nextFocusDown="@id/textView14"
+                    android:nextFocusForward="@id/textView14"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editDiametroVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Diametro:"
+                        android:inputType="number"
+                        android:nextFocusLeft="@id/textView14"
+                        android:nextFocusRight="@id/textView14"
+                        android:nextFocusUp="@id/textView14"
+                        android:nextFocusDown="@id/textView14"
+                        android:nextFocusForward="@id/textView14" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editNumeroPerforacionesVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Número perforaciones:"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nextFocusLeft="@id/textView14"
+                    android:nextFocusRight="@id/textView14"
+                    android:nextFocusUp="@id/textView14"
+                    android:nextFocusDown="@id/textView14"
+                    android:nextFocusForward="@id/textView14"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editNumeroFilasVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Número filas:"
+                        android:inputType="number"
+                        android:nextFocusLeft="@id/textView14"
+                        android:nextFocusRight="@id/textView14"
+                        android:nextFocusUp="@id/textView14"
+                        android:nextFocusDown="@id/textView14"
+                        android:nextFocusForward="@id/textView14" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nextFocusLeft="@id/textView14"
+                    android:nextFocusRight="@id/textView14"
+                    android:nextFocusUp="@id/textView14"
+                    android:nextFocusDown="@id/textView14"
+                    android:nextFocusForward="@id/textView14"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editPerforacionesxFilaVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Perforaciones por fila:"
+                        android:inputType="number"
+                        android:nextFocusLeft="@id/textView14"
+                        android:nextFocusRight="@id/textView14"
+                        android:nextFocusUp="@id/textView14"
+                        android:nextFocusDown="@id/textView14"
+                        android:nextFocusForward="@id/textView14" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textinputExplosivoVoladura"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:hint="Explosivos:"
+                    android:nextFocusLeft="@id/textView14"
+                    android:nextFocusRight="@id/textView14"
+                    android:nextFocusUp="@id/textView14"
+                    android:nextFocusDown="@id/textView14"
+                    android:nextFocusForward="@id/textView14"
+
+
+                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundMode="outline">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autocompleteExplosivoVoladura"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:nextFocusLeft="@id/textView14"
+                        android:nextFocusRight="@id/textView14"
+                        android:nextFocusUp="@id/textView14"
+                        android:nextFocusDown="@id/textView14"
+                        android:nextFocusForward="@id/textView14" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtenunciadoList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:text="Lista de explosivos:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:visibility="gone">
+
+            </TextView>
+
+            <ListView
+                android:id="@+id/listExplosivosVoladura"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp" />
+
+            <Button
+                android:id="@+id/btnGuardar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Guardar" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

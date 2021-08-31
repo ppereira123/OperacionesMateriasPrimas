@@ -22,4 +22,9 @@
         android:name="com.example.operacionesmteriasprimas.ui.informes.Informe"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_informe" />
+    <fragment
+        android:id="@+id/voladuraFragment"
+        android:name="com.example.operacionesmteriasprimas.ui.Voladura.VoladuraFragment"
+        android:label="Reporte Voladura"
+        tools:layout="@layout/fragment_voladura" />
 </navigation>

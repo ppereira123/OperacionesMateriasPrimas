@@ -42,6 +42,16 @@
         <item>Por operador</item>
     </string-array>
 
+    <string-array name="combo_explosivos">
+        <item>ANFO</item>
+        <item>EMULSION 3 X 16</item>
+        <item>EMULSION 2 1/2 X 16</item>
+        <item>DETONADORES DE 15 M</item>
+        <item>DETONADORES 20 M</item>
+        <item>CONECTORES 65 ms</item>
+        <item>CONECTORES 100 ms</item>
+    </string-array>
+
 
 
 

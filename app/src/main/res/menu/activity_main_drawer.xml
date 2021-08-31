@@ -13,8 +13,14 @@
             android:icon="@mipmap/periodico"
             android:title="@string/menu_gallery" />
         <item
+            android:id="@+id/voladuraFragment"
+            android:icon="@drawable/documento"
+            android:title="Registro de Voladura" />
+        <item
             android:id="@+id/nav_slideshow"
             android:icon="@mipmap/diario"
             android:title="@string/menu_slideshow" />
+
+
     </group>
 </menu>
